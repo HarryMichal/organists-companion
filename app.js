@@ -46,20 +46,19 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// connect to the test databse
-let db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+// connect to the test database
+var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(err.message);
   }
   console.log('Connected to the testdb database.');
 });
 
-// close the database connection
 db.close((err) => {
   if (err) {
     return console.error(err.message);
   }
-  console.log('Close the database connection.');
-});
+  console.log('Closed the database connection.')
+})
 
 module.exports = app;

@@ -1,25 +1,49 @@
-.App {
+/*
+  Category: Divs
+*/
+
+.root {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.basic-paragraph {
+  text-align: center;
 }
 
-.App-header {
+/*
+  Category: Headers
+*/
+
+.header {
   background-color: #222;
   height: 150px;
   padding: 20px;
   color: white;
 }
 
-.App-title {
+/*
+  Category: Footers
+*/
+
+.footer {
+  text-align: center;
+}
+
+/*
+  Category: h1, h2, h3, h4, etc.
+*/
+
+.title {
   font-size: 1.5em;
 }
 
-.App-intro {
-  font-size: large;
+/*
+  Category: Multimedia + Animaitons
+*/
+
+.logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
 }
 
 @keyframes App-logo-spin {
