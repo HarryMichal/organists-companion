@@ -2,6 +2,12 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/xxx.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+
+    header
+      block header
+    div(class='body')
+      block content
+    footer
+      block footer

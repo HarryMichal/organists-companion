@@ -6,9 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 
+// routes variables
 var index = require('./routes/index');
 var users = require('./routes/users');
-var settings = require('./routes/settings')
+var settings = require('./routes/settings');
+var output = require('./routes/output');
 
 var app = express();
 
@@ -24,9 +26,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes that Express serves; variables at the top
 app.use('/', index);
 app.use('/users', users);
-app.use('/settings', settings)
+app.use('/settings', settings);
+app.use('/output', output);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -52,6 +56,13 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
     console.error(err.message);
   }
   console.log('Connected to the testdb database.');
+});
+
+db.each("SELECT number, text FROM psalms", function(err, result, next){
+  if(err){
+    return console.error("Error running querry");
+  };
+  sql_output = result.number + ': ' + result.text;
 });
 
 db.close((err) => {

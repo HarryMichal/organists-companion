@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import logo from './logo.svg';
 import './stylesheets/App.css';
 
-class App extends Component {
+class base_layout extends Component {
   render() {
     return (
       <div className="root">
@@ -11,12 +11,10 @@ class App extends Component {
           <h1 className="title">Church Companion</h1>
           <img src={logo} className="logo" alt="logo" />
         </header>
-
         <div className="page-body">
         <p className="basic-paragraph">
         </p>
         </div>
-
         <footer className="footer">
         <h1 className="title">Footer</h1>
         </footer>
@@ -25,4 +23,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default base_layout;
