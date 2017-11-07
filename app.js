@@ -11,6 +11,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var settings = require('./routes/settings');
 var output = require('./routes/output');
+var api_psalms_request = require('./routes/psalms_request');
 
 var app = express();
 
@@ -26,11 +27,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
 // Routes that Express serves; variables at the top
 app.use('/', index);
 app.use('/users', users);
 app.use('/settings', settings);
 app.use('/output', output);
+
+// API Routes
+app.use('/api/data/psalms', api_psalms_request);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -58,12 +63,25 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
   console.log('Connected to the testdb database.');
 });
 
-db.each("SELECT number, text FROM psalms", function(err, result, next){
-  if(err){
-    return console.error("Error running querry");
-  };
-  sql_output = result.number + ': ' + result.text;
-});
+function del_psalms() {
+  db.run("DELETE FROM psalms", function(err, result, next){
+    if(err){
+      return console.error("Error deleting rows");
+    };
+    console.log(`Row(s) deleted ${this.changes}`);
+  });
+};
+
+function add_psalms() {
+  db.run("INSERT INTO psalms(number, text) VALUES(?)", [
+    
+  ], function(err, result, next){
+    if(err){
+      return console.error("Error adding entries")
+    };
+    console.log(`Row(s) added ${result.changes}`);
+  });
+};
 
 db.close((err) => {
   if (err) {

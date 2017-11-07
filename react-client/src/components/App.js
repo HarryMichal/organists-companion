@@ -20,7 +20,7 @@ class base_layout extends Component {
         </footer>
       </div>
     );
-  }
-}
+  };
+};
 
 export default base_layout;
