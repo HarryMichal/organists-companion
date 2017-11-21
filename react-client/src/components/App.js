@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import logo from './logo.svg';
-import './stylesheets/App.css';
+import logo from '../content/logo.svg';
+import '../stylesheets/App.css';
 
 class base_layout extends Component {
   render() {

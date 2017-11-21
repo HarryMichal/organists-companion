@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import Nav from './Nav';
-import { getPsalms } from '../utils/chucknorris-api';
+import { getPsalms } from '../utils/getPsalms-api';
 
 
 class getPsalms extends Component {

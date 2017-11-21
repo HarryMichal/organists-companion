@@ -28,7 +28,7 @@ var sslOptions = {
  * Create HTTPS server.
  */
 
-var server = https.createServer(sslOptions, app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
