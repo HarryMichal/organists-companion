@@ -4,17 +4,20 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
+
 var fs = require('fs');
 var json = require('json');
 const sqlite3 = require('sqlite3').verbose();
 
-
+  
 // routes variables
 var index = require('./routes/index');
 var users = require('./routes/users');
 var settings = require('./routes/settings');
 var output = require('./routes/output');
-var api_psalms_request = require('./routes/api/get_psalms_all');
+var api_psalms = require('./routes/api/psalms/main');
 
 var app = express();
 
@@ -29,8 +32,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
+app.use(passport.session());
 
-// Routes
+/*
+ Routes
+*/
 // Routes that Express serves; variables at the top
 app.use('/', index);
 app.use('/users', users);
@@ -38,7 +45,7 @@ app.use('/settings', settings);
 app.use('/output', output);
 
 // API Routes
-app.use('/api/data/psalms', api_psalms_request);
+app.use('/api/psalms', api_psalms);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -81,15 +88,14 @@ function del_psalms() {
   });
 };
 
+/*
 var psalms_list = fs.readFileSync('./psalms.json');
 var psalms = JSON.parse(fs.readFileSync('./psalms.json'));
-/*
+
 for (i = 0; i < 8; i++) {
   console.log("JSON: " + psalms.psalms[i].id + ", " + psalms.psalms[i].text);
 }
 */
-
-query_psalms();
 
 function query_psalms() {
   db.all("SELECT id, text FROM psalms ORDER BY id", function(err, result){
@@ -110,14 +116,15 @@ function add_psalms() {
       };
       console.log(`Row(s) added ${this.changes}`);
     });
-  }
-}
-
+  };
+};
+function db_close () {
 db.close((err) => {
   if (err) {
     return console.error(err.message);
-  }
-  console.log('Closed the database connection.')
-})
+  };
+  console.log('Closed the database connection.');
+});
+};
 
 module.exports = app;
