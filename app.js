@@ -11,13 +11,11 @@ var fs = require('fs');
 var json = require('json');
 const sqlite3 = require('sqlite3').verbose();
 
-  
+
 // routes variables
-var index = require('./routes/index');
-var users = require('./routes/users');
-var settings = require('./routes/settings');
-var output = require('./routes/output');
-var api_psalms = require('./routes/api/psalms/main');
+var main = require('./routes/main');
+var api_psalms = require('./routes/api/psalms');
+var api_users = require('./routes/api/users');
 
 var app = express();
 
@@ -39,10 +37,7 @@ app.use(passport.session());
  Routes
 */
 // Routes that Express serves; variables at the top
-app.use('/', index);
-app.use('/users', users);
-app.use('/settings', settings);
-app.use('/output', output);
+app.use('/', main);
 
 // API Routes
 app.use('/api/psalms', api_psalms);
@@ -64,67 +59,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-// connect to the test database
-var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-  console.log('Connected to the testdb database.');
-});
-
-function create_table() {
-  db.run("CREATE TABLE psalms(id INTEGER, text TEXT, rows INTEGER)")
-};
-
-// del_psalms();
-
-function del_psalms() {
-  db.run("DELETE FROM psalms", function(err, result, next){
-    if(err){
-      return console.error("Error deleting rows");
-    };
-    console.log(`Row(s) deleted ${this.changes}`);
-  });
-};
-
-/*
-var psalms_list = fs.readFileSync('./psalms.json');
-var psalms = JSON.parse(fs.readFileSync('./psalms.json'));
-
-for (i = 0; i < 8; i++) {
-  console.log("JSON: " + psalms.psalms[i].id + ", " + psalms.psalms[i].text);
-}
-*/
-
-function query_psalms() {
-  db.all("SELECT id, text FROM psalms ORDER BY id", function(err, result){
-    if(err){
-      return console.error("Error querrying entries");
-    };
-    console.log(result[2].text);
-  });
-};
-
-//add_psalms();
-
-function add_psalms() {
-  for (i = 0; i < 8; i++) {
-    db.run("INSERT INTO psalms(id, text) VALUES (?, ?) ", psalms.psalms[i].id, psalms.psalms[i].text, function(err){
-      if(err){
-        return console.error("Error adding entries");
-      };
-      console.log(`Row(s) added ${this.changes}`);
-    });
-  };
-};
-function db_close () {
-db.close((err) => {
-  if (err) {
-    return console.error(err.message);
-  };
-  console.log('Closed the database connection.');
-});
-};
 
 module.exports = app;

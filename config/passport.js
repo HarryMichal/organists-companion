@@ -48,15 +48,15 @@ module.exports = function(passport) {
     // we are checking to see if the user trying to login already exists
 
     // !!!change to SQLite; overall should be fine!!!
-    connection.query("SELECT * FROM users WHERE username = ?", [username], function(err, rows) {
+    db.each("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
       if (err)
         return done(err);
       if (rows.length) {
         return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
       } else {
         // if there is no user with that username
-        // create the user; !!! I velieve that can be unchanged!!!
-        var newUserMysql = {
+        // create the user; !!! I believe that can be unchanged!!!
+        var newUserSQLite = {
           username: username,
           password: bcrypt.hashSync(password, null, null) // use the generateHash function in our user model
         };
@@ -65,12 +65,12 @@ module.exports = function(passport) {
         var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
 
         // !!!Also change!!!
-        connection.query(insertQuery, [
-          newUserMysql.username, newUserMysql.password
+        db.run(insertQuery, [
+          newUserSQLite.username, newUserSQLite.password
         ], function(err, rows) {
-          newUserMysql.id = rows.insertId;
+          newUserSQLite.id = rows.insertId;
 
-          return done(null, newUserMysql);
+          return done(null, newUserSQLite);
         });
       }
     });
@@ -89,7 +89,7 @@ module.exports = function(passport) {
     passReqToCallback: true // allows us to pass back the entire request to the callback
   }, function(req, username, password, done) { // callback with email and password from our form
     // !!!Change from MySQL to SQLite!!!
-    connection.query("SELECT * FROM users WHERE username = ?", [username], function(err, rows) {
+    db.each("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
       if (err)
         return done(err);
       if (!rows.length) {
