@@ -5,12 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var LocalStrategy = require('passport-local');
+var session = require('express-session');
+var LocalStrategy = require('passport-local').Strategy;
 
 var fs = require('fs');
 var json = require('json');
 const sqlite3 = require('sqlite3').verbose();
-
 
 // routes variables
 var main = require('./routes/main');
@@ -18,6 +18,10 @@ var api_psalms = require('./routes/api/psalms');
 var api_users = require('./routes/api/users');
 
 var app = express();
+
+// Configuration
+require('./config/passport')(passport); // pass passport for configurtaion; uncomment later
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,9 +31,10 @@ app.set('view engine', 'pug');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({secret: 'wellthisismysecret', resave: true, saveUninitialized: true})); // session secret
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -53,7 +58,9 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get('env') === 'development'
+    ? err
+    : {};
 
   // render the error page
   res.status(err.status || 500);

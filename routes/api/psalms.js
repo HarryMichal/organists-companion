@@ -5,6 +5,15 @@ const sqlite3 = require('sqlite3');
 // ---------------------------------------------------
 
 /*
+ API/psalms/
+*/
+
+router.post('/', function(req, res) {
+  console.log("POST API/psalms/");
+  res.send("root of API calls regarding psalms");
+});
+
+/*
  API/psalms/list
 */
 
@@ -17,15 +26,6 @@ router.post('/list', function(req, res, next) {
   });
   console.log("API/psalms/list POST - API call showing list of psalms or requested psalms");
   res.send();
-});
-
-/*
- API/psalms/
-*/
-
-router.post('/', function(req, res) {
-  console.log("POST API/psalms/");
-  res.send("root of API calls regarding psalms");
 });
 
 module.exports = router;
