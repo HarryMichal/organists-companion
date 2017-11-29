@@ -15,13 +15,8 @@ const sqlite3 = require('sqlite3').verbose();
 // routes variables
 var main = require('./routes/main');
 var api_psalms = require('./routes/api/psalms');
-var api_users = require('./routes/api/users');
 
 var app = express();
-
-// Configuration
-require('./config/passport')(passport); // pass passport for configurtaion; uncomment later
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,6 +29,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Passport setup
+require('./config/passport')(app);
 app.use(session({secret: 'wellthisismysecret', resave: true, saveUninitialized: true})); // session secret
 app.use(passport.initialize());
 app.use(passport.session());
@@ -41,6 +39,7 @@ app.use(passport.session());
 /*
  Routes
 */
+
 // Routes that Express serves; variables at the top
 app.use('/', main);
 

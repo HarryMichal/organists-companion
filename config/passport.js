@@ -1,11 +1,18 @@
 var LocalStrategy = require('passport-local').Strategy;
-var db = require('sqlite3');
+var passport = require('passport');
+var sqlite3 = require('sqlite3');
 var bcrypt = require('bcrypt-nodejs');
 
 // ====================================================================
 
 // expose this function to our app using module.exports
-module.exports = function(passport) {
+module.exports = function(app) {
+  var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+  if (err) {
+    console.error(err.message);
+  };
+  console.log('Passport: DB Ready');
+});
 
   // =========================================================================
   // passport session setup ==================================================
@@ -41,28 +48,24 @@ module.exports = function(passport) {
   }, function(req, username, password, done) {
     // find a user whose email is the same as the forms email
     // we are checking to see if the user trying to login already exists
-
-    db.each("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
+    db.eacha("SELECT username FROM users WHERE username = ?", [req.body.username], function(err, rows) {
       if (err)
         return done(err);
-      if (rows.length) {
-        return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+      if (rows.username == req.body.username) {
+        return done(null, false);
+        console.error('This username is already used');
       } else {
         // if there is no user with that username
-        // create the user;
-        var newUserSQLite = {
-          username: username,
-          password: bcrypt.hashSync(password, null, null) // use the generateHash function in our user model
-        };
-
+        // create the user
+        console.log('/register handler', req.body.username);
+        var new_username = username;
+        var new_password = bcrypt.hashSync(password, null, null); // Hash provided password and insert into database
         var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
-
         db.run(insertQuery, [
-          newUserSQLite.username, newUserSQLite.password
+          new_username, new_password
         ], function(err, rows) {
-          newUserSQLite.id = rows.insertId;
-
-          return done(null, newUserSQLite);
+          var new_id =  rows.rows.Id;
+          return done(null, new_id);
         });
       }
     });
@@ -75,9 +78,7 @@ module.exports = function(passport) {
   // by default, if there was no name, it would just be called 'local'
 
   passport.use('login', new LocalStrategy({
-    usernameField: 'username',
-    passwordField: 'password',
-    passReqToCallback: true // allows us to pass back the entire request to the callback
+    username: 'username', passwordpassword: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
   }, function(req, username, password, done) { // callback with email and password from our form
     // Checks whether the user is in the database
     db.each("SELECT * FROM users WHERE username = ?", username, function(err, rows) {

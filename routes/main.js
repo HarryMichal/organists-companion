@@ -24,68 +24,32 @@ router.get('/users', (req, res, next) => {
 });
 
 // Route to /register
-router.post('/register', passport.authenticate('register', function(req, username, password, done) {
-  // find a user whose email is the same as the forms email
-  // we are checking to see if the user trying to login already exists
-  db.each("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
-    if (err)
-      return done(err);
-    if (rows.length) {
-      return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
-    } else {
-      // if there is no user with that username
-      // create the user;
-      var newUserSQLite = {
-        username: username,
-        password: bcrypt.hashSync(password, null, null) // use the generateHash function in our user model
-      };
+router.post('/register', function(req, res, next) {
+  passport.authenticate('register', (error, user, info) => {
+    console.log('/register handler', req.body);
+    console.log('Route has been accessed successfully');
+  })(req, res, next);
+});
 
-      var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
+/*  */
 
-      db.run(insertQuery, [
-        newUserSQLite.username, newUserSQLite.password
-      ], function(err, rows) {
-        newUserSQLite.id = rows.insertId;
-
-        return done(null, newUserSQLite);
-      });
-    }
-  });
-}));
-
-/*
-(req, res, next) => {
-  console.log('/register handler', req.body);
-  Account.register(new Account({username: req.body.username}), req.body.password, (err, account) => {
-    if (err) {
-      return res.status(500).send({error: err.message});
-    }
-
-    passport.authenticate('local')(req, res, () => {
-      req.session.save((err) => {
-        if (err) {
-          console.error("Passport (Route): Error during register");
-        }
-        res.status(200).send('OK');
-      });
+// Route to /login
+router.post('/login', function(req, res, next) {
+  passport.authenticate('login', (error, user, info) => {
+    console.log('/login handler');
+    req.session.save((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.send('OK');
     });
   });
 });
-*/
 
-// Route to /login
-router.post('/login', passport.authenticate('login', {
-  successRedirect: '/protected',
-  failureRedirect: '/?error=LoginError',
-  failureFlash: true
-}), (req, res, next) => {
-  console.log('/login handler');
-  req.session.save((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.send('OK');
-  });
+router.post('/login', function(req, res, next) {
+  passport.authenticate('local', function(error, user, info) {
+    signInUser(req, res, error, user, info);
+  })(req, res, next);
 });
 
 /*
