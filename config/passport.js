@@ -8,11 +8,11 @@ var bcrypt = require('bcrypt-nodejs');
 // expose this function to our app using module.exports
 module.exports = function(app) {
   var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
-  if (err) {
-    console.error(err.message);
-  };
-  console.log('Passport: DB Ready');
-});
+    if (err) {
+      console.error(err.message);
+    };
+    console.log('Passport: Connected to the testdb file');
+  });
 
   // =========================================================================
   // passport session setup ==================================================
@@ -41,32 +41,27 @@ module.exports = function(app) {
   // by default, if there was no name, it would just be called 'local'
 
   passport.use('register', new LocalStrategy({
-    // by default, local strategy uses username and password, we will override with email
-    usernameField: 'username',
-    passwordField: 'password',
-    passReqToCallback: true // allows us to pass back the entire request to the callback
+    usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
   }, function(req, username, password, done) {
-    // find a user whose email is the same as the forms email
-    // we are checking to see if the user trying to login already exists
-    db.eacha("SELECT username FROM users WHERE username = ?", [req.body.username], function(err, rows) {
-      if (err)
+    // check if the username is already used
+    db.get("SELECT username FROM users WHERE username = ?", [req.body.username], function(err, rows) {
+      if (err) // error during database querry
         return done(err);
-      if (rows.username == req.body.username) {
+      if (rows) {
+        console.error('This username is already used'); // The username is not unique --> throw an error; stop the function
         return done(null, false);
-        console.error('This username is already used');
       } else {
-        // if there is no user with that username
-        // create the user
-        console.log('/register handler', req.body.username);
-        var new_username = username;
+        var new_username = username; // The username is unique --> insert to database
         var new_password = bcrypt.hashSync(password, null, null); // Hash provided password and insert into database
-        var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
+        var insertQuery = "INSERT INTO users (username, password ) values (?,?)";
         db.run(insertQuery, [
           new_username, new_password
         ], function(err, rows) {
-          var new_id =  rows.rows.Id;
-          return done(null, new_id);
-        });
+          return console.log(rows);
+          if (err)
+            return console.error('Error while inserting user into the database');
+          }
+        );
       }
     });
   }));
