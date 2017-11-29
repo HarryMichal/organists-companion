@@ -26,8 +26,6 @@ router.get('/users', (req, res, next) => {
 // Route to /register
 router.post('/register', function(req, res, next) {
   passport.authenticate('register', (error, user, info) => {
-    console.log('/register handler', req.body);
-    console.log('Route has been accessed successfully');
   })(req, res, next);
 });
 
