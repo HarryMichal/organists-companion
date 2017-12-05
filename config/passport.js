@@ -9,9 +9,8 @@ var bcrypt = require('bcrypt-nodejs');
 module.exports = function(app) {
   var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
-      console.error(err.message);
+      console.error(err);
     };
-    console.log('Passport: Connected to the testdb file');
   });
 
   // =========================================================================
@@ -73,21 +72,23 @@ module.exports = function(app) {
   // by default, if there was no name, it would just be called 'local'
 
   passport.use('login', new LocalStrategy({
-    username: 'username', passwordpassword: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
+    usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
   }, function(req, username, password, done) { // callback with email and password from our form
     // Checks whether the user is in the database
-    db.each("SELECT * FROM users WHERE username = ?", username, function(err, rows) {
+    db.get("SELECT * FROM users WHERE username = ?", [req.body.username], function(err, rows) {
       if (err)
         return done(err);
-      if (!rows.length) {
-        return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+      if (!rows) { // Check username validity
+        console.error("User wasn't found");
+        return done(null, false);
       }
-      // if the user is found but the password is wrong
-      if (!bcrypt.compareSync(password, rows[0].password))
-        return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
-
-      // all is well, return successful user
-      return done(null, rows[0]);
+      console.log(rows.username);
+      if (!bcrypt.compareSync(req.body.password, rows.password)) {// Check password validity
+        console.error("Wrong password");
+        return done(null, false);
+      }
+      console.log('Welcome ' + req.body.username);
+      return done(null, rows); // all is well, return successful user
     });
   }));
 };
