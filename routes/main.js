@@ -25,8 +25,7 @@ router.get('/users', (req, res, next) => {
 
 // Route to /register
 router.post('/register', function(req, res, next) {
-  passport.authenticate('register', (error, user, info) => {
-  })(req, res, next);
+  passport.authenticate('register', (error, user, info) => {})(req, res, next);
 });
 
 /*  */
@@ -34,19 +33,17 @@ router.post('/register', function(req, res, next) {
 // Route to /login
 router.post('/login', function(req, res, next) {
   passport.authenticate('login', (error, user, info) => {
-    console.log('/login handler');
     req.session.save((err) => {
       if (err) {
         return next(err);
       }
-      res.send('OK');
     });
-  });
-});
+    if (!user) {
+      return res.json({error: 'User not found.'});
+    }
+    
+    res.json({success: true});
 
-router.post('/login', function(req, res, next) {
-  passport.authenticate('local', function(error, user, info) {
-    signInUser(req, res, error, user, info);
   })(req, res, next);
 });
 
