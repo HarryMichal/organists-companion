@@ -1,5 +1,7 @@
 import React from 'react';
 
+import AppBar from '../components/AppBar';
+import Drawer from '../components/Drawer';
 import SignUpForm from '../components/RegisterForm';
 
 class SignUpPage extends React.Component {
@@ -8,12 +10,14 @@ class SignUpPage extends React.Component {
     super(props);
     // initial component state
     this.state = {
+      title: 'SignUp',
       errors: {},
       user: {
         email: '',
         name: '',
         password: ''
-      }
+      },
+      open: false
     };
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
@@ -26,9 +30,7 @@ class SignUpPage extends React.Component {
     const user = this.state.user;
     user[field] = event.target.value;
 
-    this.setState({
-      user
-    });
+    this.setState({user});
   }
   /*
   Process the form - event handler
@@ -45,14 +47,20 @@ class SignUpPage extends React.Component {
   Render the component
   */
   render() {
-    return (
-      <SignUpForm
-        onSubmit={this.processForm}
-        onChange={this.changeUser}
-        errors={this.state.errors}
-        user={this.state.user}
-      />
-    );
+    return (<div className="container">
+      <div className="header">
+        <div className='appbar'>
+          <AppBar title={this.state.title}/>
+        </div>
+        <div className="drawer">
+          <Drawer/>
+        </div>
+      </div>
+
+      <div className="body">
+        <SignUpForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
+      </div>
+    </div>);
   }
 }
 

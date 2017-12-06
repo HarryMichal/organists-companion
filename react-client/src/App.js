@@ -11,33 +11,19 @@ import {
 } from 'react-router-dom';
 import registerServiceWorker from './registerServiceWorker';
 import logo from './content/logo.svg';
-import './stylesheets/App.css';
+import './App.css';
 
 // Import containers
-// import HomePage from './containers/HomePage';
+import HomePage from './containers/HomePage';
+// import OutputPage from './containers/OutputPage';
 import SignUpPage from './containers/SignUpPage';
 import LoginPage from './containers/LoginPage';
 
 const App = () => (<Router>
   <MuiThemeProvider>
-    <div>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/signup">SignUp</Link>
-        </li>
-        <li>
-          <Link to="/login">Login</Link>
-        </li>
-      </ul>
-
-      <hr/>
-
+      <Route path="/" component={HomePage}/>
       <Route path="/signup" component={SignUpPage}/>
       <Route path="/login" component={LoginPage}/>
-    </div>
   </MuiThemeProvider>
 </Router>
 )
