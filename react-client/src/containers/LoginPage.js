@@ -1,5 +1,6 @@
 import React from 'react';
 
+import AppBar from '../components/AppBar';
 import LoginForm from '../components/LoginForm';
 
 class LoginPage extends React.Component {
@@ -42,7 +43,14 @@ class LoginPage extends React.Component {
   Render the component
   */
   render() {
-    return (<LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>);
+    return (<div className="container">
+      <div className="header">
+      <AppBar />
+      </div>
+      <div className="body">
+    <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
+    </div>
+  </div>);
   }
 
 }
