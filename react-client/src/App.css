@@ -1,4 +1,11 @@
 /*
+  Category: ???
+*/
+body {
+  margin: 0px;
+}
+
+/*
   Category: Divs
 */
 
@@ -6,20 +13,37 @@
   text-align: center;
 }
 
+.header {
+  align-self: center;
+  width: 100%;
+  padding: 0 0 0 0;
+  margin-bottom: 20px;
+}
+
+.body {
+  margin-top: 20px;
+}
+
 .basic-paragraph {
   text-align: center;
 }
 
+.container {
+  width: 100%;
+  padding: 0 0 0 0;
+}
+
+
+
+.welcome-buttons {
+  display: inline-flex;
+  align-content: center;
+}
 /*
   Category: Headers
 */
 
-.header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
+
 
 /*
   Category: Footers
