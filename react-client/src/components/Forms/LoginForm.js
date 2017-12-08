@@ -5,9 +5,8 @@ import {Card, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-const LoginForm = ({onSubmit, onChange, errors, user}) => (<Card className="container">
+const LoginForm = ({onSubmit, onChange, errors, user}) => (<Card className="container-formwrap">
   <form action="/" onSubmit={onSubmit}>
-    <h2 className="card-heading">Login</h2>
 
     {errors.summary && <p className="error-message">{errors}</p>}
 
@@ -18,7 +17,7 @@ const LoginForm = ({onSubmit, onChange, errors, user}) => (<Card className="cont
     <div className='field-line'>
       <TextField type="password" name="password" hintText="Enter your Password" floatingLabelText="Password" onChange={onChange} errorText={errors.password} vaule={user.password}/>
     </div>
-
+    <br></br>
     <div className='button-line'>
       <RaisedButton label="Submit" primary={true}/>
     </div>

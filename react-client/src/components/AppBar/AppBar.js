@@ -5,8 +5,16 @@ import Drawer from './Drawer';
 
 const styles = {
   appbar: {
-    height: 100,
+    height: 60,
+    "padding-right": 65,
+    margin: 0,
+    button: {
+      "margin-top": "0",
+    },
   },
+  appbar_title: {
+    "align-self": "centre",
+  }
 };
 
 export default class AppBar extends React.Component {
@@ -38,7 +46,7 @@ handleClose() {
 render() {
   return (
     <div>
-      <AppBar_mui title={this.props.title} style={styles.appbar} onLeftIconButtonClick={this.toggleDrawer}/>
+      <AppBar_mui title={this.props.title} style={styles.appbar} titleStyle={styles.appbar_title} onLeftIconButtonClick={this.toggleDrawer}/>
       <Drawer open={this.state.open} handleClose={this.handleClose} onToggleDrawer={this.toggleDrawer}/>
     </div>)
 }
