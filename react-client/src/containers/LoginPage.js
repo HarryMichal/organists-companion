@@ -49,7 +49,9 @@ class LoginPage extends React.Component {
       <AppBar title={this.state.title}/>
       </div>
       <div className="body">
+        <div className="container-form">
     <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
+    </div>
     </div>
   </div>);
   }

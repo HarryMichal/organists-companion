@@ -5,9 +5,8 @@ import {Card, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="container">
+const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="container-formwrap">
   <form action="/" onSubmit={onSubmit}>
-    <h2 className="card-heading">Sign Up</h2>
 
     {errors.summary && <p className="error-message">{errors}</p>}
 
@@ -22,12 +21,12 @@ const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="con
     <div className="field-line">
       <TextField floatingLabelText="Password" type="password" name="password" onChange={onChange} errorText={errors.password} value={user.password}/>
     </div>
-
+    <br></br>
     <div className="button-line">
       <RaisedButton type="submit" label="Create New Account"/>
     </div>
 
-    <CardText containerElement={<Link to="/" />} >Already have an account?
+    <CardText containerElement={<Link to = "/" />}>Already have an account?
     </CardText>
   </form>
 </Card>);
