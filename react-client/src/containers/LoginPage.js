@@ -1,7 +1,7 @@
 import React from 'react';
 
-import AppBar from '../components/AppBar';
-import LoginForm from '../components/LoginForm';
+import AppBar from '../components/AppBar/AppBar';
+import LoginForm from '../components/Forms/LoginForm';
 
 class LoginPage extends React.Component {
   /*
@@ -11,6 +11,7 @@ class LoginPage extends React.Component {
     super(props);
     // set the initial component state
     this.state = {
+      title: 'Login',
       errors: {},
       user: {
         username: '',
@@ -45,7 +46,7 @@ class LoginPage extends React.Component {
   render() {
     return (<div className="container">
       <div className="header">
-      <AppBar />
+      <AppBar title={this.state.title}/>
       </div>
       <div className="body">
     <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>

@@ -3,10 +3,12 @@ import {Link} from 'react-router-dom';
 import AppBar_mui from 'material-ui/AppBar';
 import Drawer from './Drawer';
 
-/**
- * A simple `AppBar` with an icon on the right.
- * By default, the left icon is a navigation-menu.
- */
+const styles = {
+  appbar: {
+    height: 100,
+  },
+};
+
 export default class AppBar extends React.Component {
 
 constructor() {
@@ -14,10 +16,13 @@ constructor() {
   this.state = {
     open: false
   }
+  this.props = {
+    title: ""
+  }
   this.toggleDrawer = this.toggleDrawer.bind(this);
   this.handleClose = this.handleClose.bind(this);
 }
-//Toggle function (open/close Drawer)
+// Toggle function (open/close Drawer)
 toggleDrawer() {
   this.setState({
     open: !this.state.open
@@ -33,7 +38,7 @@ handleClose() {
 render() {
   return (
     <div>
-      <AppBar_mui onLeftIconButtonClick={this.toggleDrawer}/>
+      <AppBar_mui title={this.props.title} style={styles.appbar} onLeftIconButtonClick={this.toggleDrawer}/>
       <Drawer open={this.state.open} handleClose={this.handleClose} onToggleDrawer={this.toggleDrawer}/>
     </div>)
 }
