@@ -55,7 +55,9 @@ class SignUpPage extends React.Component {
       </div>
 
       <div className="body">
-        <SignUpForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
+        <div className="container-form">
+          <SignUpForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
+        </div>
       </div>
     </div>);
   }

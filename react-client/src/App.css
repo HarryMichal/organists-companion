@@ -1,8 +1,26 @@
 /*
   Category: ???
 */
+
+html {
+  margin: 0px;
+  height: 100%;
+  width: 100%;
+}
+
 body {
   margin: 0px;
+  height: 100%;
+}
+
+
+svg {
+  height: 36px !important;
+  width: 36px !important;
+}
+
+button {
+  margin-top: 0px !important;
 }
 
 /*
@@ -10,6 +28,8 @@ body {
 */
 
 .root {
+  height: 100%;
+  margin: 0px;
   text-align: center;
 }
 
@@ -22,28 +42,40 @@ body {
 
 .body {
   margin-top: 20px;
+  height: 100%;
 }
 
 .basic-paragraph {
   text-align: center;
 }
 
-.container {
-  width: 100%;
-  padding: 0 0 0 0;
-}
-
-
-
 .welcome-buttons {
   display: inline-flex;
   align-content: center;
 }
+
+
 /*
-  Category: Headers
+  Category: Containers
 */
 
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 0 0 0 0;
+}
 
+.container-form {
+  width: fit-content;
+  height: auto;
+  margin: auto auto;
+  vertical-align: middle;
+}
+
+.container-formwrap {
+  width: fit-content;
+  padding: 0 20px 0 20px;
+}
 
 /*
   Category: Footers

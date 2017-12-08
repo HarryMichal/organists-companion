@@ -1,4 +1,6 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
+
 import Drawer_mui from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -28,8 +30,9 @@ class Drawer extends React.Component {
         open={this.props.open}
         onRequestChange={this.handleClose}
       >
-        <MenuItem>Menu Item 1</MenuItem>
-        <MenuItem>Menu Item 2</MenuItem>
+        <MenuItem containerElement={<Link to="/" />} linkButton={true}>Home</MenuItem>
+        <MenuItem containerElement={<Link to="/login" />} linkItem={true}>Login</MenuItem>
+        <MenuItem containerElement={<Link to="/signup" />} linkItem={true}>SignUp</MenuItem>
       </Drawer_mui>
       </div>
     );
