@@ -4,6 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
   BrowserRouter as Router,
   Route,
+  Switch,
   Link,
   Redirect,
   withRouter,
@@ -21,9 +22,11 @@ import LoginPage from './containers/LoginPage';
 
 const App = () => (<Router>
   <MuiThemeProvider>
-      <Route path="/" component={HomePage}/>
+    <Switch>
+      <Route exact path="/" component={HomePage}/>
       <Route path="/signup" component={SignUpPage}/>
       <Route path="/login" component={LoginPage}/>
+    </Switch>
   </MuiThemeProvider>
 </Router>
 )

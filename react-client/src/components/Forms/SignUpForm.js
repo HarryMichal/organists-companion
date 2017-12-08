@@ -5,7 +5,7 @@ import {Card, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-const RegisterForm = ({onSubmit, onChange, errors, user}) => (<Card className="container">
+const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="container">
   <form action="/" onSubmit={onSubmit}>
     <h2 className="card-heading">Sign Up</h2>
 
@@ -27,20 +27,19 @@ const RegisterForm = ({onSubmit, onChange, errors, user}) => (<Card className="c
       <RaisedButton type="submit" label="Create New Account"/>
     </div>
 
-    <CardText>Already have an account?
-      <Link to={'/login'}/>
+    <CardText containerElement={<Link to="/" />} >Already have an account?
     </CardText>
   </form>
 </Card>);
 
-RegisterForm.propTypes = {
+SignUpForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 
-export default RegisterForm
+export default SignUpForm
 /*
 	// refs
 	form: null;

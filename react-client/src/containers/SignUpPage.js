@@ -1,14 +1,15 @@
 import React from 'react';
 
-import AppBar from '../components/AppBar';
-import Drawer from '../components/Drawer';
-import SignUpForm from '../components/RegisterForm';
+import AppBar from '../components/AppBar/AppBar';
+import SignUpForm from '../components/Forms/SignUpForm';
 
 class SignUpPage extends React.Component {
-  // Constructor
+  /*
+  Class constructor
+  */
   constructor(props) {
     super(props);
-    // initial component state
+    // set the initial component state
     this.state = {
       title: 'SignUp',
       errors: {},
@@ -38,10 +39,9 @@ class SignUpPage extends React.Component {
   processForm(event) {
     // prevent default behaviour
     event.preventDefault();
-
     console.log('name: ', this.state.user.name);
     console.log('email: ', this.state.user.email);
-    console.log('password: ', this.state.user.email);
+    console.log('password: ', this.state.user.password);
   }
   /*
   Render the component
@@ -51,9 +51,6 @@ class SignUpPage extends React.Component {
       <div className="header">
         <div className='appbar'>
           <AppBar title={this.state.title}/>
-        </div>
-        <div className="drawer">
-          <Drawer/>
         </div>
       </div>
 
