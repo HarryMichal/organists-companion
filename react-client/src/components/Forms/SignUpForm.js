@@ -23,11 +23,10 @@ const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="con
     </div>
     <br></br>
     <div className="button-line">
-      <RaisedButton type="submit" label="Create New Account"/>
+      <RaisedButton type="submit" primary="true" label="Create New Account"/>
     </div>
 
-    <CardText containerElement={<Link to = "/" />}>Already have an account?
-    </CardText>
+    <Link to="/login"><CardText>Already have an account?</CardText></Link>
   </form>
 </Card>);
 
