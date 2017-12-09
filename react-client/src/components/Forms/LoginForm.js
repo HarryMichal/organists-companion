@@ -22,9 +22,7 @@ const LoginForm = ({onSubmit, onChange, errors, user}) => (<Card className="cont
       <RaisedButton label="Submit" primary={true}/>
     </div>
 
-    <CardText>Don't have an account?
-      <Link to={'/signup'}></Link>
-    </CardText>
+    <Link to="/signup"><CardText>Don't have an account?</CardText></Link>
   </form>
 </Card>);
 

@@ -46,21 +46,23 @@ module.exports = function(app) {
     db.get("SELECT username FROM users WHERE username = ?", [req.body.username], function(err, rows) {
       if (err) // error during database querry
         return done(err);
-      if (rows) {
-        console.error('This username is already used'); // The username is not unique --> throw an error; stop the function
+      if (rows) { // The username is not unique --> throw an error; stop the function
+        console.error('This username is already used');
         return done(null, false);
-      } else {
-        var new_username = username; // The username is unique --> insert to database
-        var new_password = bcrypt.hashSync(password, null, null); // Hash provided password and insert into database
-        var insertQuery = "INSERT INTO users (username, password ) values (?,?)";
-        db.run(insertQuery, [
-          new_username, new_password
-        ], function(err, rows) {
-          return console.log(rows);
-          if (err)
-            return console.error('Error while inserting user into the database');
-          }
-        );
+      } else { // The username is unique --> insert to database
+        var new_username = username;
+        var salt = bcrypt.genSaltSync(10);
+        bcrypt.hash(password, salt, function(err, new_password) { // Hash provided password and insert into database;
+          var insertQuery = "INSERT INTO users (username, password) values (?,?)";
+          db.run(insertQuery, [
+            new_username, new_password
+          ], function(err, rows) {
+            return console.log(rows);
+            if (err)
+              return console.error('Error while inserting user into the database');
+            }
+          );
+        });
       }
     });
   }));
@@ -81,12 +83,18 @@ module.exports = function(app) {
       if (!rows) { // Check username validity
         console.error("User wasn't found");
         return done(null, false);
-      }
-      console.log(rows.username);
-      if (!bcrypt.compareSync(req.body.password, rows.password)) {// Check password validity
-        console.error("Wrong password");
-        return done(null, false);
-      }
+      } else {
+        console.log(rows.username);
+        console.log(rows.password);
+        console.log(username);
+        console.log(password);
+        bcrypt.compare(req.body.password, rows.password, function(err, res) { // Check password validity
+          if (err) {
+            console.error("Wrong password");
+            return done(null, false);
+          }
+        });
+      };
       console.log('Welcome ' + req.body.username);
       return done(null, rows); // all is well, return successful user
     });

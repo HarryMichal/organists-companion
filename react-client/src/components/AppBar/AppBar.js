@@ -19,8 +19,8 @@ const styles = {
 
 export default class AppBar extends React.Component {
 
-constructor() {
-  super();
+constructor(props) {
+  super(props);
   this.state = {
     open: false
   }
