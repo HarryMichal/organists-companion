@@ -42,33 +42,31 @@ module.exports = function(app) {
   passport.use('signup', new LocalStrategy({
     usernameField: 'username', passwordField: 'password', passReqToCallback: true/* allows us to pass back the entire request to the callback */
   }, function(req, username, password, done) {
-    console.log(username);
-    console.log(password);
-    console.log(req.body.email);
     // check if the username or email are already used
     db.get("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
-      if (err) // error during database querry
+      // error during database querry
+      if (err) {
         return done(err);
-      if (rows) { // The username is not unique --> throw an error; stop the function
+      }
+      // The username is not unique --> throw an error; stop the function
+      if (rows) {
         console.error('This username is already used');
         return done(null, false);
-      }
-      else {
+      // The username is unique --> hash provided password and insert into the database
+      } else {
         var salt = bcrypt.genSaltSync(10);
         bcrypt.hash(password, salt, null, function(err, new_password) { // Hash provided password and insert into database;
-          db.run("INSERT INTO users (username, password) values (?,?)", [username, new_password], function(err, rows) {
-            return console.log(rows);
-            if (err)
+          db.run("INSERT INTO users (username, email, password) values (?,?,?)", [username, req.body.email, new_password], function(err) {
+            if (err) {
               return console.error('Error while inserting user into the database');
-            }
-          );
-        });
-      }
-    });
-  }
-));
+            };
+          }); // db.run function + cb
+        }); // bcrypt.hash function + cb
+      }; // else
+    }); //db.get function + cb
+  })); //passport.use function + callback
 
-/*
+  /*
   db.get("SELECT email FROM users WHERE email = ?", [req.body.user.email], function(err, rows) {
     if (err) // error during database querry
       return done(err);
@@ -78,34 +76,35 @@ module.exports = function(app) {
     } else {
 */
 
-// =========================================================================
-// LOCAL LOGIN =============================================================
-// =========================================================================
-// we are using named strategies since we have one for login and one for signup
-// by default, if there was no name, it would just be called 'local'
+  // =========================================================================
+  // LOCAL LOGIN =============================================================
+  // =========================================================================
+  // we are using named strategies since we have one for login and one for signup
+  // by default, if there was no name, it would just be called 'local'
 
-passport.use('login', new LocalStrategy({
-usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
-}, function(req, username, password, done) { // callback with email and password from our form
-console.log(username + ' ' + password);
-db.get("SELECT * FROM users WHERE username = ?", [username], function(err, rows) { // Checks whether the user is in the database
-  if (err)
-    return done(err);
-  if (!rows) { // Check username validity
-    console.error("User wasn't found");
-    return done(null, false);
-  } else {
-    bcrypt.compare(password, rows.password, function(err, res) { // Check password validity
-      if (err) {
-        console.error("Wrong password");
+  passport.use('login', new LocalStrategy({
+    usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
+  }, function(req, username, password, done) { // callback with email and password from our form
+    console.log(username + ' ' + password);
+    db.get("SELECT * FROM users WHERE username = ?", [username], function(err, rows) { // Checks whether the user is in the database
+      if (err) // when error during query happens
+        return done(err);
+      if (!rows) { // Check username validity
         return done(null, false);
       } else {
-        console.log('Welcome ' + req.body.username);
-        return done(null, rows); // all is well, return successful user
-      }
-    });
-  };
+        bcrypt.compare(password, rows.password, function(err, res) { // Check password validity
+          if (err) {;
+            return done(err);
+          }
+          if (!res) {
+            return done(null, false);
+          } else {
+            console.log('Welcome ' + req.body.username);
+            return done(null, rows); // all is well, return successful user
+          }
+        });
+      };
 
-});
-}));
+    });
+  }));
 };

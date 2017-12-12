@@ -36,11 +36,11 @@ class LoginPage extends React.Component {
   /*
   Process the form
   */
-  processForm(event) {
+  processForm(event) {;
     event.preventDefault(); // prevent default action
     var user = this.state.user;
 
-    fetch('/api/login', {
+    fetch('http://localhost:3000/api/login', {
       method: 'post',
       body: JSON.stringify(user),
       headers: {

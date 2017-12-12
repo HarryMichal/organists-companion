@@ -11,7 +11,7 @@ const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="con
     {errors.summary && <p className="error-message">{errors}</p>}
 
     <div className="field-line">
-      <TextField floatingLabelText="Username" name="username" errorText={errors.name} onChange={onChange} value={user.username} required/>
+      <TextField floatingLabelText="Username" name="username" errorText={errors.username} onChange={onChange} value={user.username} required/>
     </div>
 
     <div className="field-line">
@@ -23,7 +23,7 @@ const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="con
     </div>
     <br></br>
     <div className="button-line">
-      <RaisedButton type="submit" primary="true" label="Create New Account"/>
+      <RaisedButton type="submit" primary={true} label="Create New Account"/>
     </div>
 
     <Link to="/login"><CardText>Already have an account?</CardText></Link>

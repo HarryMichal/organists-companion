@@ -14,6 +14,7 @@ router.post('/signup', function(req, res, next) {
     });
     res.json({success: true});
   })(req, res, next);
+  return;
 }); // runs the passport authenticate function; config in passport.js
 
 // Route to /login
@@ -30,6 +31,7 @@ router.post('/login', function(req, res, next) {
     else
       res.json({success: true});
   })(req, res, next);
+  return;
 }); // runs the passport authenticate function; config in passport.js
 
 // Route to /logout
