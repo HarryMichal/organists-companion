@@ -1,4 +1,5 @@
 import React from 'react';
+import fetch from 'node-fetch';
 
 import AppBar from '../components/AppBar/AppBar';
 import SignUpForm from '../components/Forms/SignUpForm';
@@ -14,15 +15,15 @@ class SignUpPage extends React.Component {
       title: 'SignUp',
       errors: {},
       user: {
+        username: '',
         email: '',
-        name: '',
         password: ''
-      },
-      open: false
+      }
     };
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
   }
+
   /*
   Change user - event handler
   */
@@ -33,16 +34,23 @@ class SignUpPage extends React.Component {
 
     this.setState({user});
   }
+
   /*
   Process the form - event handler
   */
   processForm(event) {
-    // prevent default behaviour
-    event.preventDefault();
-    console.log('name: ', this.state.user.name);
-    console.log('email: ', this.state.user.email);
-    console.log('password: ', this.state.user.password);
-  }
+    event.preventDefault(); // prevent default behaviour
+    var user = this.state.user;
+
+    fetch('/api/signup', {
+      method: 'post',
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json()).then(json => console.log(json));
+  };
+
   /*
   Render the component
   */

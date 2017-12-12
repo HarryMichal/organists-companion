@@ -1,16 +1,10 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Link,
-  Redirect,
-  withRouter,
-  browserHistory
 } from 'react-router-dom';
-import registerServiceWorker from './registerServiceWorker';
 import logo from './content/logo.svg';
 import './App.css';
 

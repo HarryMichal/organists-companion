@@ -39,24 +39,24 @@ module.exports = function(app) {
   // we are using named strategies since we have one for login and one for signup
   // by default, if there was no name, it would just be called 'local'
 
-  passport.use('register', new LocalStrategy({
-    usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
+  passport.use('signup', new LocalStrategy({
+    usernameField: 'username', passwordField: 'password', passReqToCallback: true/* allows us to pass back the entire request to the callback */
   }, function(req, username, password, done) {
-    // check if the username is already used
-    db.get("SELECT username FROM users WHERE username = ?", [req.body.username], function(err, rows) {
+    console.log(username);
+    console.log(password);
+    console.log(req.body.email);
+    // check if the username or email are already used
+    db.get("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
       if (err) // error during database querry
         return done(err);
       if (rows) { // The username is not unique --> throw an error; stop the function
         console.error('This username is already used');
         return done(null, false);
-      } else { // The username is unique --> insert to database
-        var new_username = username;
+      }
+      else {
         var salt = bcrypt.genSaltSync(10);
-        bcrypt.hash(password, salt, function(err, new_password) { // Hash provided password and insert into database;
-          var insertQuery = "INSERT INTO users (username, password) values (?,?)";
-          db.run(insertQuery, [
-            new_username, new_password
-          ], function(err, rows) {
+        bcrypt.hash(password, salt, null, function(err, new_password) { // Hash provided password and insert into database;
+          db.run("INSERT INTO users (username, password) values (?,?)", [username, new_password], function(err, rows) {
             return console.log(rows);
             if (err)
               return console.error('Error while inserting user into the database');
@@ -65,38 +65,47 @@ module.exports = function(app) {
         });
       }
     });
-  }));
+  }
+));
 
-  // =========================================================================
-  // LOCAL LOGIN =============================================================
-  // =========================================================================
-  // we are using named strategies since we have one for login and one for signup
-  // by default, if there was no name, it would just be called 'local'
+/*
+  db.get("SELECT email FROM users WHERE email = ?", [req.body.user.email], function(err, rows) {
+    if (err) // error during database querry
+      return done(err);
+    if (rows) {
+      console.error('This email address is already used');
+      return done(null, false);
+    } else {
+*/
 
-  passport.use('login', new LocalStrategy({
-    usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
-  }, function(req, username, password, done) { // callback with email and password from our form
-    // Checks whether the user is in the database
-    db.get("SELECT * FROM users WHERE username = ?", [req.body.username], function(err, rows) {
-      if (err)
-        return done(err);
-      if (!rows) { // Check username validity
-        console.error("User wasn't found");
+// =========================================================================
+// LOCAL LOGIN =============================================================
+// =========================================================================
+// we are using named strategies since we have one for login and one for signup
+// by default, if there was no name, it would just be called 'local'
+
+passport.use('login', new LocalStrategy({
+usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
+}, function(req, username, password, done) { // callback with email and password from our form
+console.log(username + ' ' + password);
+db.get("SELECT * FROM users WHERE username = ?", [username], function(err, rows) { // Checks whether the user is in the database
+  if (err)
+    return done(err);
+  if (!rows) { // Check username validity
+    console.error("User wasn't found");
+    return done(null, false);
+  } else {
+    bcrypt.compare(password, rows.password, function(err, res) { // Check password validity
+      if (err) {
+        console.error("Wrong password");
         return done(null, false);
       } else {
-        console.log(rows.username);
-        console.log(rows.password);
-        console.log(username);
-        console.log(password);
-        bcrypt.compare(req.body.password, rows.password, function(err, res) { // Check password validity
-          if (err) {
-            console.error("Wrong password");
-            return done(null, false);
-          }
-        });
-      };
-      console.log('Welcome ' + req.body.username);
-      return done(null, rows); // all is well, return successful user
+        console.log('Welcome ' + req.body.username);
+        return done(null, rows); // all is well, return successful user
+      }
     });
-  }));
+  };
+
+});
+}));
 };
