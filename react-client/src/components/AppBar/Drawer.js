@@ -1,9 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-import Drawer_mui from 'material-ui/Drawer';
+import DrawerMUI from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
 
 class Drawer extends React.Component {
   constructor(props) {
@@ -23,7 +22,7 @@ class Drawer extends React.Component {
   render() {
     return (
       <div className="drawer">
-      <Drawer_mui
+      <DrawerMUI
         docked={false}
         className="app-drawer"
         width={300}
@@ -33,7 +32,7 @@ class Drawer extends React.Component {
         <MenuItem containerElement={<Link to="/" />} linkButton={true}>Home</MenuItem>
         <MenuItem containerElement={<Link to="/login" />} linkItem={true}>Login</MenuItem>
         <MenuItem containerElement={<Link to="/signup" />} linkItem={true}>SignUp</MenuItem>
-      </Drawer_mui>
+      </DrawerMUI>
       </div>
     );
   }

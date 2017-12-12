@@ -1,4 +1,5 @@
 import React from 'react';
+import fetch from 'node-fetch';
 
 import AppBar from '../components/AppBar/AppBar';
 import LoginForm from '../components/Forms/LoginForm';
@@ -22,15 +23,6 @@ class LoginPage extends React.Component {
     this.changeUser = this.changeUser.bind(this);
   }
   /*
-  Process the form
-  */
-  processForm(event) {
-    // prevent default action
-    event.preventDefault();
-    console.log('username: ', this.state.user.username);
-    console.log('password: ', this.state.user.password);
-  }
-  /*
   Change the user object
   */
   changeUser(event) {
@@ -40,20 +32,37 @@ class LoginPage extends React.Component {
 
     this.setState({user});
   }
+
+  /*
+  Process the form
+  */
+  processForm(event) {
+    event.preventDefault(); // prevent default action
+    var user = this.state.user;
+
+    fetch('/api/login', {
+      method: 'post',
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json()).then(json => console.log(json));
+  };
+
   /*
   Render the component
   */
   render() {
     return (<div className="container">
       <div className="header">
-      <AppBar title={this.state.title}/>
+        <AppBar title={this.state.title}/>
       </div>
       <div className="body">
         <div className="container-form">
-    <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
-    </div>
-    </div>
-  </div>);
+          <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
+        </div>
+      </div>
+    </div>);
   }
 
 }

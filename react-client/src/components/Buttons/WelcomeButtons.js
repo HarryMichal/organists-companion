@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import React from 'react';
+import {Link} from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 
 const styles = {
   button: {
     margin: 12,
   },
-  
+
 };
 
 class BigButton extends React.Component {

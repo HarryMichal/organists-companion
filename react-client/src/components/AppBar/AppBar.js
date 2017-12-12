@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-import AppBar_mui from 'material-ui/AppBar';
+import React from 'react';
+import AppBarMUI from 'material-ui/AppBar';
 import Drawer from './Drawer';
 
 const styles = {
@@ -46,7 +45,7 @@ handleClose() {
 render() {
   return (
     <div>
-      <AppBar_mui title={this.props.title} style={styles.appbar} titleStyle={styles.appbar_title} onLeftIconButtonClick={this.toggleDrawer}/>
+      <AppBarMUI title={this.props.title} style={styles.appbar} titleStyle={styles.appbar_title} onLeftIconButtonClick={this.toggleDrawer}/>
       <Drawer open={this.state.open} handleClose={this.handleClose} onToggleDrawer={this.toggleDrawer}/>
     </div>)
 }

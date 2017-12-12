@@ -14,7 +14,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 // routes variables
 var main = require('./routes/main');
-var api_psalms = require('./routes/api/psalms');
+var api = require('./routes/api/main');
 
 var app = express();
 
@@ -44,7 +44,7 @@ app.use(passport.session());
 app.use('/', main);
 
 // API Routes
-app.use('/api/psalms', api_psalms);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
