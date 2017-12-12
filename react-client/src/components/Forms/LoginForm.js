@@ -11,15 +11,15 @@ const LoginForm = ({onSubmit, onChange, errors, user}) => (<Card className="cont
     {errors.summary && <p className="error-message">{errors}</p>}
 
     <div className='field-line'>
-      <TextField hintText="Enter your Username" floatingLabelText="Username" name="username" errorText={errors.email} onChange={onChange} value={user.username}/>
+      <TextField floatingLabelText="Username" name="username" errorText={errors.username} onChange={onChange} value={user.username} required/>
     </div>
 
     <div className='field-line'>
-      <TextField type="password" name="password" hintText="Enter your Password" floatingLabelText="Password" onChange={onChange} errorText={errors.password} vaule={user.password}/>
+      <TextField floatingLabelText="Password" type="password" name="password" onChange={onChange} errorText={errors.password} vaule={user.password} required/>
     </div>
     <br></br>
     <div className='button-line'>
-      <RaisedButton label="Submit" primary={true}/>
+      <RaisedButton type="submit" primary={true} label="Login"/>
     </div>
 
     <Link to="/signup"><CardText>Don't have an account?</CardText></Link>
