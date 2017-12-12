@@ -49,7 +49,7 @@ module.exports = function(app) {
         return done(err);
       }
       // The username is not unique --> throw an error; stop the function
-      if (rows) {
+      else if (rows) {
         console.error('This username is already used');
         return done(null, false);
       // The username is unique --> hash provided password and insert into the database
@@ -58,8 +58,10 @@ module.exports = function(app) {
         bcrypt.hash(password, salt, null, function(err, new_password) { // Hash provided password and insert into database;
           db.run("INSERT INTO users (username, email, password) values (?,?,?)", [username, req.body.email, new_password], function(err) {
             if (err) {
-              return console.error('Error while inserting user into the database');
+              console.error('Error while inserting user into the database');
+              return done(null, false);
             };
+            return done(null);
           }); // db.run function + cb
         }); // bcrypt.hash function + cb
       }; // else
@@ -89,7 +91,7 @@ module.exports = function(app) {
     db.get("SELECT * FROM users WHERE username = ?", [username], function(err, rows) { // Checks whether the user is in the database
       if (err) // when error during query happens
         return done(err);
-      if (!rows) { // Check username validity
+      else if (!rows) { // Check username validity
         return done(null, false);
       } else {
         bcrypt.compare(password, rows.password, function(err, res) { // Check password validity
@@ -104,7 +106,6 @@ module.exports = function(app) {
           }
         });
       };
-
     });
   }));
 };
