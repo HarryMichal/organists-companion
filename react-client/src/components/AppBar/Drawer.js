@@ -29,9 +29,9 @@ class Drawer extends React.Component {
         open={this.props.open}
         onRequestChange={this.handleClose}
       >
-        <MenuItem containerElement={<Link to="/" />} linkButton={true}>Home</MenuItem>
-        <MenuItem containerElement={<Link to="/login" />} linkItem={true}>Login</MenuItem>
-        <MenuItem containerElement={<Link to="/signup" />} linkItem={true}>SignUp</MenuItem>
+        <MenuItem containerElement={<Link to="/" />} >Home</MenuItem>
+        <MenuItem containerElement={<Link to="/login" />} >Login</MenuItem>
+        <MenuItem containerElement={<Link to="/signup" />} >SignUp</MenuItem>
       </DrawerMUI>
       </div>
     );

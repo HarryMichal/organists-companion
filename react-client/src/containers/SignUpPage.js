@@ -42,7 +42,7 @@ class SignUpPage extends React.Component {
     event.preventDefault(); // prevent default behaviour
     var user = this.state.user;
 
-    fetch('/api/signup', {
+    fetch('http://localhost:3000/api/signup', {
       method: 'post',
       body: JSON.stringify(user),
       headers: {
