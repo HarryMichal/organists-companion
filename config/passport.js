@@ -36,8 +36,6 @@ module.exports = function(app) {
   // =========================================================================
   // LOCAL SIGNUP ============================================================
   // =========================================================================
-  // we are using named strategies since we have one for login and one for signup
-  // by default, if there was no name, it would just be called 'local'
 
   passport.use('signup', new LocalStrategy({
     usernameField: 'username', passwordField: 'password', passReqToCallback: true/* allows us to pass back the entire request to the callback */
@@ -46,22 +44,22 @@ module.exports = function(app) {
     db.get("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
       // error during database querry
       if (err) {
-        return done(err);
-      }
-      // The username is not unique --> throw an error; stop the function
-      else if (rows) {
+        return done(err)// The username is not unique --> throw an error; stop the function);
+      } else if (rows) {
         console.error('This username is already used');
         return done(null, false);
-      // The username is unique --> hash provided password and insert into the database
+        // The username is unique --> hash provided password and insert into the database
       } else {
-        var salt = bcrypt.genSaltSync(10);
+        var salt = bcrypt.genSaltSync(11);
         bcrypt.hash(password, salt, null, function(err, new_password) { // Hash provided password and insert into database;
-          db.run("INSERT INTO users (username, email, password) values (?,?,?)", [username, req.body.email, new_password], function(err) {
+          db.run("INSERT INTO users (username, email, password) values (?,?,?)", [
+            username, req.body.email, new_password
+          ], function(err) {
             if (err) {
               console.error('Error while inserting user into the database');
               return done(null, false);
             };
-            return done(null);
+            return done(null, rows);
           }); // db.run function + cb
         }); // bcrypt.hash function + cb
       }; // else
@@ -81,8 +79,6 @@ module.exports = function(app) {
   // =========================================================================
   // LOCAL LOGIN =============================================================
   // =========================================================================
-  // we are using named strategies since we have one for login and one for signup
-  // by default, if there was no name, it would just be called 'local'
 
   passport.use('login', new LocalStrategy({
     usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
@@ -92,15 +88,16 @@ module.exports = function(app) {
       if (err) // when error during query happens
         return done(err);
       else if (!rows) { // Check username validity
-        return done(null, false);
+        return done(null, false); // Tells that password or username are wrong
       } else {
         bcrypt.compare(password, rows.password, function(err, res) { // Check password validity
-          if (err) {;
+          if (err) {
             return done(err);
           }
           if (!res) {
             return done(null, false);
-          } else {
+          }
+          else {
             console.log('Welcome ' + req.body.username);
             return done(null, rows); // all is well, return successful user
           }
