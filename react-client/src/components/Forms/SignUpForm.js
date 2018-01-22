@@ -1,34 +1,63 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {withStyles} from 'material-ui/styles';
 import {Link} from 'react-router-dom';
-import {Card, CardText} from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
+import Card, { CardText, CardContent} from 'material-ui/Card';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 
-const SignUpForm = ({onSubmit, onChange, errors, user}) => (<Card className="container-formwrap">
-  <form action="/" onSubmit={onSubmit}>
+const styles = theme => ({
+  card: {
+    minWidth: 270,
+    width: 300,
+    height: "fit-content",
+    "align-self": "center"
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    marginTop: 0,
+    marginBottom: 30,
+    width: 250
+  },
+  menu: {
+    width: 100
+  },
+  button: {
+    marginBottom: 20
+  }
+});
 
-    {errors.summary && <p className="error-message">{errors}</p>}
+class SignUpForm extends React.Component {
+  constructor(props) {
+    super(props);
+  };
+  
+  render() {
+    const { classes, onSubmit, onChange, user } = this.props;
 
-    <div className="field-line">
-      <TextField floatingLabelText="Username" name="username" errorText={errors.username} onChange={onChange} value={user.username} required/>
-    </div>
-
-    <div className="field-line">
-      <TextField floatingLabelText="Email" name="email" errorText={errors.email} onChange={onChange} value={user.email} required/>
-    </div>
-
-    <div className="field-line">
-      <TextField floatingLabelText="Password" type="password" name="password" onChange={onChange} errorText={errors.password} value={user.password} required/>
-    </div>
-    <br></br>
-    <div className="button-line">
-      <RaisedButton type="submit" primary={true} label="Create New Account"/>
-    </div>
-
-    <Link to="/login"><CardText>Already have an account?</CardText></Link>
-  </form>
-</Card>);
+    return (
+      <Card className={classes.card}>
+        <CardContent>
+          <form className={classes.userform} onSubmit={onSubmit} autoComplete="on">
+            <TextField required="required" id="username" label="Username" className={classes.textField} value={user.username} onChange={onChange} margin="normal"/>
+            <TextField required="required" id="email" label="Email" className={classes.textField} value={user.email} onChange={onChange}/>
+            <TextField required="required" id="password" label="Password" className={classes.textField} value={user.password} onChange={onChange} type="password" margin="normal"/>
+            <Button raised className={classes.button} type="submit" color="primary">
+              Register
+            </Button>
+            <br></br>
+            <Link to="/login">Already have an account?</Link>
+          </form>
+        </CardContent>
+      </Card>
+    );
+  };
+};
 
 SignUpForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -37,38 +66,4 @@ SignUpForm.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-export default SignUpForm
-/*
-	// refs
-	form: null;
-	usernameElem: null;
-	passwordElem: null;
-
-	render() {
-		const { onRegister } = this.props;
-		return (
-			<div className="container">
-				<form
-					ref={(elem) => this.form = elem}
-					onSubmit={(e) => {
-						e.preventDefault();
-						return onRegister({
-							username: this.usernameElem.value,
-							password: this.passwordElem.value
-						});
-					}}
-				>
-					<input ref={(input) => this.usernameElem = input} type='text' name="username" placeholder='Enter Username' />
-					<input ref={(input) => this.passwordElem = input} type='password' name="password" placeholder='Password' />
-					<button
-						className="btn btn-default"
-						type='submit'
-					>
-						Submit
-					</button>
-				</form>
-			</div>
-		)
-	}
-}
-*/
+export default withStyles(styles)(SignUpForm);

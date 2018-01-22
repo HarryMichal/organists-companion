@@ -1,31 +1,28 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-import RaisedButton from 'material-ui/RaisedButton';
+import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button';
 
-const styles = {
+const styles = theme => ({
   button: {
     margin: 12,
+    height: 40,
+    "align-self": "center",
   },
+});
 
-};
+function WelcomeButtons(props) {
+  const { classes } = props;
+  
+  return (
+    <div className="welcome-buttons">
+        <Button raised color="primary" href="/signup" className={classes.button} >
+        Signup
+        </Button>
+      <Button raised color="primary" href="/login" className={classes.button} >
+      Login
+      </Button>
+    </div>
+  )
+}
 
-class BigButton extends React.Component {
-
-  render() {
-    return (<div className="welcome-buttons">
-      <div className="welcome-button">
-        <RaisedButton containerElement={<Link to="/signup" />} linkButton={true} style={styles.button} labelPosition="before" primary={true} label="Signup"/>
-      </div>
-      <br></br>
-      <div className="welcome-button">
-        <RaisedButton containerElement={<Link to="/login" />} linkButton={true} style={styles.button} labelPosition="center" primary={true} label="Login"/>
-      </div>
-      <br></br>
-      <div className="welcome-button">
-        <RaisedButton containerElement={<Link to="/output" />} linkButton={true} style={styles.button} labelPosition="before" primary={true} label="Output"/>
-      </div>
-    </div>)
-  }
-};
-
-export default BigButton;
+export default withStyles(styles)(WelcomeButtons);
