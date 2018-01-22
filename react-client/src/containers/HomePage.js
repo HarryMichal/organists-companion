@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-import AppBar from '../components/AppBar/AppBar';
-import BigButton from '../components/Buttons/WelcomeButtons';
+import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -12,17 +12,18 @@ class HomePage extends React.Component {
       title: 'Home'
     }
   };
+  
   render() {
-    return (<div className="container">
-      <div className="header">
-        <div className='appbar'>
-          <AppBar title={this.state.title}/>
-        </div>
+    return (
+    <div className='page-parent'>
+      <header className='header'>
+        <ResponsiveDrawer title={this.state.title}/>
+      </header>
+      <div className='container-full'>
+        <WelcomeButtons/>
       </div>
-      <div className='body'>
-        <BigButton containerElement={<Link to = "/signup" />}/>
-      </div>
-    </div>)
+    </div>
+    )
   }
 }
 

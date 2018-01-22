@@ -1,30 +1,62 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
-import {Card, CardText} from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
+import { withStyles } from 'material-ui/styles';
+import { Link } from 'react-router-dom';
+import Card, { CardText, CardContent } from 'material-ui/Card';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 
-const LoginForm = ({onSubmit, onChange, errors, user}) => (<Card className="container-formwrap">
-  <form action="/" onSubmit={onSubmit}>
+const styles = theme => ({
+  card: {
+    minWidth: 270,
+    width: 300,
+    height: "fit-content",
+    "align-self": "center",
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    marginTop: 0,
+    marginBottom: 30,
+    width: 250,
+  },
+  menu: {
+    width: 100,
+  },
+  button: {
+    marginBottom: 20,
+  },
+});
 
-    {errors.summary && <p className="error-message">{errors}</p>}
-
-    <div className='field-line'>
-      <TextField floatingLabelText="Username" name="username" errorText={errors.username} onChange={onChange} value={user.username} required/>
-    </div>
-
-    <div className='field-line'>
-      <TextField floatingLabelText="Password" type="password" name="password" onChange={onChange} errorText={errors.password} vaule={user.password} required/>
-    </div>
-    <br></br>
-    <div className='button-line'>
-      <RaisedButton type="submit" primary={true} label="Login"/>
-    </div>
-
-    <Link to="/signup"><CardText>Don't have an account?</CardText></Link>
-  </form>
-</Card>);
+class LoginForm extends React.Component {
+  constructor(props) {
+    super(props);
+  };
+  
+  render() {
+    const { classes, onSubmit, onChange, user } = this.props;
+    
+    return (
+      <Card className={classes.card}>
+        <CardContent>
+          <form className={classes.userform} onSubmit={onSubmit} >
+            <TextField required id="username" label="Username" className={classes.textField} value={user.username} onChange={onChange} margin="normal" />
+            <TextField required id="password" label="Password" className={classes.textField} value={user.password} onChange={onChange} type="password" autoComplete="current-password" margin="normal" />
+            <Button raised className={classes.button} type="submit" color="primary">
+            Login
+            </Button>
+            <br></br>
+            <Link to="/signup">Don't have an account?</Link>
+          </form>
+        </CardContent>
+      </Card>
+    );
+  };
+};
 
 LoginForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -33,4 +65,4 @@ LoginForm.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-export default LoginForm;
+export default withStyles(styles)(LoginForm);
