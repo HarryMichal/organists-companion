@@ -23,7 +23,7 @@ router.post('/login', function(req, res, next) {
     if (error)
       return next(error);
     if (!user) {
-      return res.json(401, {authenticated: false, message: info});
+      return res.status(401).json({authenticated: false, message: info});
     }
     // Manual session establishment
     req.logIn(user, err => {

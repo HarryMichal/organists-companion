@@ -1,15 +1,13 @@
 import React from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect, Link } from 'react-router-dom';
 import logo from './content/logo.svg';
 import './App.css';
 
-// Import containers
 import HomePage from './containers/HomePage';
-// import OutputPage from './containers/OutputPage';
 import SignUpPage from './containers/SignUpPage';
 import LoginPage from './containers/LoginPage';
 
+// =====================================================
 
 class App extends React.Component {
   constructor(props) {
@@ -20,15 +18,15 @@ class App extends React.Component {
   };
 
   render() {
-    return (<Router>
-      <MuiThemeProvider>
+    return (
+      <Router>
         <Switch>
-          <Route exact="exact" path="/" component={HomePage}/>
-          <Route path="/signup" component={SignUpPage}/>
+          <Route exact path="/" component={HomePage}/>
+          <PrivateRoute path="/signup" component={SignUpPage}/>
           <Route path="/login" component={LoginPage}/>
         </Switch>
-      </MuiThemeProvider>
-    </Router>)
+      </Router>
+  )
   }
 }
 
