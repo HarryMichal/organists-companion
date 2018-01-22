@@ -23,13 +23,14 @@ router.post('/login', function(req, res, next) {
     if (error)
       return next(error);
     if (!user) {
-      return res.json(403, {error: 'User not found or wrong password.'});
+      return res.json(401, {authenticated: false, message: info});
     }
     // Manual session establishment
-    req.login(user, (err) => {
-      if (err)
-        return next(err);
-      return res.json({login: 'logged in'});
+    req.logIn(user, err => {
+      if (err) {
+        return res.json({authenticated: false, message: err});
+      }
+      return res.json({authenticated: true});
     });
   })(req, res, next);
 }); // runs the passport authenticate function; config in passport.js

@@ -17,7 +17,8 @@ class LoginPage extends React.Component {
       user: {
         username: '',
         password: ''
-      }
+      },
+      message: ''
     };
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
@@ -36,7 +37,7 @@ class LoginPage extends React.Component {
   /*
   Process the form
   */
-  processForm(event) {;
+  processForm(event) {
     event.preventDefault(); // prevent default action
     var user = this.state.user;
 
@@ -46,8 +47,10 @@ class LoginPage extends React.Component {
       headers: {
         "Content-Type": "application/json"
       }
-    }).then(res => res.json()).then(json => console.log(json));
+    }).then(res => res.json())
+    .then(json => this.setState({authenticated: json.authenticated}));
   };
+
 
   /*
   Render the component
@@ -55,7 +58,7 @@ class LoginPage extends React.Component {
   render() {
     return (<div className="container">
       <div className="header">
-        <AppBar title={this.state.title}/>
+        <AppBar title={this.state.authenticated ? "ano" : "ne"}/>
       </div>
       <div className="body">
         <div className="container-form">
