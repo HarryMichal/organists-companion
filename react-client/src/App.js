@@ -1,10 +1,6 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import logo from './content/logo.svg';
 import './App.css';
 
@@ -14,16 +10,27 @@ import HomePage from './containers/HomePage';
 import SignUpPage from './containers/SignUpPage';
 import LoginPage from './containers/LoginPage';
 
-const App = () => (<Router>
-  <MuiThemeProvider>
-    <Switch>
-      <Route exact path="/" component={HomePage}/>
-      <Route path="/signup" component={SignUpPage}/>
-      <Route path="/login" component={LoginPage}/>
-    </Switch>
-  </MuiThemeProvider>
-</Router>
-)
+
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      authenticated: false
+    }
+  };
+
+  render() {
+    return (<Router>
+      <MuiThemeProvider>
+        <Switch>
+          <Route exact="exact" path="/" component={HomePage}/>
+          <Route path="/signup" component={SignUpPage}/>
+          <Route path="/login" component={LoginPage}/>
+        </Switch>
+      </MuiThemeProvider>
+    </Router>)
+  }
+}
 
 export default App;
 /* import LoginForm from './components/LoginForm'; import RegisterForm from './components/RegisterForm'; const AuthExample = () => (<Router>
