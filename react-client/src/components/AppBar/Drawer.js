@@ -9,10 +9,11 @@ class Drawer extends React.Component {
     super(props);
     this.props = {open: false};
     this.handleClose = this.handleClose.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   }
 
   handleToggle() {
-    this.setState({open: !this.props.open});
+    this.props.handleToggle();
   }
 
   handleClose() {

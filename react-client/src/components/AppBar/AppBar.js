@@ -26,11 +26,11 @@ constructor(props) {
   this.props = {
     title: ""
   }
-  this.toggleDrawer = this.toggleDrawer.bind(this);
+  this.handleToggle = this.handleToggle.bind(this);
   this.handleClose = this.handleClose.bind(this);
 }
 // Toggle function (open/close Drawer)
-toggleDrawer() {
+handleToggle() {
   this.setState({
     open: !this.state.open
   })
@@ -45,8 +45,8 @@ handleClose() {
 render() {
   return (
     <div>
-      <AppBarMUI title={this.props.title} style={styles.appbar} titleStyle={styles.appbar_title} onLeftIconButtonClick={this.toggleDrawer}/>
-      <Drawer open={this.state.open} handleClose={this.handleClose} onToggleDrawer={this.toggleDrawer}/>
+      <AppBarMUI title={this.props.title} style={styles.appbar} titleStyle={styles.appbar_title} onLeftIconButtonClick={this.handleToggle}/>
+      <Drawer open={this.state.open} handleClose={this.handleClose} onhandleToggle={this.handleToggle} onRequestChange={this.handleToggle}/>
     </div>)
 }
 }
