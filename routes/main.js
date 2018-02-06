@@ -1,70 +1,70 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
-var bodyParse = require('body-parser');
-var sqlite3 = require('sqlite3');
+var jwt = require('jsonwebtoken');
+var WebSocket = require('ws');
 
-var psalms = require("../public/data/psalms.json");
+// ======================================================
 
-/* ============================================================================== */
+var generateToken = function (username) {
+  return jwt.sign({ name: username}, 'MYSECRET', { expiresIn: '100m' })
+};
 
-// Route to /; Main page
-router.get('/', function(req, res, next) {
-  res.render('index', {title: 'Express'});
-  res.end();
+// ====================================================================
+
+router.post('/signup', function(req, res, next) {
+  passport.authenticate('signup', (error, user, info) => {
+    req.session.save((err) => {
+      if (err) {
+        return next(err);
+      }
+    });
+    res.json({success: true});
+  })(req, res, next);
+  return;
+}); // runs the passport authenticate function; config in passport.js
+
+router.post('/login', function(req, res, next) {
+  passport.authenticate('login', (error, user, info) => {
+    if (error) {
+      return next(error);
+    }
+    if (!user) {
+      return res.status(403).json({ error: 'User not found.'});
+    }
+    req.logIn(user, err => {
+      if (err) {
+        return res.status(401).json({authenticated: false, message: err});
+      }
+      return res.json({isAuthenticated: true, token: generateToken(req.body.username)});
+    });
+  })(req, res, next);
+}); // runs the passport authenticate function; config in passport.js
+
+router.get('/logout', (req, res, next) => {
+  req.logout();
+  req.session.save((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.status(200).send('OK');
+  });
 });
 
-// Route to /users
-router.get('/users', (req, res, next) => {
-  if (req.user) {
-    return res.json({user: req.user, authenticated: true});
-  } else {
-    return res.status(401).json({error: 'User is not authenticated', authenticated: false});
-  }
+router.post('/psalms', function(req, res) {
+  console.log("POST API/psalms/");
+  res.send("root of API calls regarding psalms");
 });
 
-/*
-  Example of not using failureRedirect:
-  router.post('/login', function(req, res, next) {
-  	passport.authenticate('local', function(err, user, info) {
-  		console.log('/login handler', req.body);
-  		if (err) { return next(err); }
-  		if (!user) { return res.status(500).json({ error: 'User not found.' }); }
-  		req.session.save((err) => {
-  				if (err) {
-  						return next(err);
-  				}
-  				res.status(200).json({ success: true });
-  		});
-  	})(req, res, next);
+router.post('/psalms/list', function(req, res, next) {
+  var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Connected to the testdb database.');
   });
-  */
-
-// Route for testing API
-router.get('/ping', (req, res) => {
-  res.send("Pong!");
+  console.log("API/psalms/list POST - API call showing list of psalms or requested psalms");
+  res.send();
 });
-
-// Route to /output
-router.get('/output', function(req, res, next) {
-  res.render('output', {
-    title: 'Output - Deprecated',
-    outputText: "Isn't defined now. Deprecated"
-  });
-  res.end();
-});
-
-/* These routes should be handled on front-end in React, React Router */
-/*
-  router.get('/', (req, res) => {
-  		res.render('index', { user : req.user });
-  });
-  router.get('/register', (req, res) => {
-  		res.render('register', { });
-  });
-  router.get('/login', (req, res) => {
-  		res.render('login', { user : req.user, error : req.flash('error')});
-  });
-  */
 
 module.exports = router;
