@@ -7,14 +7,11 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
 var LocalStrategy = require('passport-local').Strategy;
-
-var fs = require('fs');
 var json = require('json');
 const sqlite3 = require('sqlite3').verbose();
 
-// routes variables
-var main = require('./routes/main');
-var api = require('./routes/api/main');
+var config = require('./config/config');
+var routes = require('./routes/main');
 
 var app = express();
 
@@ -32,19 +29,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Passport setup
 require('./config/passport')(app);
-app.use(session({secret: 'wellthisismysecret', resave: true, saveUninitialized: true})); // session secret
+app.use(session({secret: config.session.secret, resave: config.session.resave, saveUninitialized: config.session.saveUninit})); // session secret
 app.use(passport.initialize());
 app.use(passport.session());
 
-/*
- Routes
-*/
-
-// Routes that Express serves; variables at the top
-app.use('/', main);
-
-// API Routes
-app.use('/api', api);
+// API routes
+app.use('/api', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
