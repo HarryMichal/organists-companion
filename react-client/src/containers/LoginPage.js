@@ -17,6 +17,7 @@ class LoginPage extends React.Component {
       },
       message: '',
       isAuthenticated: false,
+      token: '',
     };
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
@@ -39,14 +40,17 @@ class LoginPage extends React.Component {
         "Content-Type": "application/json"
       }
     }).then(res => res.json())
-    .then(json => this.setState({isAuthenticated: json.authenticated}));
+    .then(json => this.setState({isAuthenticated: json.isAuthenticated, token: json.token}));
   };
 
   render() {
     return (
       <div className='page-parent'>
         <header className='header'>
-          <ResponsiveBar title={this.state.authenticated ? "yes" : "no"} />
+          <ResponsiveBar title={this.state.isAuthenticated ? "yes" : "no"} />
+          <p>
+          {this.state.token}
+          </p>
         </header>
         <div className='container-full'>
           <div className='container-form'>

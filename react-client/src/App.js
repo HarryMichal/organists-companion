@@ -1,19 +1,33 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect, Link } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reduxThunk from 'redux-thunk';
 import logo from './content/logo.svg';
 import './App.css';
 
 import HomePage from './containers/HomePage';
 import SignUpPage from './containers/SignUpPage';
 import LoginPage from './containers/LoginPage';
+import MockupPage from './containers/MockupPage';
 
 // =====================================================
+
+const Authentication = {
+  isAuthenticated: false,
+  authenticate(cb) {
+    
+  },
+  signout(cb) {
+    
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      authenticated: false
+      isAuthenticated: false
     }
   };
 
@@ -22,8 +36,9 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route exact path="/" component={HomePage}/>
-          <PrivateRoute path="/signup" component={SignUpPage}/>
           <Route path="/login" component={LoginPage}/>
+          <Route path="/signup" component={SignUpPage}/>
+          <Route path="/mockup" component={MockupPage}/>
         </Switch>
       </Router>
   )

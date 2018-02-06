@@ -2,6 +2,8 @@ var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var sqlite3 = require('sqlite3');
 var bcrypt = require('bcrypt-nodejs');
+var jwt = require('jsonwebtoken');
+var config = require('./config');
 
 // ====================================================================
 
@@ -12,6 +14,10 @@ module.exports = function(app) {
       console.error(err);
     };
   });
+
+var generateToken = function (username) {
+  return jwt.sign({ name: username}, config.token.secret, { expiresIn: config.token.expiresIn })
+};
 
   // =========================================================================
   // passport session setup ==================================================
@@ -76,12 +82,9 @@ module.exports = function(app) {
     } else {
 */
 
-  // =========================================================================
-  // LOCAL LOGIN =============================================================
-  // =========================================================================
-
-  passport.use('login', new LocalStrategy({
-    usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
+// LOCAL LOGIN
+passport.use('login', new LocalStrategy({
+  usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
   }, function(req, username, password, done) { // callback with email and password from our form
     console.log(username + ' ' + password);
     db.get("SELECT * FROM users WHERE username = ?", [username], function(err, rows) { // Checks whether the user is in the database
@@ -99,6 +102,7 @@ module.exports = function(app) {
           }
           else {
             console.log('Welcome ' + req.body.username);
+            console.log({ token: generateToken(req.body.username) });
             return done(null, rows); // all is well, return successful user
           }
         });
