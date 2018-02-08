@@ -3,7 +3,6 @@ var passport = require('passport');
 var sqlite3 = require('sqlite3');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
-var config = require('./config');
 
 // ====================================================================
 
@@ -14,10 +13,6 @@ module.exports = function(app) {
       console.error(err);
     };
   });
-
-var generateToken = function (username) {
-  return jwt.sign({ name: username}, config.token.secret, { expiresIn: config.token.expiresIn })
-};
 
   // =========================================================================
   // passport session setup ==================================================
@@ -101,8 +96,6 @@ passport.use('login', new LocalStrategy({
             return done(null, false);
           }
           else {
-            console.log('Welcome ' + req.body.username);
-            console.log({ token: generateToken(req.body.username) });
             return done(null, rows); // all is well, return successful user
           }
         });
