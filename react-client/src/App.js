@@ -1,9 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect, Link } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import reduxThunk from 'redux-thunk';
-import logo from './content/logo.svg';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 
 import HomePage from './containers/HomePage';
@@ -12,16 +8,6 @@ import LoginPage from './containers/LoginPage';
 import MockupPage from './containers/MockupPage';
 
 // =====================================================
-
-const Authentication = {
-  isAuthenticated: false,
-  authenticate(cb) {
-    
-  },
-  signout(cb) {
-    
-  }
-}
 
 class App extends React.Component {
   constructor(props) {

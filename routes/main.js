@@ -3,11 +3,12 @@ var router = express.Router();
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var WebSocket = require('ws');
+var config = require('../config/config');
 
 // ======================================================
 
 var generateToken = function (username) {
-  return jwt.sign({ name: username}, 'MYSECRET', { expiresIn: '100m' })
+  return jwt.sign({ name: username}, config.token.secret, { expiresIn: config.token.expiresIn })
 };
 
 // ====================================================================
@@ -34,7 +35,7 @@ router.post('/login', function(req, res, next) {
     }
     req.logIn(user, err => {
       if (err) {
-        return res.status(401).json({authenticated: false, message: err});
+        return res.status(401).json({iaAuthenticated: false, message: err});
       }
       return res.json({isAuthenticated: true, token: generateToken(req.body.username)});
     });
