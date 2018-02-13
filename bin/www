@@ -42,13 +42,14 @@ var server = http.createServer(app);
  });
  
 wss.on('connection', (ws, req) => {
-  ws.send("{\"number\": \"502\", \"psalmtext\": \"Do dou Hospodinova půjdeme.\"}");
+  ws.send("{\"number\": \"502\", \"psalmtext\": \"Do domu Hospodinova půjdeme.\"}");
   console.log("WebSocket connection established.");
   ws.on('message', (message) => {
     console.log("received: " + message);
     ws.send('Received a message.');
   })
 })
+
 
 /**
  * Listen on provided port, on all network interfaces.

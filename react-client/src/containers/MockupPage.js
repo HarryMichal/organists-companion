@@ -7,11 +7,12 @@ import TextField from 'material-ui/TextField';
 import Card, { CardText, CardContent } from 'material-ui/Card';
 
 import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import DialForm from '../components/Forms/DialForm';
 
 const styles = theme => ({
   card: {
-    minWidth: 400,
-    width: 430,
+    minWidth: 500,
+    width: 470,
     height: "fit-content",
     "align-self": "center",
   },
@@ -24,7 +25,7 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     marginTop: 0,
     marginBottom: 30,
-    width: 350,
+    width: 450,
   },
   menu: {
     width: 200,
@@ -44,9 +45,13 @@ class MockupPage extends React.Component {
         "number": "",
         "psalmtext": "",
       },
-      "temporary": ""
-    }
+      "temporary": "",
+      "formdata": {
+        "number": ""
+      }
+    };
     this.onMessage = this.onMessage.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   };
   
   componentWillMount() {
@@ -71,8 +76,20 @@ class MockupPage extends React.Component {
     e.preventDefault();
   }
   
+  sendMessage(e) {
+    
+  }
+  
+  handleClick(e) {
+    e.preventDefault();
+    const formdata = this.state.formdata;
+    const field = e.target.id;
+    formdata[field] = formdata[field] + e.target.value;
+    this.setState({formdata});
+  }
+  
   componentWillUnmount() {
-    this.socket.removeEventListener(this.onMessage);
+    this.socket.close();
     this.socket = null;
   }
   
@@ -85,13 +102,16 @@ class MockupPage extends React.Component {
         <ResponsiveDrawer title={this.state.title}/>
       </header>
       <div className='container-full'>
-      <Card className={classes.card}>
-        <CardContent>
-            <TextField className={classes.textField} value={this.state.data.number} margin="normal" />
-            <TextField className={classes.textField} value={this.state.data.psalmtext} margin="normal" />
-            <TextField className={classes.textField} value={this.state.temporary} margin="normal" />
-        </CardContent>
-      </Card>
+        <div className='container-center'>
+          <Card className={classes.card}>
+            <CardContent>
+                <TextField className={classes.textField} value={this.state.data.number} margin="normal" />
+                <TextField className={classes.textField} value={this.state.data.psalmtext} margin="normal" />
+                <TextField className={classes.textField} value={this.state.temporary} margin="normal" />
+            </CardContent>
+          </Card>
+          <DialForm data={this.state.formdata} onClick={this.handleClick} />
+        </div>
       </div>
     </div>
     )

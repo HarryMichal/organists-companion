@@ -43,7 +43,7 @@ class LoginForm extends React.Component {
     return (
       <Card className={classes.card}>
         <CardContent>
-          <form className={classes.userform} onSubmit={onSubmit} >
+          <form className={classes.userform} onSubmit={onSubmit}>
             <TextField required id="username" label="Username" className={classes.textField} value={user.username} onChange={onChange} margin="normal" />
             <TextField required id="password" label="Password" className={classes.textField} value={user.password} onChange={onChange} type="password" autoComplete="current-password" margin="normal" />
             <Button raised className={classes.button} type="submit" color="primary">

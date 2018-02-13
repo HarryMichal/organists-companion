@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import List from 'material-ui/List';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
@@ -29,10 +30,6 @@ const styles = theme => ({
   },
   appBar: {
     position: 'fixed',
-    marginLeft: drawerWidth,
-    [theme.breakpoints.up('md')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
   },
   navIconHide: {
     marginLeft: -10,
@@ -42,13 +39,11 @@ const styles = theme => ({
   drawerPaper: {
     width: 250,
     height: "100%",
-    [theme.breakpoints.up('md')]: {
-      width: drawerWidth,
-      position: 'relative',
-      height: '100%',
-      zIndex: 3,
-    },
   },
+  navTitle: {
+    "align-self": "center",
+    "width": "100%",
+  }
 });
 
 class ResponsiveDrawer extends React.Component {
@@ -60,7 +55,7 @@ class ResponsiveDrawer extends React.Component {
   };
 
   handleDrawerToggle = () => {
-    this.setState({ open: !this.state.mobileOpen });
+    this.setState({ open: !this.state.open });
   };
 
   render() {
@@ -69,6 +64,31 @@ class ResponsiveDrawer extends React.Component {
     const drawer = (
       <div>
         <div className={classes.drawerHeader} />
+        <Divider />
+        <List component="nav">
+          <div>
+            <Link to={"/"}>
+              <ListItem button>
+                <ListItemText primary="Home" />
+              </ListItem>
+            </Link>
+            <Link to={"/login"}>
+              <ListItem button>
+                <ListItemText primary="Login" />
+              </ListItem>
+            </Link>
+            <Link to={"/signup"}>
+              <ListItem button>
+                <ListItemText primary="Signup" />
+              </ListItem>
+            </Link>
+            <Link to={"/mockup"}>
+              <ListItem button>
+                <ListItemText primary="Mockup"/>
+              </ListItem>
+            </Link>
+          </div>
+        </List>
       </div>
     );
 
@@ -85,38 +105,25 @@ class ResponsiveDrawer extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography type="title" color="inherit" noWrap>
+              <Typography className={classes.navTitle} type="title" color="inherit" noWrap>
                 {this.props.title}
               </Typography>
             </Toolbar>
           </AppBar>
-          <Hidden mdUp>
             <Drawer
               type="temporary"
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={this.state.open}
               classes={{
                 paper: classes.drawerPaper,
               }}
+              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+              open={this.state.open}
               onClose={this.handleDrawerToggle}
               ModalProps={{
                 keepMounted: true, // Better open performance on mobile.
               }}
-            >
+              >
               {drawer}
             </Drawer>
-          </Hidden>
-          <Hidden smDown implementation="css">
-            <Drawer
-              type="permanent"
-              open
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
         </div>
       </div>
     );
