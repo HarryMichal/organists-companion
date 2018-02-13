@@ -1,6 +1,7 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   button: {
@@ -15,12 +16,16 @@ function WelcomeButtons(props) {
   
   return (
     <div className="welcome-buttons">
-        <Button raised color="primary" href="/signup" className={classes.button} >
+      <Link to={"/signup"}>
+        <Button raised color="primary" className={classes.button} >
         Signup
         </Button>
-      <Button raised color="primary" href="/login" className={classes.button} >
-      Login
-      </Button>
+      </Link>
+      <Link to={"/login"}>
+        <Button raised color="primary" href="/login" className={classes.button} >
+        Login
+        </Button>
+      </Link>
     </div>
   )
 }
