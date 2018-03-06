@@ -2,13 +2,16 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
-var WebSocket = require('ws');
 var config = require('../config/config');
 
 // ======================================================
 
 var generateToken = function (username) {
-  return jwt.sign({ name: username}, config.token.secret, { expiresIn: config.token.expiresIn })
+  var claims = {
+    'sub': username,
+    'permission': 'general'
+  };
+  return jwt.sign(claims, config.token.secret, { expiresIn: config.token.expiresIn });
 };
 
 // ====================================================================
@@ -35,9 +38,9 @@ router.post('/login', function(req, res, next) {
     }
     req.logIn(user, err => {
       if (err) {
-        return res.status(401).json({iaAuthenticated: false, message: err});
+        return res.status(401).json( {message: err} );
       }
-      return res.json({isAuthenticated: true, token: generateToken(req.body.username)});
+      return res.json({ token: generateToken(req.body.username) });
     });
   })(req, res, next);
 }); // runs the passport authenticate function; config in passport.js

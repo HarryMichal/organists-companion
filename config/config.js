@@ -1,7 +1,7 @@
 module.exports = {
   'token': {
     'secret': 'MYSECRET',
-    'expiresIn': '100m'
+    'expiresIn': '300m'
   },
   'session': {
     'secret': 'MYSECRET',

@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 
 import HomePage from './containers/HomePage';
-import SignUpPage from './containers/SignUpPage';
-import LoginPage from './containers/LoginPage';
 import MockupPage from './containers/MockupPage';
 
 // =====================================================
@@ -21,9 +19,7 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <Route exact path="/" component={HomePage}/>
-          <Route path="/login" component={LoginPage}/>
-          <Route path="/signup" component={SignUpPage}/>
+          <Route path="/" component={HomePage}/>
           <Route path="/mockup" component={MockupPage}/>
         </Switch>
       </Router>
