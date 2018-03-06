@@ -10,6 +10,8 @@ var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var WebSocket = require('ws');
+var jwt = require('jsonwebtoken');
+var sqlite3 = require('sqlite3');
 var config = require('../config/config');
 
 /**
@@ -36,20 +38,60 @@ var server = http.createServer(app);
  * Configure WebSocket server
  */
 
+var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+ if (err) {
+   console.error(err);
+ };
+});
+
  var wss = new WebSocket.Server({
    'server': server,
-   'path': "/api/ws"
+   'path': "/api/ws",
+   'clientTracking': true
  });
  
 wss.on('connection', (ws, req) => {
-  ws.send("{\"number\": \"502\", \"psalmtext\": \"Do domu Hospodinova půjdeme.\"}");
-  console.log("WebSocket connection established.");
-  ws.on('message', (message) => {
-    console.log("received: " + message);
-    ws.send('Received a message.');
-  })
+  console.log("Connection was established.");
+  ws.on('message', (data) => {
+    if (data.indexOf("token")) {
+      jwt.verify(data, config.token.secret, function(err, decoded) {
+        if (err) {
+          console.log("There was an error.");
+          return ws.close();
+        }
+        else {
+          console.log(decoded);
+          db.get("SELECT number, psalmtext FROM meta", function(err, rows) {
+            if (err) {
+              return console.error(err);
+            } else if (rows) {
+              var init_message = JSON.stringify(rows);
+              return ws.send(init_message);
+            }
+          });
+          return console.log("Verification went alright. Initial message was succesfully sent.");
+        };
+      })
+    }
+    else if (data.indexOf("number")) {
+      console.log("This contains a number: " + data);
+    }
+    else if (data.indexOf("psalm")) {
+      console.log("This contains a psalm: " + data);
+    }
+    else {
+      console.log("There was nothing: " + data);
+      ws.close();
+    }
+  });
+  ws.onclose = function(e) {
+    console.log("Socket has been closed.")
+  };
+  ws.onerror = function(err) {
+    console.error("Socket encountered error: ", err.message, " Closing socket.");
+    ws.close();
+  };
 })
-
 
 /**
  * Listen on provided port, on all network interfaces.

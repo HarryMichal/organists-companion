@@ -35,12 +35,20 @@ const styles = theme => ({
   },
 });
 
+function createWSConnection(callback) {
+this.socket = new WebSocket("ws://localhost:3001/api/ws");
+if(typeof callback === "function") {
+  callback();
+}
+}
+
 class MockupPage extends React.Component {
   constructor(props) {
     super(props);
     // set the initial component state
     this.state = {
       title: 'Mockup',
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInBlcm1pc3Npb24iOiJnZW5lcmFsIiwiaWF0IjoxNTIwMTY4MDUxLCJleHAiOjE1MjAxODYwNTF9.Jy8AxA-ObKDw-PhYQXNziH_DEsTfps9zZLt8O6MSGKo',
       "data": {
         "number": "",
         "psalmtext": "",
@@ -56,6 +64,11 @@ class MockupPage extends React.Component {
   
   componentWillMount() {
     this.socket = new WebSocket("ws://localhost:3001/api/ws");
+    var token = this.state.token;
+    var socket = this.socket;
+    this.socket.onopen = function (event) {
+      socket.send(token);
+    }
     this.socket.addEventListener("message", this.onMessage);
   }
   
@@ -82,10 +95,25 @@ class MockupPage extends React.Component {
   
   handleClick(e) {
     e.preventDefault();
-    const formdata = this.state.formdata;
-    const field = e.target.id;
-    formdata[field] = formdata[field] + e.target.value;
-    this.setState({formdata});
+    if (e.target.id === "number") {
+      const formdata = this.state.formdata;
+      const field = e.target.id;
+      formdata[field] = formdata[field] + e.target.value;
+      this.setState({formdata});
+    }
+    else if (e.target.id === "backspace") {
+      const formdata = this.state.formdata;
+      const field = "number";
+      var sliced = formdata[field].slice(0, -1);
+      formdata[field] = sliced;
+      this.setState({formdata});
+    }
+    else if (e.target.id === "init_number") {
+      
+    }
+    else if (e.target.id === "init_psalm") {
+      
+    }
   }
   
   componentWillUnmount() {

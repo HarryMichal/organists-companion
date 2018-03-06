@@ -5,10 +5,16 @@ import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   button: {
-    margin: 12,
-    height: 40,
-    "align-self": "center",
+    'margin-left': 10,
+    'margin-right': 10,
+    height: 80,
+    width: 170,
+    'fontSize': '36px',
+    'align-self': 'center',
   },
+  buttonwrap: {
+    'align-self': 'center'
+  }
 });
 
 function WelcomeButtons(props) {
@@ -16,13 +22,13 @@ function WelcomeButtons(props) {
   
   return (
     <div className="welcome-buttons">
-      <Link to={"/signup"}>
+      <Link className={classes.buttonwrap} to={"/signup"}>
         <Button raised color="primary" className={classes.button} >
         Signup
         </Button>
       </Link>
-      <Link to={"/login"}>
-        <Button raised color="primary" href="/login" className={classes.button} >
+      <Link className={classes.buttonwrap} to={"/login"}>
+        <Button raised color="primary" className={classes.button} >
         Login
         </Button>
       </Link>

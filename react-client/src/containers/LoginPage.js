@@ -33,6 +33,7 @@ class LoginPage extends React.Component {
   processForm(e) {
     e.preventDefault(); // prevent default action
     var user = this.state.user;
+    console.log("YES!!");
     fetch('http://localhost:3000/api/login', {
       method: 'post',
       body: JSON.stringify(user),
@@ -45,19 +46,9 @@ class LoginPage extends React.Component {
 
   render() {
     return (
-      <div className='page-parent'>
-        <header className='header'>
-          <ResponsiveBar title={this.state.isAuthenticated ? "yes" : "no"} />
-          <p>
-          {this.state.token}
-          </p>
-        </header>
-        <div className='container-full'>
-          <div className='container-form'>
+          <div>
             <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user} />
           </div>
-        </div>
-      </div>
     );
   }
 }

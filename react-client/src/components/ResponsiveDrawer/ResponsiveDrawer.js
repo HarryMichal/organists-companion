@@ -41,8 +41,9 @@ const styles = theme => ({
     height: "100%",
   },
   navTitle: {
-    "align-self": "center",
-    "width": "100%",
+    'align-self': 'center',
+    'width': '100%',
+    'margin-left': -40,
   }
 });
 
