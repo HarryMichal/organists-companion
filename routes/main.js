@@ -34,11 +34,11 @@ router.post('/login', function(req, res, next) {
       return next(error);
     }
     if (!user) {
-      return res.status(403).json({ error: 'User not found.'});
+      return res.status(403).json({ error: 'User not found.' });
     }
     req.logIn(user, err => {
       if (err) {
-        return res.status(401).json( {message: err} );
+        return res.status(401).json( { message: err } );
       }
       return res.json({ token: generateToken(req.body.username) });
     });
