@@ -7,35 +7,38 @@ import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 import SignUpPage from './SignUpPage';
 import LoginPage from './LoginPage';
 
-class HomePage extends React.Component {
+class notAuthorizedApp extends React.Component {
   constructor(props) {
     super(props);
     // set the initial component state
     this.state = {
       title: 'Home',
-      selectedform: 'Login',
+      form: 'login'
     }
+    this.changeForm = this.changeForm.bind(this);
+    console.log(localStorage.getItem('jwt'));
   };
+  
+  changeForm(event) {
+    this.setState({ form: event.target.value });
+  }
   
   render() {
     return (
     <div className='page-parent'>
-      <header className='header'>
+      <header className='navbar'>
         <ResponsiveDrawer title={this.state.title}/>
       </header>
       <div className='container-full'>
-        <WelcomeButtons />
-        {this.state.selectedform == 'Login'
-        ? <Switch>
-            <Route path='/login' component={LoginPage}/>
-          </Switch>
-        : <Switch>
-            <Route path='/signup' component={SignUpPage}/>
-          </Switch>}
+        <WelcomeButtons onClick={this.changeForm} />
+        { this.state.form === 'login'
+        ?  <LoginPage />
+        :  <SignUpPage />
+        }
       </div>
     </div>
     )
   }
 }
 
-export default HomePage;
+export default notAuthorizedApp;
