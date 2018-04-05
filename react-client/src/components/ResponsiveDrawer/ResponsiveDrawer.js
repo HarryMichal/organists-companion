@@ -83,9 +83,9 @@ class ResponsiveDrawer extends React.Component {
                 <ListItemText primary="Signup" />
               </ListItem>
             </Link>
-            <Link to={"/mockup"}>
+            <Link to={"/app"}>
               <ListItem button>
-                <ListItemText primary="Mockup"/>
+                <ListItemText primary="Application"/>
               </ListItem>
             </Link>
           </div>
