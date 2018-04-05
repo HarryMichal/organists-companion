@@ -4,6 +4,9 @@ import fetch from 'node-fetch';
 import ResponsiveBar from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import LoginForm from '../components/Forms/LoginForm';
 
+import AuthService from '../services/AuthService';
+import constants from '../constants.js';
+
 class LoginPage extends React.Component {
   constructor(props) {
     super(props);
@@ -14,10 +17,7 @@ class LoginPage extends React.Component {
       user: {
         username: '',
         password: ''
-      },
-      message: '',
-      isAuthenticated: false,
-      token: '',
+      }
     };
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
@@ -28,29 +28,22 @@ class LoginPage extends React.Component {
     const user = this.state.user;
     user[field] = event.target.value;
     this.setState({user});
-  }
+  };
 
-  processForm(e) {
-    e.preventDefault(); // prevent default action
+  processForm(e) { // send to API and handle client authentication
+    e.preventDefault();
     var user = this.state.user;
-    console.log("YES!!");
-    fetch('http://localhost:3000/api/login', {
-      method: 'post',
-      body: JSON.stringify(user),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => res.json())
-    .then(json => this.setState({isAuthenticated: json.isAuthenticated, token: json.token}));
+    AuthService.login(user);
   };
 
   render() {
     return (
-          <div>
+          <div className="container-form">
             <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user} />
+            <p>{constants.auth.token}</p>
           </div>
     );
-  }
-}
+  };
+};
 
 export default LoginPage;
