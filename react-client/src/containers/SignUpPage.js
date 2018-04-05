@@ -44,16 +44,9 @@ class SignUpPage extends React.Component {
 
   render() {
     return (
-      <div className="page-parent">
-        <header className="header">
-            <ResponsiveDrawer title={this.state.title} />
-        </header>
-        <div className="container-full">
           <div className="container-form">
             <SignUpForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
           </div>
-        </div>
-      </div>
     );
   }
 }
