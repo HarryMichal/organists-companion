@@ -1,7 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
-import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   button: {
@@ -18,22 +20,22 @@ const styles = theme => ({
 });
 
 function WelcomeButtons(props) {
-  const { classes } = props;
+  const { classes, onClick } = props;
   
   return (
     <div className="welcome-buttons">
-      <Link className={classes.buttonwrap} to={"/signup"}>
-        <Button raised color="primary" className={classes.button} >
-        Signup
-        </Button>
-      </Link>
-      <Link className={classes.buttonwrap} to={"/login"}>
-        <Button raised color="primary" className={classes.button} >
+        <Button raised color="primary" className={classes.button} onClick={onClick} value="login">
         Login
         </Button>
-      </Link>
+        <Button raised color="primary" className={classes.button} onClick={onClick} value="signup">
+        Signup
+        </Button>
     </div>
-  )
+  );
+};
+
+WelcomeButtons.propTypes = {
+  onClick: PropTypes.func.isRequired
 }
 
 export default withStyles(styles)(WelcomeButtons);

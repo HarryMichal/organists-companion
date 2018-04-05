@@ -2,11 +2,11 @@
   Category: Base
 */
 
-html, body {
-  margin: 0px;
-  height: 100% !important;
-  min-height: 100% !important;
+body,
+html {
+  height: 100%;
   width: 100%;
+  margin: 0px;
 }
 
 svg {
@@ -17,13 +17,38 @@ svg {
 button {
   margin-top: 0px !important;
 }
+
+a {
+  color: #F05F40;
+}
+
+a:hover {
+  color: #f05f40;
+}
+
+.bg-primary {
+  background-color: #F05F40 !important;
+}
+
+.bg-dark {
+  background-color: #212529 !important;
+}
+
+/*
+  Category: NavigationBar
+*/
+
+.navbar {
+  display: inline;
+  
+}
+
 /*
   Category: Divs
 */
 
 .root {
   height: 100%;
-  margin: 0px;
   text-align: center;
 }
 
@@ -36,7 +61,6 @@ button {
   height: 100%;
   min-height: 100%;
   width: 100%;
-  margin-top: -65px;
 }
 
 .sidebar {
@@ -48,7 +72,6 @@ button {
   height: 100%;
   min-height: 100%;
   width: 100%;
-  margin-top: 65px;
   z-index: 1;
   box-sizing: border-box;
   justify-content: stretch;
@@ -63,14 +86,22 @@ button {
 }
 
 .welcome-buttons {
-  display: inline-flex;
-  align-content: center;
-  height: 100%;
+  height: -moz-fit-content;
+  width: -moz-fit-content;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .userform {
   display: grid;
 }
+
+.authentication-form {
+  align-content: center;
+  height: fit-content;
+}
+
 /*
   Category: Headers and Footers
 */
@@ -93,11 +124,11 @@ button {
 }
 
 .container-form {
-  width: fit-content;
-  height: 100%;
+  width: -moz-fit-content;
+  height: -moz-fit-content;
+  margin: auto;
   display: inline-flex;
-  margin: auto auto;
-  vertical-align: middle;
+  align-content: center;
 }
 
 .container-center {

@@ -75,7 +75,7 @@ class DialForm extends React.Component {
                 </Grid>
                 <Grid item xs="12">
                   <Button raised className={classes.button} id="backspace" onClick={onClick}>
-                  backspace
+                  Backspace
                   </Button>
                 </Grid>
                 <Grid item xs={this.state.xs}>
