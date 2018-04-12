@@ -2,19 +2,22 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 import constants from './constants.js';
-import AuthService from '../services/AuthService';
+import AuthService from './services/AuthService';
 
 import notAuthorizedApp from './containers/notAuthorizedApp';
 import AuthorizedApp from './containers/AuthorizedApp';
+import AuthPage from './containers/AuthPage';
 
 // =====================================================
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    AuthService.authenticate()
+  <Route {...rest} render={props =>
+    AuthService.getToken() !== null ? (
       <Component {...props} />
+    ) : (
       <Redirect to="/" />
-  )} />
+    )
+  } />
 )
 
 class App extends React.Component {
@@ -22,10 +25,13 @@ class App extends React.Component {
   render() {
     return (
       <Router>
-        <Switch>
-          <Route path="/" component={notAuthorizedApp}/>
-          <PrivateRoute path="/app" component={AuthorizedApp}/>
-        </Switch>
+        <div className="App">
+          <Switch>
+            <Route exact path="/" component={notAuthorizedApp}/>
+            <Route path="/auth/:authType" component={AuthPage}/>
+            <PrivateRoute exact path="/app" component={AuthorizedApp}/>
+          </Switch>
+        </div>
       </Router>
     )
   }
