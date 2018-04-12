@@ -5,7 +5,6 @@ import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 
 import SignUpPage from './SignUpPage';
-import LoginPage from './LoginPage';
 
 class notAuthorizedApp extends React.Component {
   constructor(props) {
@@ -30,11 +29,7 @@ class notAuthorizedApp extends React.Component {
         <ResponsiveDrawer title={this.state.title}/>
       </header>
       <div className='container-full'>
-        <WelcomeButtons onClick={this.changeForm} />
-        { this.state.form === 'login'
-        ?  <LoginPage />
-        :  <SignUpPage />
-        }
+        <WelcomeButtons onClick={this.changeForm} />  
       </div>
     </div>
     )

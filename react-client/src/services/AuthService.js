@@ -1,7 +1,10 @@
 import fetch from 'node-fetch';
-import LoginAction from './LoginAction'
+import { isEmpty } from 'lodash';
 
-class AuthService {
+const TOKEN_KEY = "jwt";
+const USER_INFO = "userinfo";
+
+const AuthService = {
   login(user) {
     return fetch('http://localhost:3000/api/login', {
       method: 'post',
@@ -13,10 +16,12 @@ class AuthService {
       .then(json => {
         let jwt = json;
         console.log(jwt);
-        LoginAction.loginUser(jwt);
-        return true;
+        AuthService.setToken(jwt);
+        this.props.history.push('/');
+      }).catch((err) => {
+        console.log(err);
       });
-  };
+  },
   
   signup(user) {
     return fetch('http://localhost:3000/api/login', {
@@ -27,13 +32,62 @@ class AuthService {
       }
     }).then(res => res.json())
       .then(json => {})
+  },
+  
+  /*
+  Clearing of localStorage and sessionStorage
+  */
+  clear(key) {
+    if (localStorage && localStorage.getItem(key)) {
+      return localStorage.removeItem(key);
+    }
+    if (sessionStorage && sessionStorage.getItem(key)) {
+      return sessionStorage.rmoveItem(key);
+    }
+    return null;
+  },
+  
+  clearToken(tokenKey = TOKEN_KEY) {
+    return AuthService.clear(tokenKey);
+  },
+  
+  /*
+  Writing to localStorage and sessionStorage
+  */
+  set(value, key, isLocalStorage) {
+    if (isEmpty(value)) {
+    return null;
+    }
+    if (isLocalStorage && localStorage) {
+      return localStorage.setItem(key, JSON.stringify(value));
+    }
+    if (sessionStorage) {
+      return sessionStorage.setItem(key, JSON.stringify(value));
+    }
+    return null;
+  },
+  
+  setToken(value = '', isLocalStorage = false, tokenKey = TOKEN_KEY) {
+    return AuthService.set(value, tokenKey, isLocalStorage);
+  },
+  
+  /*
+  Reading of localStorage and sessionStorage
+  */
+  get(key) {
+    if (localStorage && localStorage.getItem(key)) {
+      return JSON.parse(localStorage.getItem(key)) || null;
+    }
+    if (sessionStorage && sessionStorage.getItem(key)) {
+      return JSON.parse(sessionStorage.getItem(key)) || null;
+    }
+    return null;
+  },
+  
+  getToken(tokenKey = TOKEN_KEY) {
+    return AuthService.get(tokenKey);
+  },
 };
 
-  authenticate() {
-    var jwt = sessionStorage.getItem('jwt');
-    
-  }
-};
-
-export default new AuthService();
+export default AuthService;
   
