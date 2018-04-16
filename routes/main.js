@@ -1,10 +1,27 @@
 var express = require('express');
 var router = express.Router();
+var sqlite3 = require('sqlite3');
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var config = require('../config/config');
 
 // ======================================================
+
+var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+  if (err) {
+    console.error(err);
+  };
+});
+
+var db_token = db.run("INSERT INTO users (username, email, password) values (?,?,?)", [
+  username, req.body.email, new_password
+], function(err) {
+  if (err) {
+    console.error('Error while inserting user into the database');
+    return done(null, false);
+  };
+  return done(null, rows);
+});
 
 var generateToken = function (username) {
   var claims = {
@@ -40,7 +57,9 @@ router.post('/login', function(req, res, next) {
       if (err) {
         return res.status(401).json( { message: err } );
       }
-      return res.json({ token: generateToken(req.body.username) });
+      var token = generateToken(req.body.username);
+      
+      return res.json({ token: token });
     });
   })(req, res, next);
 }); // runs the passport authenticate function; config in passport.js
