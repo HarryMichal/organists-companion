@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router';
 import fetch from 'node-fetch';
 import { replace } from 'lodash';
 
@@ -8,20 +9,21 @@ import SignUpForm from '../components/Forms/SignUpForm';
 import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 
 import AuthService from '../services/AuthService';
-import constants from '../constants.js';
 
 class AuthPage extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     // set the initial component state
     this.state = {
-      title: 'Login',
+      title: 'Authentication',
       errors: {},
       user: {
         username: '',
+        email: '',
         password: ''
       }
     };
+    this.changeForm = this.changeForm.bind(this);
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
   };
@@ -41,10 +43,10 @@ class AuthPage extends React.Component {
     
     switch (this.props.match.params.authType) {
       case 'login':
-        requestURL = 'http://localhost:3000/api/login';
+        requestURL = 'http://192.168.0.109:3000/api/login';
         break;
-      case 'register':
-        requestURL = 'http://localhost:3000/api/register';
+      case 'signup':
+        requestURL = 'http://192.168.0.109:3000/api/register';
         break;
     }
     return requestURL;
@@ -57,15 +59,45 @@ class AuthPage extends React.Component {
     this.setState({user});
   };
   
-  changeForm() {
-    this.props.history.push("/auth/");
+  changeForm(event) {
+    this.props.history.push("/auth/" + event.target.value);
   }
 
   processForm(event) { // send to API and handle client authentication
     event.preventDefault();
     const user = this.state.user;
     const requestURL = this.getRequestURL();
-    AuthService.login(user);
+    switch (this.props.match.params.authType) {
+      case 'login':
+        fetch(requestURL, {
+          method: 'post',
+          body: JSON.stringify(user),
+          headers: {
+            "Content-Type": "application/json"
+          }})
+          .then(res => res.json())
+          .then(json => {
+            let jwt = json;
+            console.log(jwt);
+            AuthService.setToken(jwt);
+            this.props.history.push("/app");
+          }).catch((err) => {
+            console.log(err);
+          });
+        break;
+      case 'signup':
+        fetch(requestURL, {
+          method: 'post',
+          body: JSON.stringify(user),
+          headers: {
+            "Content-Type": "application/json"
+          }})
+          .then(res => res.json())
+          .then(json => {
+            console.log(json);
+          });
+        break;
+    };
   };
   
   renderForm() {
@@ -74,7 +106,7 @@ class AuthPage extends React.Component {
           <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user} />
       );
     }
-    else if (this.props.match.params.authType === 'register') {
+    else if (this.props.match.params.authType === 'signup') {
       return (
           <SignUpForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user}/>
       );
@@ -84,16 +116,20 @@ class AuthPage extends React.Component {
   render() {
     return (
       <div className='page-parent'>
-        <header className='navbar'>
+        <header className="navbar">
           <ResponsiveBar title={this.state.title}/>
         </header>
-        <WelcomeButtons onClick={this.changeForm} />
-        <div className="container-form">
-          {this.renderForm()}
+        <div className="container-full">
+          <div className="container-center">
+            <WelcomeButtons onClick={this.changeForm} />
+            <div className="container-form">
+              {this.renderForm()}
+            </div>
+          </div>
         </div>
       </div>
     );
   };
 };
 
-export default AuthPage;
+export default withRouter(AuthPage);

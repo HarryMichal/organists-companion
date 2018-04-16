@@ -24,12 +24,12 @@ function WelcomeButtons(props) {
   
   return (
     <div className="welcome-buttons">
-        <Button raised color="primary" className={classes.button} onClick={onClick} value="login">
-        Login
-        </Button>
-        <Button raised color="primary" className={classes.button} onClick={onClick} value="signup">
-        Signup
-        </Button>
+      <Button raised color="primary" className={classes.button} onClick={onClick} value="login">
+      Login
+      </Button>
+      <Button raised color="primary" className={classes.button} onClick={onClick} value="signup">
+      Signup
+      </Button>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 
 import SignUpPage from './SignUpPage';
 
-class notAuthorizedApp extends React.Component {
+class HomePage extends React.Component {
   constructor(props) {
     super(props);
     // set the initial component state
@@ -29,11 +29,11 @@ class notAuthorizedApp extends React.Component {
         <ResponsiveDrawer title={this.state.title}/>
       </header>
       <div className='container-full'>
-        <WelcomeButtons onClick={this.changeForm} />  
+        <WelcomeButtons onClick={this.changeForm} />
       </div>
     </div>
     )
   }
 }
 
-export default notAuthorizedApp;
+export default HomePage;
