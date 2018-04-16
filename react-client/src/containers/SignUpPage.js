@@ -16,7 +16,6 @@ class SignUpPage extends React.Component {
         email: '',
         password: ''
       },
-      message: '',
     };
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);

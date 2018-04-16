@@ -39,8 +39,10 @@ a:hover {
 */
 
 .navbar {
-  display: inline;
-  
+  width: 100%;
+  padding: 0 0 0 0;
+  z-index: 1;
+  position: fixed;
 }
 
 /*
@@ -55,6 +57,11 @@ a:hover {
 .body {
   box-sizing: border-box;
   -moz-box-siting: border-box;
+}
+
+.App {
+  height: 100%;
+  width: 100%;
 }
 
 .page-parent {
@@ -72,7 +79,6 @@ a:hover {
   height: 100%;
   min-height: 100%;
   width: 100%;
-  z-index: 1;
   box-sizing: border-box;
   justify-content: stretch;
   -moz-box-sizing: border-box;
@@ -81,16 +87,41 @@ a:hover {
   -moz-box-orient: vertical;
 }
 
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 0 0 0 0;
+  overflow: auto;
+}
+
+.container-form {
+  width: -moz-fit-content;
+  height: -moz-fit-content;
+  margin: auto;
+  display: inline-flex;
+  align-content: center;
+}
+
+.container-center {
+  width: -moz-fit-content;
+  height: 100%;
+  display: inline-grid;
+  margin: auto auto;
+}
+
+.container-formwrap {
+  width: fit-content;
+  padding: 0 20px 0 20px;
+}
+
 .basic-paragraph {
   text-align: center;
 }
 
 .welcome-buttons {
-  height: -moz-fit-content;
   width: -moz-fit-content;
+  height: -moz-fit-content;
   margin: auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
 }
 
 .userform {
@@ -110,38 +141,6 @@ a:hover {
   width: 100%;
   padding: 0 0 0 0;
   position: fixed;
-}
-
-/*
-  Category: Containers
-*/
-
-.container {
-  width: 100%;
-  height: 100%;
-  padding: 0 0 0 0;
-  overflow: auto;
-}
-
-.container-form {
-  width: -moz-fit-content;
-  height: -moz-fit-content;
-  margin: auto;
-  display: inline-flex;
-  align-content: center;
-}
-
-.container-center {
-  width: fit-content;
-  height: 100%;
-  display: inline-flex;
-  margin: auto auto;
-  vertical-align: middle;
-}
-
-.container-formwrap {
-  width: fit-content;
-  padding: 0 20px 0 20px;
 }
 
 /*

@@ -1,12 +1,13 @@
 import fetch from 'node-fetch';
 import { isEmpty } from 'lodash';
+import jwt from 'jsonwebtoken';
 
 const TOKEN_KEY = "jwt";
 const USER_INFO = "userinfo";
 
 const AuthService = {
   login(user) {
-    return fetch('http://localhost:3000/api/login', {
+    return fetch('http://192.168.0.109:3000/api/login', {
       method: 'post',
       body: JSON.stringify(user),
       headers: {
@@ -17,14 +18,13 @@ const AuthService = {
         let jwt = json;
         console.log(jwt);
         AuthService.setToken(jwt);
-        this.props.history.push('/');
       }).catch((err) => {
         console.log(err);
       });
   },
   
   signup(user) {
-    return fetch('http://localhost:3000/api/login', {
+    return fetch('http://192.168.0.109:3000/api/login', {
       method: 'post',
       body: JSON.stringiy(user),
       headers: {
