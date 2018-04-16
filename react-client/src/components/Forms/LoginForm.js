@@ -33,10 +33,6 @@ const styles = theme => ({
 });
 
 class LoginForm extends React.Component {
-  constructor(props) {
-    super(props);
-  };
-  
   render() {
     const { classes, onSubmit, onChange, user } = this.props;
     

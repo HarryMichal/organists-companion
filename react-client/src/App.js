@@ -1,11 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
-import constants from './constants.js';
 import AuthService from './services/AuthService';
 
-import notAuthorizedApp from './containers/notAuthorizedApp';
-import AuthorizedApp from './containers/AuthorizedApp';
+import HomePage from './containers/HomePage';
+import DialerPage from './containers/DialerPage';
 import AuthPage from './containers/AuthPage';
 
 // =====================================================
@@ -27,9 +26,9 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <Switch>
-            <Route exact path="/" component={notAuthorizedApp}/>
+            <Route exact path="/" component={HomePage}/>
             <Route path="/auth/:authType" component={AuthPage}/>
-            <PrivateRoute exact path="/app" component={AuthorizedApp}/>
+            <PrivateRoute exact path="/app" component={DialerPage}/>
           </Switch>
         </div>
       </Router>
