@@ -1,7 +1,7 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
+import fetch from 'node-fetch';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Card, { CardText, CardContent } from 'material-ui/Card';
@@ -62,8 +62,18 @@ class DialerPage extends React.Component {
   };
   
   componentWillMount() {
-    this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws");
-    this.socket.addEventListener("message", this.onMessage);
+    var token = sessionStorage.getItem("jwt");
+    fetch("http://192.168.0.109:3000/api/getticket", {
+      method: "post",
+      body: token,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json())
+    .then(json => {
+      this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws" + json.ticket);
+      this.socket.addEventListener("message", this.onMessage);
+    })
   }
   
   componentWillUnmount() {
