@@ -13,16 +13,6 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
   };
 });
 
-var db_token = db.run("INSERT INTO users (username, email, password) values (?,?,?)", [
-  username, req.body.email, new_password
-], function(err) {
-  if (err) {
-    console.error('Error while inserting user into the database');
-    return done(null, false);
-  };
-  return done(null, rows);
-});
-
 var generateToken = function (username) {
   var claims = {
     'sub': username,
@@ -30,6 +20,15 @@ var generateToken = function (username) {
   };
   return jwt.sign(claims, config.token.secret, { expiresIn: config.token.expiresIn });
 };
+
+var getTokenData = function(token) {
+  return jwt.decode(token);
+}
+
+var createTicket = function(token) {
+  var ticket = "?perm=" + token.permission + "&exp=" + token.exp;
+  return ticket;
+}
 
 // ====================================================================
 
@@ -73,6 +72,12 @@ router.get('/logout', (req, res, next) => {
     res.status(200).send('OK');
   });
 });
+
+router.post('/getticket', (req, res, next) => {
+  var decoded = getTokenData(req.body.token);
+  var ticket = createTicket(decoded);
+  return res.json({ "ticket": ticket});
+})
 
 router.post('/psalms', function(req, res) {
   console.log("POST API/psalms/");

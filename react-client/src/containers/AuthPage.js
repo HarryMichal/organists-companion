@@ -78,7 +78,6 @@ class AuthPage extends React.Component {
           .then(res => res.json())
           .then(json => {
             let jwt = json;
-            console.log(jwt);
             AuthService.setToken(jwt);
             this.props.history.push("/app");
           }).catch((err) => {

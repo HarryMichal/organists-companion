@@ -1,9 +1,7 @@
 import fetch from 'node-fetch';
 import { isEmpty } from 'lodash';
-import jwt from 'jsonwebtoken';
 
 const TOKEN_KEY = "jwt";
-const USER_INFO = "userinfo";
 
 const AuthService = {
   login(user) {
