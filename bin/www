@@ -13,6 +13,7 @@ var WebSocket = require('ws');
 var jwt = require('jsonwebtoken');
 var sqlite3 = require('sqlite3');
 var config = require('../config/config');
+var url = require('url');
 
 /**
  * Get port from environment and store in Express.
@@ -40,7 +41,22 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
 var wss = new WebSocket.Server({
  'server': server,
  'path': "/api/ws",
- 'clientTracking': true
+ 'clientTracking': true,
+ 'verifyClient': function(info, done) {
+   var query = url.parse(info.req.url, true).query;
+   if (info.origin === "http://192.168.0.109:3000") {
+     var newDate = Math.round(new Date().getTime()/1000);
+     if(newDate - query.exp < 0) {
+        done(true);
+     }
+     else {
+       done(false);
+     }
+   }
+   else {
+     done(false);
+   }
+ }
 });
  
 wss.on('connection', (ws, req) => {
