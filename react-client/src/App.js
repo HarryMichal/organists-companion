@@ -6,6 +6,7 @@ import AuthService from './services/AuthService';
 import HomePage from './containers/HomePage';
 import DialerPage from './containers/DialerPage';
 import AuthPage from './containers/AuthPage';
+import OutputPage from './containers/OutputPage';
 
 // =====================================================
 
@@ -28,6 +29,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={HomePage}/>
             <Route path="/auth/:authType" component={AuthPage}/>
+            <Route path="/output" component={OutputPage}/>
             <PrivateRoute exact path="/app" component={DialerPage}/>
           </Switch>
         </div>
