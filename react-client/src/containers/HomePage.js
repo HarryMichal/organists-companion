@@ -19,7 +19,7 @@ class HomePage extends React.Component {
   };
   
   changeForm(event) {
-    this.setState({ form: event.target.value });
+      this.props.history.push("/auth/" + event.target.value);
   }
   
   render() {
@@ -29,7 +29,9 @@ class HomePage extends React.Component {
         <ResponsiveDrawer title={this.state.title}/>
       </header>
       <div className='container-full'>
-        <WelcomeButtons onClick={this.changeForm} />
+        <div className='container-center'>
+          <WelcomeButtons onClick={this.changeForm} />
+        </div>
       </div>
     </div>
     )

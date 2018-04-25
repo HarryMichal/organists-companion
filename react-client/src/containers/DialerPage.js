@@ -49,7 +49,9 @@ class DialerPage extends React.Component {
     this.state = {
       title: 'Dialer',
       "data": {
-        "number": "",
+        "type": "",
+        "song": "",
+        "verse": "",
         "psalmtext": "",
       },
       "message": {
@@ -59,11 +61,12 @@ class DialerPage extends React.Component {
     };
     this.onMessage = this.onMessage.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
   };
   
   componentWillMount() {
     var token = sessionStorage.getItem("jwt");
-    fetch("http://192.168.0.109:3000/api/getticket", {
+    fetch("http://localhost:3000/api/getticket", {
       method: "post",
       body: token,
       headers: {
@@ -71,7 +74,7 @@ class DialerPage extends React.Component {
       }
     }).then(res => res.json())
     .then(json => {
-      this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws" + json.ticket);
+      this.socket = new WebSocket("ws://localhost:3001/api/ws" + json.ticket);
       this.socket.addEventListener("message", this.onMessage);
     })
   }
@@ -86,18 +89,21 @@ class DialerPage extends React.Component {
   onMessage(event) {
     var data = JSON.parse(event.data);
     console.log(data);
-    if (data.number) {
-      this.setState({"data": {"number": data.number}})
+    if (data.type === "song") {
+      this.setState(prevState => ({ data: { type: data.type, song: data.id, verse: data.verse, psalmtext: ""}}));
     };
     
-    if (data.psalmtext) {
-      this.setState({"data": {"psalmtext": data.psalmtext}})
+    if (data.type === "psalm") {
+      this.setState(prevState => ({"data": { type: data.type, song: "", verse: "", "psalmtext": data.text}}));
     };
   }
   
   sendMessage(event) {
-    var data = this.state.message;
-    this.socket.send(data);
+    var msg = {
+      type: this.state.message.type,
+      number: this.state.message.number
+    }
+    this.socket.send(JSON.stringify(msg));
     this.setState({ message: { type: "", number: ""}});
   }
   
@@ -105,45 +111,34 @@ class DialerPage extends React.Component {
     event.preventDefault();
     switch (event.target.id) {
       case 'number':
-        var formdata = this.state.message;
-        var field = "number";
-        var next = event.target.value;
-        formdata[field] = formdata[field] + event.target.value;
-        this.setState(prevState => ({ message: { number: prevState.message.number + next }}));
+        if (this.state.message.type !== "") {
+          var newNumber = event.target.value;
+          this.setState(prevState => ({ message: { type: prevState.message.type, number: prevState.message.number.concat([newNumber]) }}));
+        }
         break;
         
       case 'backspace':
-        var formdata = this.state.message;
-        var field = "number";
-        var sliced = formdata[field].slice(0, -1);
-        formdata[field] = sliced;
-        this.setState({formdata});
+        this.setState(prevState => ({ message: { type: prevState.message.type, number: prevState.message.number.slice(0, -1)}}));
         break;
         
-      case 'init_number':
+      case 'init_song':
         if (this.state.message.type === "") {
-          this.setState((prevState, props) => {
-          return { message: { type: "song_number", number: prevState.message.number }}});
+          var newType = event.target.value;
+          this.setState(prevState => ({ message: { type: prevState.message.type.concat([newType]), number: prevState.message.number }}));
         }
-        else if (this.state.message.type === "psalm_number") {
-          // maybe change colour of the button
-        }
-        else {
+        else if (this.state.message.type === "song") {
           this.sendMessage();
-        };
+        }
         break;
         
       case 'init_psalm':
         if (this.state.message.type === "") {
-          this.setState((prevState, props) => {
-          return { message: { type: "psalm_number", number: prevState.message.number }}});
+          var newType = event.target.value;
+          this.setState(prevState => ({ message: { type: prevState.message.type.concat([newType]), number: prevState.message.number }}));
         }
-        else if (this.state.message.type === "song_number") {
-          // maybe change colour of the button
-        }
-        else {
+        else if (this.state.message.type === "psalm") {
           this.sendMessage();
-        };
+        }
         break;
     }
   }
@@ -154,11 +149,14 @@ class DialerPage extends React.Component {
     return (
     <div className='page-parent'>
       <header className='navbar'>
-        <ResponsiveDrawer title={this.state.title}/>
+        <ResponsiveDrawer title={this.state.data.song}/>
       </header>
       <div className='container-full'>
         <div className='container-center'>
-          <DialForm data={this.state.message} onClick={this.handleClick} />
+        <p>
+        {this.state.data.song}
+        </p>
+          <DialForm data={this.state.message} onClick={this.handleClick} onSubmit={this.sendMessage} />
         </div>
       </div>
     </div>

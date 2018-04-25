@@ -43,7 +43,7 @@ class AuthPage extends React.Component {
     
     switch (this.props.match.params.authType) {
       case 'login':
-        requestURL = 'http://192.168.0.109:3000/api/login';
+        requestURL = 'http://localhost:3000/api/login';
         break;
       case 'signup':
         requestURL = 'http://192.168.0.109:3000/api/register';
