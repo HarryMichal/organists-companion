@@ -1,11 +1,12 @@
 import fetch from 'node-fetch';
 import { isEmpty } from 'lodash';
+import jwt from 'jsonwebtoken';
 
 const TOKEN_KEY = "jwt";
 
 const AuthService = {
   login(user) {
-    return fetch('http://192.168.0.109:3000/api/login', {
+    return fetch('http://localhost:3000/api/login', {
       method: 'post',
       body: JSON.stringify(user),
       headers: {
@@ -40,7 +41,7 @@ const AuthService = {
       return localStorage.removeItem(key);
     }
     if (sessionStorage && sessionStorage.getItem(key)) {
-      return sessionStorage.rmoveItem(key);
+      return sessionStorage.removeItem(key);
     }
     return null;
   },
@@ -85,6 +86,14 @@ const AuthService = {
   getToken(tokenKey = TOKEN_KEY) {
     return AuthService.get(tokenKey);
   },
+  
+  validate() {
+    
+  },
+  
+  validateToken() {
+    
+  }
 };
 
 export default AuthService;
