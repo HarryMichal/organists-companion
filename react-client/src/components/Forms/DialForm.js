@@ -61,14 +61,6 @@ class DialForm extends React.Component {
     }
   };
   
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.data.number !== nextProps.data.number) {
-      return true;
-    };
-    return false;
-  };
-  
-  
   renderButtons() {
     const { classes, onClick } = this.props;
     
@@ -119,54 +111,32 @@ class DialForm extends React.Component {
           9
           </Button>
         </Grid>
+        <Grid item xs={this.state.xs}>
+          <Button raised className={classes.button} id="init_song" value="song" color="secondary" onClick={onClick}>
+          *
+          </Button>
+        </Grid>
+        <Grid item xs={this.state.xs}>
+          <Button raised className={classes.button} id="number" value="0" color="primary" onClick={onClick}>
+          0
+          </Button>
+        </Grid>
+        <Grid item xs={this.state.xs}>
+          <Button raised className={classes.button} id="init_psalm" value="psalm" color="secondary" onClick={onClick}>
+          #
+          </Button>
+        </Grid>
       </Grid>
     );
   }
   
-  renderButton_numb() {
-    const { classes, onClick, data } = this.props;
-    
-    switch(data.type) {
-      case("init_number"):
-        return (
-          <Grid item xs={this.state.xs}>
-            <Button raised className={classes.button} id="init_number" value="*" color="primary" onClick={onClick}>
-            *
-            </Button>
-          </Grid>
-        )
-        break;
-      default:
-        return (
-          <Grid item xs={this.state.xs}>
-            <Button raised className={classes.button} id="init_number" value="*" color="secondary" onClick={onClick}>
-            *
-            </Button>
-          </Grid>
-        )
-        break;
-    }
-    
-  }
-  
-  renderButton_psalm() {
-    const { classes, onClick, data } = this.props;
-    /*
-    <Grid item xs={this.state.xs}>
-      <Button raised className={classes.button} id="init_psalm" value="#" color="primary" onClick={onClick}>
-      #
-      </Button>
-    </Grid>
-    */
-  }
-  
   render() {
-    const { classes, onClick, onChange, data } = this.props;
+    const { classes, onClick, onChange, onSubmit, data } = this.props;
     
     return (
       <Card className={classes.card}>
         <CardContent>
-          <form className={classes.form}>
+          <form className={classes.form} onSubmit={onSubmit}>
             <div className={classes.root}>
               <Grid container justify="center" spacing={this.state.spacing} >
                 <Grid item xs>
@@ -190,6 +160,7 @@ class DialForm extends React.Component {
 DialForm.propTypes = {
   onClick: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   data: PropTypes.func.isRequired
 };
     
