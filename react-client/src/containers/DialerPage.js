@@ -13,8 +13,8 @@ const styles = theme => ({
   card: {
     minWidth: 500,
     width: 470,
-    height: "fit-content",
-    "align-self": "center",
+    height: 600,
+    marginTop: 50,
   },
   container: {
     display: 'flex',
@@ -36,7 +36,7 @@ const styles = theme => ({
 });
 
 function createWSConnection(callback) {
-this.socket = new WebSocket("ws://localhost:3001/api/ws");
+this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws");
 if(typeof callback === "function") {
   callback();
 }
@@ -65,23 +65,17 @@ class DialerPage extends React.Component {
   };
   
   componentWillMount() {
-    var token = sessionStorage.getItem("jwt");
-    fetch("http://localhost:3000/api/getticket", {
-      method: "post",
-      body: token,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => res.json())
-    .then(json => {
-      this.socket = new WebSocket("ws://localhost:3001/api/ws" + json.ticket);
-      this.socket.addEventListener("message", this.onMessage);
-    })
+    var query = "token=" +  JSON.parse(sessionStorage.getItem("jwt")).token;
+    this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws?" + query);
+    this.socket.addEventListener("message", this.onMessage);
+    query = null;
   }
   
   componentWillUnmount() {
-    this.socket.close();
-    this.socket = null;
+    if (this.socket !== null) {
+      this.socket.close();
+      this.socket = null;
+    }
   }
   
   // Event based functions
@@ -153,9 +147,6 @@ class DialerPage extends React.Component {
       </header>
       <div className='container-full'>
         <div className='container-center'>
-        <p>
-        {this.state.data.song}
-        </p>
           <DialForm data={this.state.message} onClick={this.handleClick} onSubmit={this.sendMessage} />
         </div>
       </div>
