@@ -13,21 +13,16 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
   };
 });
 
-var generateToken = function (username) {
+var generateToken = function (username, permission, expiration) {
   var claims = {
     'sub': username,
-    'permission': 'general'
+    'perm': permission
   };
-  return jwt.sign(claims, config.token.secret, { expiresIn: config.token.expiresIn });
+  return jwt.sign(claims, config.token.secret, { expiresIn: expiration });
 };
 
 var getTokenData = function(token) {
   return jwt.decode(token);
-}
-
-var createTicket = function(token) {
-  var ticket = "?perm=" + token.permission + "&exp=" + token.exp;
-  return ticket;
 }
 
 // ====================================================================
@@ -56,14 +51,14 @@ router.post('/login', function(req, res, next) {
       if (err) {
         return res.status(401).json( { message: err } );
       }
-      var token = generateToken(req.body.username);
+      var token = generateToken(req.body.username, "general", config.token.expiresIn);
       
       return res.json({ token: token });
     });
   })(req, res, next);
 }); // runs the passport authenticate function; config in passport.js
 
-router.get('/logout', (req, res, next) => {
+router.get('/logout', function(req, res, next) {
   req.logout();
   req.session.save((err) => {
     if (err) {
@@ -77,6 +72,13 @@ router.post('/getticket', (req, res, next) => {
   var decoded = getTokenData(req.body.token);
   var ticket = createTicket(decoded);
   return res.json({ "ticket": ticket});
+})
+
+router.post('/guest', function(req, res, next) {
+  var guest = req.body;
+  var token = generateToken(guest.sub, guest.perm, guest.exp);
+  
+  return res.json({token: token});
 })
 
 router.post('/psalms', function(req, res) {
