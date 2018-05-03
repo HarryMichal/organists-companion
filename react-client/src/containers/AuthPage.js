@@ -43,7 +43,7 @@ class AuthPage extends React.Component {
     
     switch (this.props.match.params.authType) {
       case 'login':
-        requestURL = 'http://localhost:3000/api/login';
+        requestURL = 'http://192.168.0.109:3000/api/login';
         break;
       case 'signup':
         requestURL = 'http://192.168.0.109:3000/api/register';
@@ -74,15 +74,16 @@ class AuthPage extends React.Component {
           body: JSON.stringify(user),
           headers: {
             "Content-Type": "application/json"
-          }})
-          .then(res => res.json())
-          .then(json => {
-            let jwt = json;
-            AuthService.setToken(jwt);
-            this.props.history.push("/app");
-          }).catch((err) => {
-            console.log(err);
-          });
+          }}
+        )
+        .then(res => res.json())
+        .then(json => {
+          let jwt = json;
+          AuthService.setToken(jwt);
+          this.props.history.push("/app");
+        }).catch((err) => {
+          console.log(err);
+        });
         break;
       case 'signup':
         fetch(requestURL, {
@@ -90,11 +91,12 @@ class AuthPage extends React.Component {
           body: JSON.stringify(user),
           headers: {
             "Content-Type": "application/json"
-          }})
-          .then(res => res.json())
-          .then(json => {
-            console.log(json);
-          });
+          }}
+        )
+        .then(res => res.json())
+        .then(json => {
+          console.log(json);
+        });
         break;
     };
   };
