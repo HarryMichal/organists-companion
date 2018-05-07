@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import { isEmpty } from 'lodash';
-import jwt from 'jsonwebtoken';
 
 const TOKEN_KEY = "jwt";
 
@@ -23,7 +22,7 @@ const AuthService = {
   },
   
   signup(user) {
-    return fetch('http://192.168.0.109:3000/api/login', {
+    return fetch('http://localhost:3000/api/login', {
       method: 'post',
       body: JSON.stringiy(user),
       headers: {
