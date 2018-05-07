@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import { Link } from 'react-router-dom';
-import Card, { CardText, CardContent } from 'material-ui/Card';
+import Card, { CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
 
 const styles = theme => ({
   card: {
     minWidth: 270,
-    width: 500,
+    width: 350,
     height: "fit-content",
     "align-self": "center",
   },
@@ -18,34 +16,19 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  form: {
-    
-  },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    marginTop: 0,
-    marginBottom: 30,
-    width: "auto",
-    fontSize: 60
-  },
-  textField: {
-    fontSize: 50,
-    root: {
-      fontSize: '50px'
-    },
-    input: {
-      fontSize: '50px'
-    },
-    hint: {
-      fontSize: '50px'
-    }
+    fontSize: 40,
+    height: 50,
+    border: "1px solid #000"
   },
   button: {
     minWidth: 20,
     width: "100%",
     height: "100%",
-    fontSize: "40px",
+    fontSize: "34px",
+  },
+  buttonwrap: {
+    marginTop: 15
   },
   root: {
     flexGrow: 1,
@@ -56,8 +39,8 @@ class DialForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      spacing: "8",
-      xs: "4"
+      spacing: 8,
+      xs: 4
     }
   };
   
@@ -65,7 +48,7 @@ class DialForm extends React.Component {
     const { classes, onClick } = this.props;
     
     return (
-      <Grid container spacing={this.state.spacing}>
+      <Grid container spacing={this.state.spacing} className={classes.buttonwrap}>
         <Grid item xs={this.state.xs}>
           <Button raised className={classes.button} id="number" value="1" color="primary" onClick={onClick}>
           1
@@ -131,18 +114,20 @@ class DialForm extends React.Component {
   }
   
   render() {
-    const { classes, onClick, onChange, onSubmit, data } = this.props;
+    const { classes, onClick, onSubmit, data } = this.props;
     
     return (
       <Card className={classes.card}>
         <CardContent>
           <form className={classes.form} onSubmit={onSubmit}>
             <div className={classes.root}>
-              <Grid container justify="center" spacing={this.state.spacing} >
+              <Grid container justify="center" alignItems='center' spacing={this.state.spacing} >
                 <Grid item xs>
-                  <TextField disabled id="number" className={classes.textField} value={this.props.data.number} onChange={onChange} />
+                  <p id="number" className={classes.textField}>
+                  {data.number}
+                  </p>
                 </Grid>
-                <Grid item xs="4">
+                <Grid item xs={this.state.xs}>
                   <Button raised className={classes.button} id="backspace" onClick={onClick}>
                   DEL
                   </Button>
@@ -159,9 +144,8 @@ class DialForm extends React.Component {
 
 DialForm.propTypes = {
   onClick: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  data: PropTypes.func.isRequired
+  data: PropTypes.object.isRequired
 };
     
 export default withStyles(styles)(DialForm);

@@ -7,23 +7,28 @@ html {
   height: 100%;
   width: 100%;
   margin: 0px;
+  box-sizing: border-box;
 }
 
 svg {
   height: 36px !important;
   width: 36px !important;
+  box-sizing: inherit;
 }
 
 button {
   margin-top: 0px !important;
+  box-sizing: inherit;
 }
 
 p {
-margin: 0;
+  margin: 0;
+  box-sizing: inherit;
 }
 
 a {
   color: #F05F40;
+  box-sizing: inherit;
 }
 
 a:hover {
@@ -47,6 +52,7 @@ a:hover {
   padding: 0 0 0 0;
   z-index: 1;
   position: fixed;
+  box-sizing: inherit;
 }
 
 /*
@@ -56,22 +62,25 @@ a:hover {
 .root {
   height: 100%;
   text-align: center;
+  box-sizing: inherit;
 }
 
 .body {
   box-sizing: border-box;
-  -moz-box-siting: border-box;
+  -moz-box-sizing: border-box;
 }
 
 .App {
   height: 100%;
   width: 100%;
+  box-sizing: inherit;
 }
 
 .page-parent {
   height: 100%;
   min-height: 100%;
   width: 100%;
+  box-sizing: inherit;
 }
 
 .sidebar {
@@ -97,6 +106,7 @@ a:hover {
   height: 100%;
   padding: 0 0 0 0;
   overflow: auto;
+  box-sizing: inherit;
 }
 
 .container-form {
@@ -104,29 +114,41 @@ a:hover {
   height: -moz-fit-content;
   margin: auto;
   align-content: center;
+  box-sizing: inherit;
 }
 
 .container-center {
   width: -moz-fit-content;
-  height: 100%;
+  height: -moz-fit-content;
   margin: 0 auto;
+  box-sizing: inherit;
 }
 
 .container-output {
   width: 100%;
   height: 100%;
+  box-sizing: inherit;
+}
+
+.container-dialer {
+  width: -moz-fit-content;
+  height: -moz-fit-content;
+  margin: 70px auto;
+  box-sizing: inherit;
 }
 
 .container-formwrap {
   width: fit-content;
   padding: 0 20px 0 20px;
+  box-sizing: inherit;
 }
 
 .container-outputleft {
-  width: 74%;
+  width: 75%;
   height: 100%;
   margin: auto 0;
   float: left;
+  box-sizing: inherit;
 }
 
 .container-outputright {
@@ -135,25 +157,30 @@ a:hover {
   height: 100%;
   margin: auto 0;
   float: left;
+  box-sizing: inherit;
 }
 
 .basic-paragraph {
   text-align: center;
+  box-sizing: inherit;
 }
 
 .welcome-buttons {
   width: -moz-fit-content;
   height: -moz-fit-content;
   margin: auto;
+  box-sizing: inherit;
 }
 
 .userform {
   display: grid;
+  box-sizing: inherit;
 }
 
 .authentication-form {
   align-content: center;
   height: fit-content;
+  box-sizing: inherit;
 }
 
 /*
@@ -164,6 +191,7 @@ a:hover {
   width: 100%;
   padding: 0 0 0 0;
   position: fixed;
+  box-sizing: inherit;
 }
 
 /*
@@ -190,6 +218,7 @@ a:hover {
   width: 100%;
   margin: auto auto;
   font-size: 10em;
+  box-sizing: inherit;
 }
 
 .textbox-verse {
@@ -197,6 +226,7 @@ a:hover {
   width: 100%;
   margin: auto auto;
   font-size: 6em;
+  box-sizing: inherit;
 }
 
 /*

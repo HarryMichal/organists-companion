@@ -1,46 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import fetch from 'node-fetch';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import Card, { CardText, CardContent } from 'material-ui/Card';
+import Grid from 'material-ui/Grid';
 
 import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import DialForm from '../components/Forms/DialForm';
 
 const styles = theme => ({
-  card: {
-    minWidth: 500,
-    width: 470,
-    height: 600,
-    marginTop: 50,
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    marginTop: 0,
-    marginBottom: 30,
-    width: 450,
-  },
-  menu: {
-    width: 200,
-  },
-  button: {
-    marginBottom: 20,
-  },
+  
 });
-
-function createWSConnection(callback) {
-this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws");
-if(typeof callback === "function") {
-  callback();
-}
-}
 
 class DialerPage extends React.Component {
   constructor(props) {
@@ -66,7 +33,7 @@ class DialerPage extends React.Component {
   
   componentWillMount() {
     var query = "token=" +  JSON.parse(sessionStorage.getItem("jwt")).token;
-    this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws?" + query);
+    this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
     this.socket.addEventListener("message", this.onMessage);
     query = null;
   }
@@ -134,6 +101,9 @@ class DialerPage extends React.Component {
           this.sendMessage();
         }
         break;
+      default:
+        console.log("Error.")
+        break;
     }
   }
   
@@ -143,13 +113,16 @@ class DialerPage extends React.Component {
     return (
     <div className='page-parent'>
       <header className='navbar'>
-        <ResponsiveDrawer title={this.state.data.song}/>
+        <ResponsiveDrawer title={this.state.title}/>
       </header>
-      <div className='container-full'>
-        <div className='container-center'>
+      <Grid container justify='center' alignItems='center' direction='column' className='container-full'>
+        <Grid item >
+          <p>{this.state.data.song} {this.state.data.psalmtext}</p>
+        </Grid>
+        <Grid item className='container-dialer'>
           <DialForm data={this.state.message} onClick={this.handleClick} onSubmit={this.sendMessage} />
-        </div>
-      </div>
+        </Grid>
+      </Grid>
     </div>
     )
   }

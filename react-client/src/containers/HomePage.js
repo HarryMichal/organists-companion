@@ -1,10 +1,8 @@
 import React from 'react';
-import { Router, Route, Switch, Link } from 'react-router-dom';
+import Grid from 'material-ui/Grid';
 
 import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import WelcomeButtons from '../components/Buttons/WelcomeButtons';
-
-import SignUpPage from './SignUpPage';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -28,11 +26,11 @@ class HomePage extends React.Component {
       <header className='navbar'>
         <ResponsiveDrawer title={this.state.title}/>
       </header>
-      <div className='container-full'>
-        <div className='container-center'>
+      <Grid container justify='center' alignItems='center' className='container-full'>
+        <Grid item className='container-center'>
           <WelcomeButtons onClick={this.changeForm} />
-        </div>
-      </div>
+        </Grid>
+      </Grid>
     </div>
     )
   }
