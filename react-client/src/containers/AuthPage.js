@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import fetch from 'node-fetch';
-import { replace } from 'lodash';
+import Grid from 'material-ui/Grid';
 
 import ResponsiveBar from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import LoginForm from '../components/Forms/LoginForm';
@@ -43,10 +43,13 @@ class AuthPage extends React.Component {
     
     switch (this.props.match.params.authType) {
       case 'login':
-        requestURL = 'http://192.168.0.109:3000/api/login';
+        requestURL = 'http://localhost:3000/api/login';
         break;
       case 'signup':
-        requestURL = 'http://192.168.0.109:3000/api/register';
+        requestURL = 'http://localhost:3000/api/register';
+        break;
+      default:
+        console.log("Error.")
         break;
     }
     return requestURL;
@@ -98,6 +101,9 @@ class AuthPage extends React.Component {
           console.log(json);
         });
         break;
+      default:
+        console.log("Error.")
+        break;
     };
   };
   
@@ -120,14 +126,14 @@ class AuthPage extends React.Component {
         <header className="navbar">
           <ResponsiveBar title={this.state.title}/>
         </header>
-        <div className="container-full">
-          <div className="container-center">
+        <Grid container justify='center' alignItems='center' direction='column' className="container-full">
+          <Grid item className="container-center">
             <WelcomeButtons onClick={this.changeForm} />
-            <div className="container-form">
+          </Grid>
+          <Grid item className="container-form">
               {this.renderForm()}
-            </div>
-          </div>
-        </div>
+          </Grid>
+        </Grid>
       </div>
     );
   };

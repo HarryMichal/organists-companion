@@ -11,10 +11,10 @@ class OutputPage extends React.Component {
     super();
     this.state ={
       "data": {
-        "type": "TEST_TYPE",
-        "song": "TEST_SONG",
-        "verse": "TEST_VERSE",
-        "psalmtext": "TEST_PSALMTEXT",
+        "type": "t",
+        "song": "s",
+        "verse": "v",
+        "psalmtext": "t",
       }
     };
     this.onMessage = this.onMessage.bind(this);
@@ -22,7 +22,7 @@ class OutputPage extends React.Component {
   
   componentWillMount() {
     const body = { "sub": "guest", "perm": "guest", "exp": "7d" };
-    fetch("http://192.168.0.109:3000/api/guest", {
+    fetch("http://localhost:3000/api/guest", {
       method: 'post',
       body: JSON.stringify(body),
       headers: {
@@ -33,7 +33,7 @@ class OutputPage extends React.Component {
     .then(json => {
       console.log(json.token);
       let query = "token=" + json.token;
-      this.socket = new WebSocket("ws://192.168.0.109:3001/api/ws?" + query);
+      this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
       this.socket.addEventListener("message", this.onMessage);
     })
   }
