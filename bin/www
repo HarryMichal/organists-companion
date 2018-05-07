@@ -50,7 +50,7 @@ var wss = new WebSocket.Server({
     var query = url.parse(info.req.url, true).query;
     
     // check the origin of the issued request
-    if (info.origin === "http://192.168.0.109:3000" && query.token !== null) {
+    if (info.origin === "http://localhost:3000" && query.token !== null) {
       jwt.verify(query.token, config.token.secret, function(err, token) {
         if (err) {
           console.error(err);
@@ -74,15 +74,14 @@ var wss = new WebSocket.Server({
 });
  
 wss.getUniqueID = function() {
-    function s2() {
+    function s4() {
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
-    return '#' + s2();
+    return '#' + s4();
 };
  
 wss.on('connection', function connection(ws, req) {
   console.log("Connection was established.");
-  console.log(req.connection.remoteAddress);
   
   // Assign crucial info to identify client
   const parameters = url.parse(req.url, true);
