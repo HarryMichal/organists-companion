@@ -74,6 +74,7 @@ a:hover {
   height: 100%;
   width: 100%;
   box-sizing: inherit;
+  padding: 16px;
 }
 
 .page-parent {
@@ -221,11 +222,20 @@ a:hover {
   box-sizing: inherit;
 }
 
-.textbox-verse {
-  height: 100%;
+.textbox-psalm {
+  height: -moz-fit-content;
   width: 100%;
   margin: auto auto;
   font-size: 6em;
+  box-sizing: inherit;
+}
+
+.textbox-verse {
+  height: 100%;
+  width: 2px;
+  word-wrap: break-word;
+  margin: auto auto;
+  font-size: 4em;
   box-sizing: inherit;
 }
 
