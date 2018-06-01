@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   button: {
@@ -23,10 +23,10 @@ function WelcomeButtons(props) {
   
   return (
     <div className="welcome-buttons">
-      <Button raised color="primary" className={classes.button} onClick={onClick} value="login">
+      <Button variant="raised" color="primary" className={classes.button} onClick={onClick} value="login">
       Login
       </Button>
-      <Button raised color="primary" className={classes.button} onClick={onClick} value="signup">
+      <Button variant="raised" color="primary" className={classes.button} onClick={onClick} value="signup">
       Signup
       </Button>
     </div>

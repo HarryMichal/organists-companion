@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import Card, { CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
   card: {
     minWidth: 270,
-    width: 300,
+    width: 320,
     height: "fit-content",
     "align-self": "center",
   },
@@ -20,14 +21,10 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    marginTop: 0,
-    marginBottom: 30,
     width: 250,
   },
-  menu: {
-    width: 100,
-  },
   button: {
+    marginTop: 30,
     marginBottom: 20,
   },
 });
@@ -42,11 +39,9 @@ class LoginForm extends React.Component {
           <form className={classes.userform} onSubmit={onSubmit}>
             <TextField required id="username" label="Username" className={classes.textField} value={user.username} onChange={onChange} margin="normal" />
             <TextField required id="password" label="Password" className={classes.textField} value={user.password} onChange={onChange} type="password" autoComplete="current-password" margin="normal" />
-            <Button raised className={classes.button} type="submit" color="primary">
+            <Button variant="raised" className={classes.button} type="submit" color="primary">
             Login
             </Button>
-            <br></br>
-            <Link to="/signup">Don't have an account?</Link>
           </form>
         </CardContent>
       </Card>
