@@ -1,7 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var sqlite3 = require('sqlite3');
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 
 // ====================================================================
@@ -46,13 +46,13 @@ module.exports = function(app) {
       // error during database querry
       if (err) {
         return done(err)// The username is not unique --> throw an error; stop the function);
-      } else if (rows) {
-        console.error('This username is already used');
+      }
+      if (rows) {
+        console.error('This username  is already used');
         return done(null, false);
-        // The username is unique --> hash provided password and insert into the database
-      } else {
+      } else { // The username is unique --> hash provided password and insert into the database
         var salt = bcrypt.genSaltSync(11);
-        bcrypt.hash(password, salt, null, function(err, new_password) { // Hash provided password and insert into database;
+        bcrypt.hash(password, salt, function(err, new_password) { // Hash provided password and insert into database;
           db.run("INSERT INTO users (username, email, password) values (?,?,?)", [
             username, req.body.email, new_password
           ], function(err) {
