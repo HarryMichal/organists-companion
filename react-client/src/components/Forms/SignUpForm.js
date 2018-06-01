@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from 'material-ui/styles';
+import {withStyles} from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
-import Card, { CardContent} from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
   card: {
@@ -43,11 +44,9 @@ class SignUpForm extends React.Component {
             <TextField required="required" id="username" label="Username" className={classes.textField} value={user.username} onChange={onChange} margin="normal"/>
             <TextField required="required" id="email" label="Email" className={classes.textField} value={user.email} onChange={onChange}/>
             <TextField required="required" id="password" label="Password" className={classes.textField} value={user.password} onChange={onChange} type="password" margin="normal"/>
-            <Button raised className={classes.button} type="submit" color="primary">
+            <Button variant="raised" className={classes.button} type="submit" color="primary">
               Register
             </Button>
-            <br></br>
-            <Link to="/login">Already have an account?</Link>
           </form>
         </CardContent>
       </Card>

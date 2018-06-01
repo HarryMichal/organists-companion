@@ -31,7 +31,6 @@ class SignUpPage extends React.Component {
   processForm(e) {
     e.preventDefault(); // prevent default behaviour
     var user = this.state.user;
-    console.log('YES!!')
     fetch('http://localhost:3000/api/signup', {
       method: 'post',
       body: JSON.stringify(user),

@@ -1,6 +1,8 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
 import fetch from 'node-fetch';
+
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
   
@@ -13,7 +15,7 @@ class OutputPage extends React.Component {
       "data": {
         "type": "t",
         "song": "s",
-        "verse": "v",
+        "verse": [],
         "psalmtext": "t",
       }
     };
@@ -57,24 +59,37 @@ class OutputPage extends React.Component {
     }
   }
   
+  renderVerse() {
+    return(
+      <Grid container justif='center' alignItems='center' direction='column' spacing="8">
+        {Array.from(this.state.data.verse).map((num) => (
+          <Grid item xs={8}>
+            <p>
+            {num}
+            </p>
+          </Grid>
+        ))
+        }
+      </Grid>
+    )
+  }
+  
   render() {
     return(
-      <div className='page-parent'>
-        <div className="container-output">
-          <div className="container-outputleft">
-            <p className="textbox-number">
-            {this.state.data.song}
-            {this.state.data.psalmtext}
-            </p>
-          </div>
-          <div className="container-outputright">
-            <p className="textbox-verse">
-            {this.state.data.verse}
-            </p>
-          </div>
-      
-        </div>
-      </div>
+      <Grid container justify='center' alignItems='center' className='page-parent'>
+        <Grid item className="container-outputleft">
+          {this.state.data.song ?
+          <p className="textbox-number">
+          {this.state.data.song}
+          </p> :
+          <p className="textbox-psalm">
+          {this.state.data.psalmtext}
+          </p>}
+        </Grid>
+        <Grid item className="container-outputright">
+          {this.renderVerse()}
+        </Grid>
+      </Grid>
     )
   }
 }

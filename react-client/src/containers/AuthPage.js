@@ -1,14 +1,23 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import fetch from 'node-fetch';
-import Grid from 'material-ui/Grid';
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
-import ResponsiveBar from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import LoginForm from '../components/Forms/LoginForm';
 import SignUpForm from '../components/Forms/SignUpForm';
 import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 
 import AuthService from '../services/AuthService';
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    height: '100%',
+  },
+  
+})
 
 class AuthPage extends React.Component {
   constructor(props) {
@@ -46,7 +55,7 @@ class AuthPage extends React.Component {
         requestURL = 'http://localhost:3000/api/login';
         break;
       case 'signup':
-        requestURL = 'http://localhost:3000/api/register';
+        requestURL = 'http://localhost:3000/api/signup';
         break;
       default:
         console.log("Error.")
@@ -121,12 +130,14 @@ class AuthPage extends React.Component {
   };
   
   render() {
+    const { classes } = this.props;
+    
     return (
-      <div className='page-parent'>
+      <Grid container className={classes.root} spacing={16}>
         <header className="navbar">
-          <ResponsiveBar title={this.state.title}/>
+          <AppDrawer title={this.state.title}/>
         </header>
-        <Grid container justify='center' alignItems='center' direction='column' className="container-full">
+        <Grid container justify='center' alignItems='center' direction='column' spacing='16' className="container-full">
           <Grid item className="container-center">
             <WelcomeButtons onClick={this.changeForm} />
           </Grid>
@@ -134,9 +145,9 @@ class AuthPage extends React.Component {
               {this.renderForm()}
           </Grid>
         </Grid>
-      </div>
+      </Grid>
     );
   };
 };
 
-export default withRouter(AuthPage);
+export default withStyles(styles)(withRouter(AuthPage));

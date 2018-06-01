@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import Drawer from 'material-ui/Drawer';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import Divider from 'material-ui/Divider';
+import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 
 const styles = theme => ({
@@ -44,7 +46,7 @@ const styles = theme => ({
   }
 });
 
-class ResponsiveDrawer extends React.Component {
+class AppDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,7 +100,7 @@ class ResponsiveDrawer extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography className={classes.navTitle} type="title" color="inherit" noWrap>
+              <Typography className={classes.navTitle} variant="title" color="inherit" noWrap>
                 {this.props.title}
               </Typography>
             </Toolbar>
@@ -123,9 +125,9 @@ class ResponsiveDrawer extends React.Component {
   }
 }
 
-ResponsiveDrawer.propTypes = {
+AppDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(ResponsiveDrawer);
+export default withStyles(styles, { withTheme: true })(AppDrawer);
