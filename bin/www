@@ -14,6 +14,8 @@ var jwt = require('jsonwebtoken');
 var sqlite3 = require('sqlite3');
 var config = require('../config/config');
 var url = require('url');
+var database = require('../utils/database.js');
+var utils = require('../utils/utilities.js');
 
 /**
  * Get port from environment and store in Express.
@@ -37,10 +39,6 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
    console.error(err);
  };
 });
-
-var dbAction = {
-  
-};
 
 var wss = new WebSocket.Server({
   'server': server,
@@ -79,114 +77,225 @@ wss.getUniqueID = function() {
     }
     return '#' + s4();
 };
- 
-wss.on('connection', function connection(ws, req) {
-  console.log("Connection was established.");
-  
-  // Assign crucial info to identify client
-  const parameters = url.parse(req.url, true);
-  var token = jwt.decode(parameters.query.token);
+
+wss.sendMessage = function(message, target) {
+  switch(target) {
+    case "all":
+      wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(message));
+        }
+      });
+      break;
+    case "organist":
+      wss.clients.forEach(function each(client) {
+        if (client.chatRoom === "general") {
+          client.send(JSON.stringify(message));
+        }
+      });
+      break;
+    case "guest":
+      wss.clients.forEach(function each(client) {
+        if (client.chatRoom === "guest") {
+          client.send(JSON.stringify(message));
+        }
+      });
+      break;
+  }
+}
+
+wss.handleConnection = function(request, ws) {
+  let parameters = url.parse(request.url, true);
+  let token = jwt.decode(parameters.query.token);
   
   ws.id = token.sub + wss.getUniqueID();
   ws.chatRoom = token.perm;
   
+  console.log(`${ws.id} has just connected.`);
+}
+
+wss.showUsers = function() {
+  let clients = [];
   wss.clients.forEach(function each(client) {
-    console.log(client.id);
+    clients.push(client.id);
   });
+  console.log(clients);
+}
+
+wss.handleVerses = function(verse) {
+  let verses = [];
+  for (var i = 0; i < verse; i++) {
+    verses[i] = i + 1;
+  }
+  return verses;
+}
+ 
+wss.on('connection', function connection(ws, req) {
+  wss.handleConnection(req, ws);
   
-  // Send actual data to the new user
-  db.get("SELECT type, number FROM meta WHERE id = 1", function(err, rows) {
+  wss.showUsers();
+  
+  database.select("type, number, verse", "meta", "id", "1", function(err, result) {
     if (err) {
-      console.error("Database error" + err);
+      console.error(err);
     }
-    if (rows) {
-      db.get("SELECT id, verse FROM songs WHERE id = ?", [rows.number], function(err, song) {
-        if (err) {
-          console.error("Database error" + err);
-        }
-        if (song) {
-          let verses = [];
-          for (var i = 0; i < song.verse; i++) {
-            verses[i] = i + 1;
+    if (result) {
+      if (result.type === "song") {
+        database.select("id, verse", "songs", "id", result.number, function(err, song) {
+          if (err) {
+            console.error(err);
           }
-          let message = { id: song.id, verse: verses, type: rows.type };
-          wss.clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify(message));
-            }
-          });
-        }
-      });
+          if (song) {
+            let verses = wss.handleVerses(song.verse);
+            let message = {
+              id: song.id,
+              verse: verses,
+              activeverse: utils.toArray(result.verse),
+              type: result.type
+            };
+            wss.sendMessage(message, "all");
+          }
+        });
+      }
+      
+      if (result.type === "psalm") {
+        database.select("id, text", "psalms", "id", result.number, function(err, psalm) {
+          if (err) {
+            console.error(err);
+          }
+          if (result) {
+            let message = {
+              id: psalm.id,
+              psalmtext: psalm.text,
+              type: result.type
+            };
+            wss.sendMessage(message, "all");
+          }
+        });
+      }
     }
   });
   
-  ws.on('message', (data) => {
+  ws.on('message', function(data) {
     var data = JSON.parse(data);
     
     switch(data.type) {
       case "song":
-        db.run("UPDATE meta SET number = ?, type = ? WHERE id = 1", [data.number, data.type], function(err) {
+        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [`${data.number}`, `${data.type}`, null], function(err, changes) {
           if (err) {
-            console.error("Database error" + err);
+            console.error(err);
           }
-          db.get("SELECT type, number FROM meta WHERE id = 1", function(err, rows) {
-            if (err) {
-              console.error("Database error" + err);
-            }
-            if (rows) {
-              db.get("SELECT id, verse FROM songs WHERE id = ?", [rows.number], function(err, rows) {
-                if (err) {
-                  console.error("Database error" + err);
-                }
-                if (rows) {
-                  console.log("Message sent.");
-                  var verses = [];
-                  for (var i = 0; i < rows.verse; i++) {
-                    verses[i] = i + 1;
+          if (changes) {
+            console.log(changes);
+            database.select("type, number", "meta", "id", "1", function(err, result) {
+              if (err) {
+                console.error(err);
+              }
+              if (result) {
+                database.select("id, verse", "songs", "id", result.number, function(err, song) {
+                  if (err) {
+                    console.error(err);
                   }
-                  console.log(verses);
-                  wss.clients.forEach(function each(client) {
-                    if (client.readyState === WebSocket.OPEN) {
-                      let message = { id: rows.id, verse: verses, type: "song" };
-                      client.send(JSON.stringify(message));
-                    }
-                  });
-                }
-              }); // ends if
-            } // ends db if
-          });
+                  if (song) {
+                    let verses = wss.handleVerses(song.verse);
+                    let message = {
+                      id: song.id,
+                      verse: verses,
+                      activeverse: result.verse,
+                      type: result.type
+                    };
+                    wss.sendMessage(message, "all");
+                  }
+                })
+              }
+            });
+          }
         });
         break;
       case "psalm":
-        console.log("My " + data.type + " is: " + data.number);
-        db.run("UPDATE meta SET number = ?, type = ? WHERE id = 1", [data.number, data.type], function(err) {
+        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [`${data.number}`, `${data.type}`, null], function(err, changes) {
           if (err) {
-            console.error("Database error" + err);
+            console.error(err);
           }
-          db.get("SELECT type, number FROM meta WHERE id = 1", function(err, rows) {
-            if (err) {
-              console.error("Database error" + err);
-            }
-            if (rows) {
-              db.get("SELECT id, text FROM psalms WHERE id = ?", [rows.number], function(err, rows) {
-                if (err) {
-                  console.error("Database error" + err);
-                }
-                if (rows) {
-                  console.log("Message sent.");
-                  wss.clients.forEach(function each(client) {
-                    if (client.readyState === WebSocket.OPEN) {
-                      let message = { id: rows.id, text: rows.text, type: "psalm"};
-                      client.send(JSON.stringify(message));
-                    }
-                  });
-                }
-              }); // ends if
-            } // ends db if
-          });
+          if (changes) {
+            database.select("type, number", "meta", "id", "1", function(err, result) {
+              if (err) {
+                console.error(err);
+              }
+              if (result) {
+                database.select("id, text", "psalms", "id", result.number, function(err, psalm) {
+                  if (err) {
+                    console.error(err);
+                  }
+                  if (psalm) {
+                    console.log(result.type);
+                    let message = {
+                      type: result.type,
+                      id: psalm.id,
+                      psalmtext: psalm.text
+                    };
+                    wss.sendMessage(message, "all");
+                  }
+                });
+              }
+            });
+          }
         });
         break;
-    };
+      case "verse":
+        if (data.subtype === "add") {
+          database.select("verse", "meta", "id", "1", function(err, result) {
+            if (err) {
+              console.error(err);
+            }
+            if (result) {
+              var oldverse = utils.toArray(result.verse);
+              var verse = oldverse.concat(parseInt(data.verse)).sort(function(a, b){return a-b});
+              database.update("meta", "verse = ?", "id = 1", [`${verse}`], function(err, changes) {
+                if (err) {
+                  console.error(err);
+                }
+                if (changes) {
+                  let message = {
+                    type: data.type,
+                    verse: verse
+                  };
+                  wss.sendMessage(message, "all");
+                }
+              })
+            }
+          })
+        }
+        
+        if (data.subtype === "del") {
+          database.select("verse", "meta", "id", "1", function(err, result) {
+            if (err) {
+              console.error(err);
+            }
+            if (result) {
+              var oldverse = utils.toArray(result.verse);
+              var todelete = oldverse.indexOf(parseInt(data.verse));
+              oldverse.splice(todelete, 1);
+              database.update("meta", "verse = ?", "id = 1", [`${oldverse}`], function(err, changes) {
+                if (err) {
+                  console.error(err);
+                }
+                if (changes) {
+                  let message = {
+                    type: data.type,
+                    verse: oldverse
+                  };
+                  wss.sendMessage(message, "all");
+                }
+              })
+            }
+          })
+        }
+        break;
+      default:
+        console.log("Received unknown message format.");
+        break;
+    }
   });
   
   ws.onclose = function(e) {
