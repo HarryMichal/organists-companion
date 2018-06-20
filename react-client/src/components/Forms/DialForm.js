@@ -105,12 +105,12 @@ class DialForm extends React.Component {
   }
   
   renderVerseButtons() {
-    const { classes, data } = this.props;
+    const { classes, data, onClick } = this.props;
     return(
       <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
         {Array.from(data.verse).map((num) => (
           <Grid item xs={this.state.v_buttons.xs}>
-            <Button variant="raised" className={classes.v_button} id="number" value={num} color="primary">
+            <Button variant="raised" className={classes.v_button} id="verse" value={num} color="primary" onClick={onClick}>
             {num}
             </Button>
           </Grid>
