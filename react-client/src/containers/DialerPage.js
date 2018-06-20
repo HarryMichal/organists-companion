@@ -14,16 +14,18 @@ class DialerPage extends React.Component {
     super(props);
     // set the initial component state
     this.state = {
-      "title": 'Dialer',
+      "title": "Dialer",
       "data": {
         "type": "",
         "song": "",
         "verse": "",
+        "activeverse": "",
         "psalmtext": "",
       },
       "message": {
         "type": "",
         "number": "",
+        "verse": [],
       }
     };
     this.onMessage = this.onMessage.bind(this);
@@ -52,12 +54,40 @@ class DialerPage extends React.Component {
   onMessage(event) {
     var data = JSON.parse(event.data);
     if (data.type === "song") {
-      this.setState(prevState => ({ data: { type: data.type, song: data.id, verse: data.verse, psalmtext: ""}}));
-    };
+      this.setState(prevState => ({
+        data: {
+          type: data.type,
+          song: data.id,
+          verse: data.verse,
+          activeverse: data.activeverse,
+          psalmtext: ""
+        }
+      }));
+    }
     
     if (data.type === "psalm") {
-      this.setState(prevState => ({"data": { type: data.type, song: "", verse: "", "psalmtext": data.text}}));
-    };
+      this.setState(prevState => ({
+        data: {
+          type: data.type,
+          song: "",
+          verse: "",
+          activeverse: "",
+          psalmtext: data.psalmtext
+        }
+      }));
+    }
+    
+    if (data.type === "verse") {
+      this.setState(prevState => ({
+        data: {
+          type: prevState.data.type,
+          song: prevState.data.song,
+          verse: prevState.data.verse,
+          activeverse: data.verse,
+          psalmtext: prevState.data.psalmtext
+        }
+      }));
+    }
   }
   
   onError(event) {
@@ -70,32 +100,57 @@ class DialerPage extends React.Component {
   }
   
   sendMessage(event) {
-    var msg = {
-      type: this.state.message.type,
-      number: this.state.message.number
+    if (this.state.message.type === "song" || this.state.message.type === "psalm") {
+      var msg = {
+        type: this.state.message.type,
+        number: this.state.message.number,
+        verse: this.state.message.verse
+      }
+      this.socket.send(JSON.stringify(msg));
+      this.setState({ message: { type: "", number: "", verse: ""}});
     }
-    this.socket.send(JSON.stringify(msg));
-    this.setState({ message: { type: "", number: ""}});
+    else if (event.type === "verse") {
+      this.socket.send(JSON.stringify(event));
+    }
   }
   
   handleClick(event) {
     event.preventDefault();
+    var message = this.state.message;
     switch (event.target.id) {
+      
       case 'number':
-        if (this.state.message.type !== "") {
+        if (message.type !== "") {
           var newNumber = event.target.value;
-          this.setState(prevState => ({ message: { type: prevState.message.type, number: prevState.message.number.concat([newNumber]) }}));
+          this.setState(prevState => ({
+            message: {
+              type: prevState.message.type,
+              number: prevState.message.number.concat([newNumber]),
+            }
+          }));
         }
         break;
         
       case 'backspace':
-        this.setState(prevState => ({ message: { type: prevState.message.type, number: prevState.message.number.slice(0, -1)}}));
+        this.setState(prevState => ({
+          message: {
+            type: prevState.message.type,
+            number: prevState.message.number.slice(0, -1),
+            verse: prevState.message.verse
+          }
+        }));
         break;
         
       case 'init_song':
-        if (this.state.message.type === "") {
+        if (message.type === "") {
           var newType = event.target.value;
-          this.setState(prevState => ({ message: { type: prevState.message.type.concat([newType]), number: prevState.message.number }}));
+          this.setState(prevState => ({
+            message: {
+              type: prevState.message.type.concat([newType]),
+              number: prevState.message.number,
+              verse: prevState.message.verse
+            }
+          }));
         }
         else if (this.state.message.type === "song") {
           this.sendMessage();
@@ -103,14 +158,41 @@ class DialerPage extends React.Component {
         break;
         
       case 'init_psalm':
-        if (this.state.message.type === "") {
+        if (message.type === "") {
           var newType = event.target.value;
-          this.setState(prevState => ({ message: { type: prevState.message.type.concat([newType]), number: prevState.message.number }}));
+          this.setState(prevState => ({
+            message: {
+              type: prevState.message.type.concat([newType]),
+              number: prevState.message.number,
+              verse: prevState.message.verse
+            }
+          }));
         }
         else if (this.state.message.type === "psalm") {
           this.sendMessage();
         }
         break;
+        
+      case 'verse':
+        var newType = event.target.id;
+        var message = {};
+        if (this.state.data.activeverse == undefined || this.state.data.activeverse.indexOf(parseInt(event.target.value)) === -1) {
+          message = {
+            type: event.target.id,
+            subtype: "add",
+            verse: event.target.value
+          }
+        }
+        else {
+          message = {
+            type: event.target.id,
+            subtype: "del",
+            verse: event.target.value
+          }
+        }
+        this.sendMessage(message);
+        break;
+        
       default:
         console.log("Error.")
         break;
