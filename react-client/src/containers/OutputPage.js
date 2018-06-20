@@ -13,14 +13,14 @@ class OutputPage extends React.Component {
     super();
     this.state ={
       "data": {
-        "type": "t",
-        "song": "s",
+        "type": "",
+        "song": "",
         "verse": [],
-        "psalmtext": "t",
+        "psalmtext": "",
       }
     };
     this.onMessage = this.onMessage.bind(this);
-  } // end of constructor
+  }
   
   componentWillMount() {
     const body = { "sub": "guest", "perm": "guest", "exp": "7d" };
@@ -49,35 +49,45 @@ class OutputPage extends React.Component {
   
   onMessage(event) {
     var data = JSON.parse(event.data);
-    console.log(data);
     if (data.type === "song") {
-      this.setState(prevState => ({ data: { type: data.type, song: data.id, verse: data.verse, psalmtext: ""}}));
+      this.setState(prevState => ({
+        data: {
+          type: data.type,
+          song: data.id,
+          verse: data.activeverse,
+          psalmtext: undefined
+        }
+      }));
     }
     
     if (data.type === "psalm") {
-      this.setState(prevState => ({"data": { type: data.type, song: "", verse: "", "psalmtext": data.text}}));
+      console.log(data.text);
+      this.setState(prevState => ({
+        data: {
+          type: data.type,
+          song: undefined,
+          verse: undefined,
+          psalmtext: data.psalmtext
+        }
+      }));
+    }
+    
+    if (data.type === "verse") {
+      this.setState(prevState => ({
+        data: {
+          type: prevState.data.type,
+          song: prevState.data.song,
+          verse: data.verse,
+          psalmtext: prevState.data.psalmtext
+        }
+      }))
     }
   }
   
-  renderVerse() {
+  renderSong() {
     return(
-      <Grid container justif='center' alignItems='center' direction='column' spacing="8">
-        {Array.from(this.state.data.verse).map((num) => (
-          <Grid item xs={8}>
-            <p>
-            {num}
-            </p>
-          </Grid>
-        ))
-        }
-      </Grid>
-    )
-  }
-  
-  render() {
-    return(
-      <Grid container justify='center' alignItems='center' className='page-parent'>
-        <Grid item className="container-outputleft">
+      <Grid container className='container-main' justify='center' alignItems='center' direction='column'>
+        <Grid item className="wrap-main">
           {this.state.data.song ?
           <p className="textbox-number">
           {this.state.data.song}
@@ -86,9 +96,44 @@ class OutputPage extends React.Component {
           {this.state.data.psalmtext}
           </p>}
         </Grid>
-        <Grid item className="container-outputright">
-          {this.renderVerse()}
+      </Grid>
+    )
+  }
+  
+  renderPsalm() {
+    
+  }
+  
+  renderVerse() {
+    return(
+      <Grid container className='container-verse' justify='flex-start' alignItems='flex-start' direction='column' spacing='8' >
+          {Array.from(this.state.data.verse).map((num) => (
+            <Grid item className="wrap-verse">
+              <p className='textbox-verse'>{num}</p>
+            </Grid>
+          ))}
+      </Grid>
+    )
+  }
+  
+  render() {
+    return(
+      <Grid container className='page-parent' justify='center' alignItems='center'>
+        
+        
+        /*
+        <Grid item className="container-outputleft">
+          {this.renderMain()}
         </Grid>
+        {this.state.data.verse !== undefined ?
+          <Grid item className="container-outputright">
+            {this.renderVerse()}
+          </Grid> :
+          <Grid>
+            
+          </Grid>
+        }
+        */
       </Grid>
     )
   }
