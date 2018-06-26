@@ -23,17 +23,10 @@ function WelcomeButtons(props) {
   
   return (
     <div className="welcome-buttons">
-<<<<<<< HEAD
       <Button variant="raised" color="primary" className={classes.button} onClick={onClick} value="login">
       Login
       </Button>
       <Button variant="raised" color="primary" className={classes.button} onClick={onClick} value="signup">
-=======
-      <Button raised color="primary" className={classes.button} onClick={onClick} value="login">
-      Login
-      </Button>
-      <Button raised color="primary" className={classes.button} onClick={onClick} value="signup">
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
       Signup
       </Button>
     </div>

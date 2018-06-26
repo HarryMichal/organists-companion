@@ -15,11 +15,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     AuthService.getToken() !== null ? (
       <Component {...props} />
     ) : (
-<<<<<<< HEAD
       <Redirect to="/auth/login" />
-=======
-      <Redirect to="/" />
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
     )
   } />
 )
@@ -32,13 +28,8 @@ class App extends React.Component {
         <div className="App">
           <Switch>
             <Route exact path="/" component={HomePage}/>
-<<<<<<< HEAD
             <Route exact path="/auth/:authType" component={AuthPage}/>
             <Route exact path="/output" component={OutputPage}/>
-=======
-            <Route path="/auth/:authType" component={AuthPage}/>
-            <Route path="/output" component={OutputPage}/>
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
             <PrivateRoute exact path="/app" component={DialerPage}/>
           </Switch>
         </div>

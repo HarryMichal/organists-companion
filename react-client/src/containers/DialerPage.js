@@ -1,15 +1,8 @@
 import React from 'react';
-<<<<<<< HEAD
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
 import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
-=======
-import { withStyles } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
-
-import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
 import DialForm from '../components/Forms/DialForm';
 
 const styles = theme => ({
@@ -21,11 +14,7 @@ class DialerPage extends React.Component {
     super(props);
     // set the initial component state
     this.state = {
-<<<<<<< HEAD
       "title": 'Dialer',
-=======
-      title: 'Dialer',
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
       "data": {
         "type": "",
         "song": "",
@@ -34,19 +23,12 @@ class DialerPage extends React.Component {
       },
       "message": {
         "type": "",
-<<<<<<< HEAD
         "number": "",
       }
     };
     this.onMessage = this.onMessage.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onError = this.onError.bind(this);
-=======
-        "number": ""
-      }
-    };
-    this.onMessage = this.onMessage.bind(this);
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
     this.handleClick = this.handleClick.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
   };
@@ -54,13 +36,8 @@ class DialerPage extends React.Component {
   componentWillMount() {
     var query = "token=" +  JSON.parse(sessionStorage.getItem("jwt")).token;
     this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
-<<<<<<< HEAD
     this.socket.onopen = this.onOpen;
     this.socket.onerror = this.onError;
-=======
-    this.socket.addEventListener("message", this.onMessage);
-    query = null;
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
   }
   
   componentWillUnmount() {
@@ -74,10 +51,6 @@ class DialerPage extends React.Component {
   
   onMessage(event) {
     var data = JSON.parse(event.data);
-<<<<<<< HEAD
-=======
-    console.log(data);
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
     if (data.type === "song") {
       this.setState(prevState => ({ data: { type: data.type, song: data.id, verse: data.verse, psalmtext: ""}}));
     };
@@ -87,7 +60,6 @@ class DialerPage extends React.Component {
     };
   }
   
-<<<<<<< HEAD
   onError(event) {
     this.props.history.push("/auth/login");
   }
@@ -97,8 +69,6 @@ class DialerPage extends React.Component {
     console.log(this.socket);
   }
   
-=======
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
   sendMessage(event) {
     var msg = {
       type: this.state.message.type,
@@ -153,22 +123,11 @@ class DialerPage extends React.Component {
     return (
     <div className='page-parent'>
       <header className='navbar'>
-<<<<<<< HEAD
         <AppDrawer title={this.state.data.song ? (this.state.data.song) : (this.state.data.psalmtext)}/>
       </header>
       <Grid container justify='center' alignItems='center' direction='column' spacing='16' className='container-full'>
         <Grid item className='container-dialer'>
           <DialForm message={this.state.message} data={this.state.data} onClick={this.handleClick} onSubmit={this.sendMessage} />
-=======
-        <ResponsiveDrawer title={this.state.title}/>
-      </header>
-      <Grid container justify='center' alignItems='center' direction='column' className='container-full'>
-        <Grid item >
-          <p>{this.state.data.song} {this.state.data.psalmtext}</p>
-        </Grid>
-        <Grid item className='container-dialer'>
-          <DialForm data={this.state.message} onClick={this.handleClick} onSubmit={this.sendMessage} />
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
         </Grid>
       </Grid>
     </div>

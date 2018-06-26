@@ -2,16 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-=======
-import Card, { CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
->>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
 
 const styles = theme => ({
   card: {
