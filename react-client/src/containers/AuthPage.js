@@ -1,16 +1,23 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import fetch from 'node-fetch';
+<<<<<<< HEAD
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
 import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+=======
+import Grid from 'material-ui/Grid';
+
+import ResponsiveBar from '../components/ResponsiveDrawer/ResponsiveDrawer';
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
 import LoginForm from '../components/Forms/LoginForm';
 import SignUpForm from '../components/Forms/SignUpForm';
 import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 
 import AuthService from '../services/AuthService';
 
+<<<<<<< HEAD
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -19,6 +26,8 @@ const styles = theme => ({
   
 })
 
+=======
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
 class AuthPage extends React.Component {
   constructor(props) {
     super();
@@ -55,7 +64,11 @@ class AuthPage extends React.Component {
         requestURL = 'http://localhost:3000/api/login';
         break;
       case 'signup':
+<<<<<<< HEAD
         requestURL = 'http://localhost:3000/api/signup';
+=======
+        requestURL = 'http://localhost:3000/api/register';
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
         break;
       default:
         console.log("Error.")
@@ -130,6 +143,7 @@ class AuthPage extends React.Component {
   };
   
   render() {
+<<<<<<< HEAD
     const { classes } = this.props;
     
     return (
@@ -138,6 +152,14 @@ class AuthPage extends React.Component {
           <AppDrawer title={this.state.title}/>
         </header>
         <Grid container justify='center' alignItems='center' direction='column' spacing='16' className="container-full">
+=======
+    return (
+      <div className='page-parent'>
+        <header className="navbar">
+          <ResponsiveBar title={this.state.title}/>
+        </header>
+        <Grid container justify='center' alignItems='center' direction='column' className="container-full">
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
           <Grid item className="container-center">
             <WelcomeButtons onClick={this.changeForm} />
           </Grid>
@@ -145,9 +167,17 @@ class AuthPage extends React.Component {
               {this.renderForm()}
           </Grid>
         </Grid>
+<<<<<<< HEAD
       </Grid>
+=======
+      </div>
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
     );
   };
 };
 
+<<<<<<< HEAD
 export default withStyles(styles)(withRouter(AuthPage));
+=======
+export default withRouter(AuthPage);
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd

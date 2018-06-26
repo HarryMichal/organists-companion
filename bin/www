@@ -105,6 +105,7 @@ wss.on('connection', function connection(ws, req) {
           console.error("Database error" + err);
         }
         if (song) {
+<<<<<<< HEAD
           let verses = [];
           for (var i = 0; i < song.verse; i++) {
             verses[i] = i + 1;
@@ -115,13 +116,23 @@ wss.on('connection', function connection(ws, req) {
               client.send(JSON.stringify(message));
             }
           });
+=======
+          let message = { id: song.id, verse: song.verse, type: rows.type };
+          ws.send(JSON.stringify(message));
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
         }
       });
     }
   });
+<<<<<<< HEAD
   
   ws.on('message', (data) => {
     var data = JSON.parse(data);
+=======
+  ws.on('message', (data) => {
+    var data = JSON.parse(data);
+    console.log("My " + data.type + " is: " + data.number);
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
     
     switch(data.type) {
       case "song":
@@ -140,6 +151,7 @@ wss.on('connection', function connection(ws, req) {
                 }
                 if (rows) {
                   console.log("Message sent.");
+<<<<<<< HEAD
                   var verses = [];
                   for (var i = 0; i < rows.verse; i++) {
                     verses[i] = i + 1;
@@ -148,6 +160,11 @@ wss.on('connection', function connection(ws, req) {
                   wss.clients.forEach(function each(client) {
                     if (client.readyState === WebSocket.OPEN) {
                       let message = { id: rows.id, verse: verses, type: "song" };
+=======
+                  wss.clients.forEach(function each(client) {
+                    if (client.readyState === WebSocket.OPEN) {
+                      let message = { id: rows.id, verse: rows.verse, type: "song" };
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
                       client.send(JSON.stringify(message));
                     }
                   });

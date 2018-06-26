@@ -13,7 +13,11 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
   };
 });
 
+<<<<<<< HEAD
 function generateToken (username, permission, expiration) {
+=======
+var generateToken = function (username, permission, expiration) {
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
   var claims = {
     'sub': username,
     'perm': permission
@@ -68,11 +72,39 @@ router.get('/logout', function(req, res, next) {
   });
 });
 
+<<<<<<< HEAD
+=======
+router.post('/getticket', (req, res, next) => {
+  var decoded = getTokenData(req.body.token);
+  var ticket = createTicket(decoded);
+  return res.json({ "ticket": ticket});
+})
+
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
 router.post('/guest', function(req, res, next) {
   var guest = req.body;
   var token = generateToken(guest.sub, guest.perm, guest.exp);
   
   return res.json({token: token});
 })
+<<<<<<< HEAD
+=======
+
+router.post('/psalms', function(req, res) {
+  console.log("POST API/psalms/");
+  res.send("root of API calls regarding psalms");
+});
+
+router.post('/psalms/list', function(req, res, next) {
+  var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Connected to the testdb database.');
+  });
+  console.log("API/psalms/list POST - API call showing list of psalms or requested psalms");
+  res.send();
+});
+>>>>>>> d354be3d10c1e69966dbc6c9c99be3e0029d53bd
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
+import Grid from 'material-ui/Grid';
 
-import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import WelcomeButtons from '../components/Buttons/WelcomeButtons';
 
 class HomePage extends React.Component {
@@ -13,6 +13,7 @@ class HomePage extends React.Component {
       form: 'login'
     }
     this.changeForm = this.changeForm.bind(this);
+    console.log(localStorage.getItem('jwt'));
   };
   
   changeForm(event) {
@@ -23,7 +24,7 @@ class HomePage extends React.Component {
     return (
     <div className='page-parent'>
       <header className='navbar'>
-        <AppDrawer title={this.state.title}/>
+        <ResponsiveDrawer title={this.state.title}/>
       </header>
       <Grid container justify='center' alignItems='center' className='container-full'>
         <Grid item className='container-center'>
