@@ -60,7 +60,7 @@ class DialerPage extends React.Component {
           song: data.id,
           verse: data.verse,
           activeverse: data.activeverse,
-          psalmtext: ""
+          psalmtext: undefined
         }
       }));
     }
@@ -69,9 +69,9 @@ class DialerPage extends React.Component {
       this.setState(prevState => ({
         data: {
           type: data.type,
-          song: "",
-          verse: "",
-          activeverse: "",
+          song: undefined,
+          verse: undefined,
+          activeverse: undefined,
           psalmtext: data.psalmtext
         }
       }));

@@ -86,32 +86,43 @@ class OutputPage extends React.Component {
   
   renderSong() {
     return(
-      <Grid container className='container-main' justify='center' alignItems='center' direction='column'>
-        <Grid item className="wrap-main">
-          {this.state.data.song ?
-          <p className="textbox-number">
-          {this.state.data.song}
-          </p> :
-          <p className="textbox-psalm">
-          {this.state.data.psalmtext}
-          </p>}
-        </Grid>
+      <Grid container className='container-main' justify='center' alignItems='center'>
+        {this.state.data.verse.length == 0 ?
+          <Grid container className='container-main' justify='center' alignItems='center'>
+            <Grid item className='wrap-main'>
+              <p className='textbox-number'>
+                {this.state.data.song}
+              </p>
+            </Grid>
+          </Grid>
+          :
+          <Grid container className='container' justify='center' alignItems='center'>
+            <Grid item className='container-outputleft'>
+              <p className="textbox-number">
+                {this.state.data.song}
+              </p>
+            </Grid>
+            <Grid item className='container-outputright'>
+              {Array.from(this.state.data.verse).map((num) => (
+                <Grid item className="wrap-verse">
+                  <p className='textbox-verse'>{num}</p>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        }
       </Grid>
     )
   }
   
   renderPsalm() {
-    
-  }
-  
-  renderVerse() {
     return(
-      <Grid container className='container-verse' justify='flex-start' alignItems='flex-start' direction='column' spacing='8' >
-          {Array.from(this.state.data.verse).map((num) => (
-            <Grid item className="wrap-verse">
-              <p className='textbox-verse'>{num}</p>
-            </Grid>
-          ))}
+      <Grid container className='container-main' justify='center' alignItems='center'>
+        <Grid item className='wrap-main'>
+          <p className='textbox-psalm'>
+            {this.state.data.psalmtext}
+          </p>
+        </Grid>
       </Grid>
     )
   }
@@ -119,21 +130,11 @@ class OutputPage extends React.Component {
   render() {
     return(
       <Grid container className='page-parent' justify='center' alignItems='center'>
-        
-        
-        /*
-        <Grid item className="container-outputleft">
-          {this.renderMain()}
-        </Grid>
-        {this.state.data.verse !== undefined ?
-          <Grid item className="container-outputright">
-            {this.renderVerse()}
-          </Grid> :
-          <Grid>
-            
-          </Grid>
+        {this.state.data.type === "song" ?
+          this.renderSong()
+          :
+          this.renderPsalm()
         }
-        */
       </Grid>
     )
   }
