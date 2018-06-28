@@ -135,39 +135,47 @@ wss.on('connection', function connection(ws, req) {
   
   wss.showUsers();
   
-  database.select("type, number, verse", "meta", "id", "1", function(err, result) {
+  database.select("type, number, verse", "meta", "id", "1", function(err, meta) {
     if (err) {
       console.error(err);
     }
-    if (result) {
-      if (result.type === "song") {
-        database.select("id, verse", "songs", "id", result.number, function(err, song) {
+    if (meta) {
+      if (meta.type === "song") {
+        database.select("id, verse", "songs", "id", meta.number, function(err, song) {
           if (err) {
             console.error(err);
           }
           if (song) {
             let verses = wss.handleVerses(song.verse);
+            
+            if (meta.verse === null) {
+              var activeverse = [];
+            }
+            else {
+              var activeverse = utils.toArray(meta.verse);
+            }
+            
             let message = {
               id: song.id,
               verse: verses,
-              activeverse: utils.toArray(result.verse),
-              type: result.type
+              activeverse: activeverse,
+              type: meta.type
             };
             wss.sendMessage(message, "all");
           }
         });
       }
       
-      if (result.type === "psalm") {
-        database.select("id, text", "psalms", "id", result.number, function(err, psalm) {
+      if (meta.type === "psalm") {
+        database.select("id, text", "psalms", "id", meta.number, function(err, psalm) {
           if (err) {
             console.error(err);
           }
-          if (result) {
+          if (meta) {
             let message = {
+              type: meta.type,
               id: psalm.id,
-              psalmtext: psalm.text,
-              type: result.type
+              psalmtext: psalm.text
             };
             wss.sendMessage(message, "all");
           }
@@ -186,13 +194,12 @@ wss.on('connection', function connection(ws, req) {
             console.error(err);
           }
           if (changes) {
-            console.log(changes);
-            database.select("type, number", "meta", "id", "1", function(err, result) {
+            database.select("type, number", "meta", "id", "1", function(err, meta) {
               if (err) {
                 console.error(err);
               }
-              if (result) {
-                database.select("id, verse", "songs", "id", result.number, function(err, song) {
+              if (meta) {
+                database.select("id, verse", "songs", "id", meta.number, function(err, song) {
                   if (err) {
                     console.error(err);
                   }
@@ -201,8 +208,8 @@ wss.on('connection', function connection(ws, req) {
                     let message = {
                       id: song.id,
                       verse: verses,
-                      activeverse: result.verse,
-                      type: result.type
+                      activeverse: [],
+                      type: meta.type
                     };
                     wss.sendMessage(message, "all");
                   }
@@ -218,19 +225,19 @@ wss.on('connection', function connection(ws, req) {
             console.error(err);
           }
           if (changes) {
-            database.select("type, number", "meta", "id", "1", function(err, result) {
+            database.select("type, number", "meta", "id", "1", function(err, meta) {
               if (err) {
                 console.error(err);
               }
-              if (result) {
-                database.select("id, text", "psalms", "id", result.number, function(err, psalm) {
+              if (meta) {
+                database.select("id, text", "psalms", "id", meta.number, function(err, psalm) {
                   if (err) {
                     console.error(err);
                   }
                   if (psalm) {
-                    console.log(result.type);
+                    console.log(meta.type);
                     let message = {
-                      type: result.type,
+                      type: meta.type,
                       id: psalm.id,
                       psalmtext: psalm.text
                     };
@@ -244,13 +251,19 @@ wss.on('connection', function connection(ws, req) {
         break;
       case "verse":
         if (data.subtype === "add") {
-          database.select("verse", "meta", "id", "1", function(err, result) {
+          database.select("verse", "meta", "id", "1", function(err, meta) {
             if (err) {
               console.error(err);
             }
-            if (result) {
-              var oldverse = utils.toArray(result.verse);
-              var verse = oldverse.concat(parseInt(data.verse)).sort(function(a, b){return a-b});
+            if (meta) {
+              var oldverse = utils.toArray(meta.verse);
+              if (meta.verse == "" || meta.verse == null) {
+                var verse = utils.toArray(data.verse);
+              }
+              else {
+                var verse = oldverse.concat(parseInt(data.verse)).sort(function(a, b){return a-b});
+              }
+              
               database.update("meta", "verse = ?", "id = 1", [`${verse}`], function(err, changes) {
                 if (err) {
                   console.error(err);
@@ -268,14 +281,15 @@ wss.on('connection', function connection(ws, req) {
         }
         
         if (data.subtype === "del") {
-          database.select("verse", "meta", "id", "1", function(err, result) {
+          database.select("verse", "meta", "id", "1", function(err, meta) {
             if (err) {
               console.error(err);
             }
-            if (result) {
-              var oldverse = utils.toArray(result.verse);
+            if (meta) {
+              var oldverse = utils.toArray(meta.verse);
               var todelete = oldverse.indexOf(parseInt(data.verse));
               oldverse.splice(todelete, 1);
+              
               database.update("meta", "verse = ?", "id = 1", [`${oldverse}`], function(err, changes) {
                 if (err) {
                   console.error(err);
@@ -375,27 +389,3 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
-
-/*
-if (data.indexOf("token")) {
-  JSON.parse(data);
-  jwt.verify(data.token, config.token.secret, { algorithms: ['HS256'] }, function(err, decoded) {
-    if (err) {
-      console.log("There was an error. (JWT)");
-      return ws.close();
-    }
-    else {
-      console.log(decoded);
-      db.get("SELECT number, psalmtext FROM meta", function(err, rows) {
-        if (err) {
-          return console.error(err);
-        } else if (rows) {
-          var init_message = JSON.stringify(rows);
-          return ws.send(init_message);
-        }
-      });
-      return console.log("Verification went alright. Initial message was succesfully sent.");
-    };
-  })
-}
-*/
