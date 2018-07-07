@@ -88,6 +88,18 @@ class DialerPage extends React.Component {
         }
       }));
     }
+    
+    if (data.type === "blank") {
+      this.setState(prevState => ({
+        data: {
+          type: null,
+          song: data.id,
+          verse: data.verse,
+          activeverse: data.activeverse,
+          psalmtext: null
+        }
+      }))
+    }
   }
   
   onError(event) {
@@ -133,13 +145,15 @@ class DialerPage extends React.Component {
       
       case 'number':
         if (message.type !== "") {
-          var newNumber = event.target.value;
-          this.setState(prevState => ({
-            message: {
-              type: prevState.message.type,
-              number: prevState.message.number.concat([newNumber]),
-            }
-          }));
+          if (message.number.length < 3) {
+            var newNumber = event.target.value;
+            this.setState(prevState => ({
+              message: {
+                type: prevState.message.type,
+                number: prevState.message.number.concat([newNumber]),
+              }
+            }));
+          }
         }
         break;
         
@@ -151,6 +165,13 @@ class DialerPage extends React.Component {
             verse: prevState.message.verse
           }
         }));
+        break;
+        
+      case 'delete':
+        let blankMessage = {
+          type: "blank"
+        };
+        this.socket.send(JSON.stringify(blankMessage));
         break;
         
       case 'init_song':

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -106,6 +107,7 @@ class DialForm extends React.Component {
   
   renderVerseButtons() {
     const { classes, data, onClick } = this.props;
+    
     return(
       <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
         {Array.from(data.verse).map((num) => (
@@ -161,7 +163,7 @@ class DialForm extends React.Component {
             <div className={classes.root}>
               <Grid container justify="center" alignItems='center' spacing={this.state.spacing} >
                 <Grid item xs={this.state.xs}>
-                  <Button variant="raised" className={classes.button} id="backspace" onClick={onClick}>
+                  <Button variant="raised" className={classes.button} id="delete" onClick={onClick}>
                   NULL
                   </Button>
                 </Grid>
