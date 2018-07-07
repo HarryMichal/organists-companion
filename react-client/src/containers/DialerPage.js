@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 
 import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import DialForm from '../components/Forms/DialForm';
+import ErrorForm from '../components/Forms/ErrorForm';
 
 const styles = theme => ({
   
@@ -26,20 +27,19 @@ class DialerPage extends React.Component {
         "type": "",
         "number": "",
         "verse": [],
-      }
+      },
+      "error": false
     };
     this.onMessage = this.onMessage.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onError = this.onError.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.openConnection = this.openConnection.bind(this);
   };
   
   componentWillMount() {
-    var query = "token=" +  JSON.parse(sessionStorage.getItem("jwt")).token;
-    this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
-    this.socket.onopen = this.onOpen;
-    this.socket.onerror = this.onError;
+    this.openConnection();
   }
   
   componentWillUnmount() {
@@ -88,15 +88,39 @@ class DialerPage extends React.Component {
         }
       }));
     }
+    
+    if (data.type === "blank") {
+      this.setState(prevState => ({
+        data: {
+          type: null,
+          song: data.id,
+          verse: data.verse,
+          activeverse: data.activeverse,
+          psalmtext: null
+        }
+      }))
+    }
   }
   
   onError(event) {
-    this.props.history.push("/auth/login");
+    // this.props.history.push("/auth/login");
+    this.setState(prevState => ({
+      error: true
+    }));
   }
   
   onOpen(event) {
+    this.setState(prevState => ({
+      error: false
+    }))
     this.socket.onmessage = this.onMessage;
-    console.log(this.socket);
+  }
+  
+  openConnection() {
+    var query = "token=" +  JSON.parse(sessionStorage.getItem("jwt")).token;
+    this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
+    this.socket.onopen = this.onOpen;
+    this.socket.onerror = this.onError;
   }
   
   sendMessage(event) {
@@ -121,13 +145,15 @@ class DialerPage extends React.Component {
       
       case 'number':
         if (message.type !== "") {
-          var newNumber = event.target.value;
-          this.setState(prevState => ({
-            message: {
-              type: prevState.message.type,
-              number: prevState.message.number.concat([newNumber]),
-            }
-          }));
+          if (message.number.length < 3) {
+            var newNumber = event.target.value;
+            this.setState(prevState => ({
+              message: {
+                type: prevState.message.type,
+                number: prevState.message.number.concat([newNumber]),
+              }
+            }));
+          }
         }
         break;
         
@@ -139,6 +165,13 @@ class DialerPage extends React.Component {
             verse: prevState.message.verse
           }
         }));
+        break;
+        
+      case 'delete':
+        let blankMessage = {
+          type: "blank"
+        };
+        this.socket.send(JSON.stringify(blankMessage));
         break;
         
       case 'init_song':
@@ -209,7 +242,11 @@ class DialerPage extends React.Component {
       </header>
       <Grid container justify='center' alignItems='center' direction='column' spacing='16' className='container-full'>
         <Grid item className='container-dialer'>
-          <DialForm message={this.state.message} data={this.state.data} onClick={this.handleClick} onSubmit={this.sendMessage} />
+          {(this.state.error ?
+            <ErrorForm onClick={this.openConnection} />
+            :
+            <DialForm message={this.state.message} data={this.state.data} onClick={this.handleClick} onSubmit={this.sendMessage} />
+          )}
         </Grid>
       </Grid>
     </div>
