@@ -14,6 +14,11 @@ var jwt = require('jsonwebtoken');
 var sqlite3 = require('sqlite3');
 var config = require('../config/config');
 var url = require('url');
+<<<<<<< HEAD
+=======
+var database = require('../utils/database.js');
+var utils = require('../utils/utilities.js');
+>>>>>>> codesplitting
 
 /**
  * Get port from environment and store in Express.
@@ -79,6 +84,7 @@ wss.getUniqueID = function() {
     }
     return '#' + s4();
 };
+<<<<<<< HEAD
  
 wss.on('connection', function connection(ws, req) {
   console.log("Connection was established.");
@@ -86,10 +92,43 @@ wss.on('connection', function connection(ws, req) {
   // Assign crucial info to identify client
   const parameters = url.parse(req.url, true);
   var token = jwt.decode(parameters.query.token);
+=======
+
+wss.sendMessage = function(message, target) {
+  switch(target) {
+    case "all":
+      wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(message));
+        }
+      });
+      break;
+    case "organist":
+      wss.clients.forEach(function each(client) {
+        if (client.chatRoom === "general") {
+          client.send(JSON.stringify(message));
+        }
+      });
+      break;
+    case "guest":
+      wss.clients.forEach(function each(client) {
+        if (client.chatRoom === "guest") {
+          client.send(JSON.stringify(message));
+        }
+      });
+      break;
+  }
+}
+
+wss.handleConnection = function(request, ws) {
+  let parameters = url.parse(request.url, true);
+  let token = jwt.decode(parameters.query.token);
+>>>>>>> codesplitting
   
   ws.id = token.sub + wss.getUniqueID();
   ws.chatRoom = token.perm;
   
+<<<<<<< HEAD
   wss.clients.forEach(function each(client) {
     console.log(client.id);
   });
@@ -189,6 +228,209 @@ wss.on('connection', function connection(ws, req) {
     };
   });
   
+=======
+  console.log(`${ws.id} has just connected.`);
+}
+
+wss.showUsers = function() {
+  let clients = [];
+  wss.clients.forEach(function each(client) {
+    clients.push(client.id);
+  });
+  console.log(clients);
+}
+
+wss.handleVerses = function(verse) {
+  let verses = [];
+  for (var i = 0; i < verse; i++) {
+    verses[i] = i + 1;
+  }
+  return verses;
+}
+ 
+wss.on('connection', function connection(ws, req) {
+  wss.handleConnection(req, ws);
+  
+  wss.showUsers();
+  
+  database.select("type, number, verse", "meta", "id", "1", function(err, meta) {
+    if (err) {
+      console.error(err);
+    }
+    if (meta) {
+      if (meta.type === "song") {
+        database.select("id, verse", "songs", "id", meta.number, function(err, song) {
+          if (err) {
+            console.error(err);
+          }
+          if (song) {
+            let verses = wss.handleVerses(song.verse);
+            
+            if (meta.verse === null) {
+              var activeverse = [];
+            }
+            else {
+              var activeverse = utils.toArray(meta.verse);
+            }
+            
+            let message = {
+              id: song.id,
+              verse: verses,
+              activeverse: activeverse,
+              type: meta.type
+            };
+            wss.sendMessage(message, "all");
+          }
+        });
+      }
+      
+      if (meta.type === "psalm") {
+        database.select("id, text", "psalms", "id", meta.number, function(err, psalm) {
+          if (err) {
+            console.error(err);
+          }
+          if (meta) {
+            let message = {
+              type: meta.type,
+              id: psalm.id,
+              psalmtext: psalm.text
+            };
+            wss.sendMessage(message, "all");
+          }
+        });
+      }
+    }
+  });
+  
+  ws.on('message', function(data) {
+    var data = JSON.parse(data);
+    
+    switch(data.type) {
+      case "song":
+        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [`${data.number}`, `${data.type}`, null], function(err, changes) {
+          if (err) {
+            console.error(err);
+          }
+          if (changes) {
+            database.select("type, number", "meta", "id", "1", function(err, meta) {
+              if (err) {
+                console.error(err);
+              }
+              if (meta) {
+                database.select("id, verse", "songs", "id", meta.number, function(err, song) {
+                  if (err) {
+                    console.error(err);
+                  }
+                  if (song) {
+                    let verses = wss.handleVerses(song.verse);
+                    let message = {
+                      id: song.id,
+                      verse: verses,
+                      activeverse: [],
+                      type: meta.type
+                    };
+                    wss.sendMessage(message, "all");
+                  }
+                })
+              }
+            });
+          }
+        });
+        break;
+      case "psalm":
+        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [`${data.number}`, `${data.type}`, null], function(err, changes) {
+          if (err) {
+            console.error(err);
+          }
+          if (changes) {
+            database.select("type, number", "meta", "id", "1", function(err, meta) {
+              if (err) {
+                console.error(err);
+              }
+              if (meta) {
+                database.select("id, text", "psalms", "id", meta.number, function(err, psalm) {
+                  if (err) {
+                    console.error(err);
+                  }
+                  if (psalm) {
+                    console.log(meta.type);
+                    let message = {
+                      type: meta.type,
+                      id: psalm.id,
+                      psalmtext: psalm.text
+                    };
+                    wss.sendMessage(message, "all");
+                  }
+                });
+              }
+            });
+          }
+        });
+        break;
+      case "verse":
+        if (data.subtype === "add") {
+          database.select("verse", "meta", "id", "1", function(err, meta) {
+            if (err) {
+              console.error(err);
+            }
+            if (meta) {
+              var oldverse = utils.toArray(meta.verse);
+              if (meta.verse == "" || meta.verse == null) {
+                var verse = utils.toArray(data.verse);
+              }
+              else {
+                var verse = oldverse.concat(parseInt(data.verse)).sort(function(a, b){return a-b});
+              }
+              
+              database.update("meta", "verse = ?", "id = 1", [`${verse}`], function(err, changes) {
+                if (err) {
+                  console.error(err);
+                }
+                if (changes) {
+                  let message = {
+                    type: data.type,
+                    verse: verse
+                  };
+                  wss.sendMessage(message, "all");
+                }
+              })
+            }
+          })
+        }
+        
+        if (data.subtype === "del") {
+          database.select("verse", "meta", "id", "1", function(err, meta) {
+            if (err) {
+              console.error(err);
+            }
+            if (meta) {
+              var oldverse = utils.toArray(meta.verse);
+              var todelete = oldverse.indexOf(parseInt(data.verse));
+              oldverse.splice(todelete, 1);
+              
+              database.update("meta", "verse = ?", "id = 1", [`${oldverse}`], function(err, changes) {
+                if (err) {
+                  console.error(err);
+                }
+                if (changes) {
+                  let message = {
+                    type: data.type,
+                    verse: oldverse
+                  };
+                  wss.sendMessage(message, "all");
+                }
+              })
+            }
+          })
+        }
+        break;
+      default:
+        console.log("Received unknown message format.");
+        break;
+    }
+  });
+  
+>>>>>>> codesplitting
   ws.onclose = function(e) {
     console.log("Socket has been closed.");
   };
@@ -266,27 +508,3 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
-
-/*
-if (data.indexOf("token")) {
-  JSON.parse(data);
-  jwt.verify(data.token, config.token.secret, { algorithms: ['HS256'] }, function(err, decoded) {
-    if (err) {
-      console.log("There was an error. (JWT)");
-      return ws.close();
-    }
-    else {
-      console.log(decoded);
-      db.get("SELECT number, psalmtext FROM meta", function(err, rows) {
-        if (err) {
-          return console.error(err);
-        } else if (rows) {
-          var init_message = JSON.stringify(rows);
-          return ws.send(init_message);
-        }
-      });
-      return console.log("Verification went alright. Initial message was succesfully sent.");
-    };
-  })
-}
-*/

@@ -8,6 +8,7 @@ html {
   width: 100%;
   margin: 0px;
   box-sizing: border-box;
+  font-family: Roboto;
 }
 
 svg {
@@ -148,6 +149,7 @@ a:hover {
   width: 75%;
   height: 100%;
   margin: auto 0;
+  padding-left: 16px;
   float: left;
   box-sizing: inherit;
 }
@@ -157,8 +159,28 @@ a:hover {
   width: 25%;
   height: 100%;
   margin: auto 0;
-  float: left;
+  padding-left: 16px;
+  float: right;
   box-sizing: inherit;
+}
+
+.container-main {
+  width: 100%;
+  height: 100%;
+  margin: auto 0;
+}
+
+.container-verse {
+  height: 100%;
+}
+
+.wrap-main {
+  width: 100%;
+}
+
+.wrap-verse {
+  height: 12%;
+  width: 50%;
 }
 
 .basic-paragraph {
@@ -218,7 +240,7 @@ a:hover {
   height: -moz-fit-content;
   width: 100%;
   margin: auto auto;
-  font-size: 10em;
+  font-size: 34em;
   box-sizing: inherit;
 }
 
@@ -226,16 +248,15 @@ a:hover {
   height: -moz-fit-content;
   width: 100%;
   margin: auto auto;
-  font-size: 6em;
+  font-size: 8em;
   box-sizing: inherit;
 }
 
 .textbox-verse {
   height: 100%;
-  width: 2px;
-  word-wrap: break-word;
-  margin: auto auto;
-  font-size: 4em;
+  width: 100%;
+  padding: 4px;
+  font-size: 7em;
   box-sizing: inherit;
 }
 
