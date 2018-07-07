@@ -181,6 +181,16 @@ wss.on('connection', function connection(ws, req) {
           }
         });
       }
+      
+      if (meta.type === null) {
+        let message = {
+          type: "blank",
+          id: "",
+          verse: "",
+          activeverse: []
+        };
+        wss.sendMessage(message, "all");
+      }
     }
   });
   
@@ -305,6 +315,22 @@ wss.on('connection', function connection(ws, req) {
             }
           })
         }
+        break;
+      case "blank":
+        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [null, null, null], function(err, changes) {
+          if (err) {
+            console.error(err)
+          }
+          if (changes) {
+            let message = {
+              id: "",
+              verse: "",
+              activeverse: [],
+              type: "blank"
+            };
+            wss.sendMessage(message, "all");
+          }
+        })
         break;
       default:
         console.log("Received unknown message format.");
