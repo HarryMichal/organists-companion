@@ -14,11 +14,8 @@ var jwt = require('jsonwebtoken');
 var sqlite3 = require('sqlite3');
 var config = require('../config/config');
 var url = require('url');
-<<<<<<< HEAD
-=======
 var database = require('../utils/database.js');
 var utils = require('../utils/utilities.js');
->>>>>>> codesplitting
 
 /**
  * Get port from environment and store in Express.
@@ -42,10 +39,6 @@ var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) =>
    console.error(err);
  };
 });
-
-var dbAction = {
-  
-};
 
 var wss = new WebSocket.Server({
   'server': server,
@@ -84,15 +77,6 @@ wss.getUniqueID = function() {
     }
     return '#' + s4();
 };
-<<<<<<< HEAD
- 
-wss.on('connection', function connection(ws, req) {
-  console.log("Connection was established.");
-  
-  // Assign crucial info to identify client
-  const parameters = url.parse(req.url, true);
-  var token = jwt.decode(parameters.query.token);
-=======
 
 wss.sendMessage = function(message, target) {
   switch(target) {
@@ -123,112 +107,10 @@ wss.sendMessage = function(message, target) {
 wss.handleConnection = function(request, ws) {
   let parameters = url.parse(request.url, true);
   let token = jwt.decode(parameters.query.token);
->>>>>>> codesplitting
   
   ws.id = token.sub + wss.getUniqueID();
   ws.chatRoom = token.perm;
   
-<<<<<<< HEAD
-  wss.clients.forEach(function each(client) {
-    console.log(client.id);
-  });
-  
-  // Send actual data to the new user
-  db.get("SELECT type, number FROM meta WHERE id = 1", function(err, rows) {
-    if (err) {
-      console.error("Database error" + err);
-    }
-    if (rows) {
-      db.get("SELECT id, verse FROM songs WHERE id = ?", [rows.number], function(err, song) {
-        if (err) {
-          console.error("Database error" + err);
-        }
-        if (song) {
-          let verses = [];
-          for (var i = 0; i < song.verse; i++) {
-            verses[i] = i + 1;
-          }
-          let message = { id: song.id, verse: verses, type: rows.type };
-          wss.clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify(message));
-            }
-          });
-        }
-      });
-    }
-  });
-  
-  ws.on('message', (data) => {
-    var data = JSON.parse(data);
-    
-    switch(data.type) {
-      case "song":
-        db.run("UPDATE meta SET number = ?, type = ? WHERE id = 1", [data.number, data.type], function(err) {
-          if (err) {
-            console.error("Database error" + err);
-          }
-          db.get("SELECT type, number FROM meta WHERE id = 1", function(err, rows) {
-            if (err) {
-              console.error("Database error" + err);
-            }
-            if (rows) {
-              db.get("SELECT id, verse FROM songs WHERE id = ?", [rows.number], function(err, rows) {
-                if (err) {
-                  console.error("Database error" + err);
-                }
-                if (rows) {
-                  console.log("Message sent.");
-                  var verses = [];
-                  for (var i = 0; i < rows.verse; i++) {
-                    verses[i] = i + 1;
-                  }
-                  console.log(verses);
-                  wss.clients.forEach(function each(client) {
-                    if (client.readyState === WebSocket.OPEN) {
-                      let message = { id: rows.id, verse: verses, type: "song" };
-                      client.send(JSON.stringify(message));
-                    }
-                  });
-                }
-              }); // ends if
-            } // ends db if
-          });
-        });
-        break;
-      case "psalm":
-        console.log("My " + data.type + " is: " + data.number);
-        db.run("UPDATE meta SET number = ?, type = ? WHERE id = 1", [data.number, data.type], function(err) {
-          if (err) {
-            console.error("Database error" + err);
-          }
-          db.get("SELECT type, number FROM meta WHERE id = 1", function(err, rows) {
-            if (err) {
-              console.error("Database error" + err);
-            }
-            if (rows) {
-              db.get("SELECT id, text FROM psalms WHERE id = ?", [rows.number], function(err, rows) {
-                if (err) {
-                  console.error("Database error" + err);
-                }
-                if (rows) {
-                  console.log("Message sent.");
-                  wss.clients.forEach(function each(client) {
-                    if (client.readyState === WebSocket.OPEN) {
-                      let message = { id: rows.id, text: rows.text, type: "psalm"};
-                      client.send(JSON.stringify(message));
-                    }
-                  });
-                }
-              }); // ends if
-            } // ends db if
-          });
-        });
-        break;
-    };
-  });
-  
-=======
   console.log(`${ws.id} has just connected.`);
 }
 
@@ -456,7 +338,6 @@ wss.on('connection', function connection(ws, req) {
     }
   });
   
->>>>>>> codesplitting
   ws.onclose = function(e) {
     console.log("Socket has been closed.");
   };
