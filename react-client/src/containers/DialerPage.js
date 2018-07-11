@@ -28,11 +28,15 @@ class DialerPage extends React.Component {
         "number": "",
         "verse": [],
       },
-      "error": false
+      "status": {
+        "isLoggedIn": false,
+        "isError": false
+      }
     };
     this.onMessage = this.onMessage.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onError = this.onError.bind(this);
+    this.onClose = this.onClose.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.openConnection = this.openConnection.bind(this);
@@ -105,22 +109,46 @@ class DialerPage extends React.Component {
   onError(event) {
     // this.props.history.push("/auth/login");
     this.setState(prevState => ({
-      error: true
+      status: {
+        isLoggedIn: prevState.status.isLoggedIn,
+        isError: true,
+      }
     }));
   }
   
   onOpen(event) {
     this.setState(prevState => ({
-      error: false
+      status: {
+        isLoggedIn : true,
+        isError: false
+      }
     }))
-    this.socket.onmessage = this.onMessage;
+  }
+  
+  onClose(event) {
+    this.setState(prevState => ({
+      status: {
+        isLoggedIn: false,
+        isError: prevState.status.isError
+      }
+    }))
   }
   
   openConnection() {
     var query = "token=" +  JSON.parse(sessionStorage.getItem("jwt")).token;
-    this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
-    this.socket.onopen = this.onOpen;
-    this.socket.onerror = this.onError;
+    
+    try {
+      this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
+    }
+    finally {
+      if (this.socket != undefined) {
+        this.socket.onopen = this.onOpen;
+        this.socket.onerror = this.onError;
+        this.socket.onclose = this.onClose;
+        this.socket.onmessage = this.onMessage;
+      }
+    }
+    
   }
   
   sendMessage(event) {
@@ -235,10 +263,25 @@ class DialerPage extends React.Component {
   render() {
     const { classes } = this.props;
     
+    let drawerOnClick = {
+      login: () => {this.props.history.push("/auth/login")},
+      reconnect: () => {
+        if (this.socket != undefined || this.socket != null) {
+          try {
+            this.socket.close();
+          }
+          finally {
+            this.openConnection()
+          }
+        }
+        else this.openConnection()
+      }
+    };
+    
     return (
     <div className='page-parent'>
       <header className='navbar'>
-        <AppDrawer title={this.state.data.song ? (this.state.data.song) : (this.state.data.psalmtext)}/>
+        <AppDrawer title={this.state.data.song ? (this.state.data.song) : (this.state.data.psalmtext)} status={this.state.status} onClick={drawerOnClick}/>
       </header>
       <Grid container justify='center' alignItems='center' direction='column' spacing='16' className='container-full'>
         <Grid item className='container-dialer'>

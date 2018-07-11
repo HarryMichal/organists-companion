@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   root: {
@@ -39,10 +40,12 @@ const styles = theme => ({
     width: 250,
     height: "100%",
   },
-  navTitle: {
+  titleCenter: {
     'align-self': 'center',
-    'width': '100%',
-    'margin-left': -40,
+  },
+  titleRight: {
+    width: 200,
+    textAlign: 'right'
   }
 });
 
@@ -56,10 +59,40 @@ class AppDrawer extends React.Component {
 
   handleDrawerToggle = () => {
     this.setState({ open: !this.state.open });
+    
+    console.log(this.props);
   };
+  
+  renderRightButton() {
+    const { classes, status, onClick } = this.props;
+    
+    if (status) {
+      if (status.isLoggedIn && !status.isError) {
+        return (
+          <Typography color="inherit" noWrap>
+            Hello, dear user
+          </Typography>
+        )
+      }
+      else if (status.isLoggedIn && status.isError) {
+        return (
+          <Button variant='raised' size='medium' color='primary' onClick={onClick.reconnect} className={classes.button}>
+            Reconnect
+          </Button>
+        )
+      }
+      else if (!status.isLoggedIn) {
+        return (
+          <Button variant='raised' size='medium' color='primary' onClick={onClick.login} className={classes.button}>
+            Login
+          </Button>
+        )
+      }
+    }
+  }
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, status } = this.props;
 
     const drawer = (
       <div>
@@ -100,9 +133,14 @@ class AppDrawer extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography className={classes.navTitle} variant="title" color="inherit" noWrap>
+              <Typography style={status ? {'flex': 1, width: 'auto'} : {width: '100%', paddingRight: 35} } className={classes.titleCenter} variant="title" color="inherit" noWrap>
                 {this.props.title}
               </Typography>
+              {(status &&
+                <div className={classes.titleRight}>
+                  {this.renderRightButton()}
+                </div>
+              )}
             </Toolbar>
           </AppBar>
             <Drawer
@@ -128,6 +166,8 @@ class AppDrawer extends React.Component {
 AppDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  status: PropTypes.object.isRequired,
+  onClick: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(AppDrawer);
