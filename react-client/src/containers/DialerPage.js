@@ -6,6 +6,8 @@ import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import DialForm from '../components/Forms/DialForm';
 import ErrorForm from '../components/Forms/ErrorForm';
 
+import AuthService from '../services/AuthService';
+
 const styles = theme => ({
   
 });
@@ -135,7 +137,7 @@ class DialerPage extends React.Component {
   }
   
   openConnection() {
-    var query = "token=" +  JSON.parse(sessionStorage.getItem("jwt")).token;
+    var query = "token=" +  AuthService.getToken();
     
     try {
       this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);

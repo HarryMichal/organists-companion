@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import decode from 'jwt-decode';
 import { isEmpty } from 'lodash';
 
 const TOKEN_KEY = "jwt";
@@ -86,13 +87,25 @@ const AuthService = {
     return AuthService.get(tokenKey);
   },
   
-  validate() {
-    
+  isLoggedIn() {
+    var token = AuthService.getToken();
+    return token && !AuthService.isTokenExpired();
   },
   
-  validateToken() {
-    
-  }
+  getTokenExpirationDate() {
+    var token = decode(AuthService.getToken());
+    if (!token) {
+      return null
+    }
+    var date = new Date();
+    date.setUTCSeconds(token.exp);
+    return date;
+  },
+  
+  isTokenExpired() {
+    var tokenDate = AuthService.getTokenExpirationDate();
+    return tokenDate < new Date();
+  },
 };
 
 export default AuthService;

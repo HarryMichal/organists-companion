@@ -90,12 +90,12 @@ class AuthPage extends React.Component {
         )
         .then(res => res.json())
         .then(json => {
-          let jwt = json;
-          AuthService.setToken(jwt);
-          this.props.history.push("/app");
-        }).catch((err) => {
-          console.log(err);
-        });
+          if (json.success) {
+            let token = json.token;
+            AuthService.setToken(token);
+            this.props.history.push("/app");
+          }
+        })
         break;
       case 'signup':
         fetch(requestURL, {
@@ -108,6 +108,9 @@ class AuthPage extends React.Component {
         .then(res => res.json())
         .then(json => {
           console.log(json);
+          if (json.success) {
+            this.props.history.push("/auth/login");
+          }
         });
         break;
       default:

@@ -21,6 +21,17 @@ function generateToken (username, permission, expiration) {
   return jwt.sign(claims, config.token.secret, { expiresIn: expiration });
 };
 
+function verifyToken(token, callback) {
+  jwt.veriy(token, config.token.secret, function(err, token) {
+    if (err) {
+      callback(true, null);
+    }
+    if (token) {
+      callback(false, token);
+    }
+  })
+}
+
 var getTokenData = function(token) {
   return jwt.decode(token);
 }
@@ -29,6 +40,9 @@ var getTokenData = function(token) {
 
 router.post('/signup', function(req, res, next) {
   passport.authenticate('signup', (error, user, info) => {
+    if (error) {
+      return res.json({success: false});
+    }
     req.session.save((err) => {
       if (err) {
         return next(err);
@@ -45,15 +59,15 @@ router.post('/login', function(req, res, next) {
       return next(error);
     }
     if (!user) {
-      return res.status(403).json({ error: 'User not found.' });
+      return res.status(403).json({ success: false, error: 'User not found.' });
     }
     req.logIn(user, err => {
       if (err) {
-        return res.status(401).json( { message: err } );
+        return res.status(401).json({ success: false, message: err });
       }
       var token = generateToken(req.body.username, "general", config.token.expiresIn);
       
-      return res.json({ token: token });
+      return res.json({ success: true, token: token });
     });
   })(req, res, next);
 }); // runs the passport authenticate function; config in passport.js

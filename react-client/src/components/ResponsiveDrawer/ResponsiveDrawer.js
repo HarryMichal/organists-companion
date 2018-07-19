@@ -12,7 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
+import AccountCircle from 'material-ui-icons/AccountCircle';
 import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 
 const styles = theme => ({
   root: {
@@ -53,38 +57,73 @@ class AppDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      anchorEl: null,
     };
   };
 
   handleDrawerToggle = () => {
     this.setState({ open: !this.state.open });
-    
-    console.log(this.props);
+  };
+  
+  handleMenu = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+  
+  handleMenuClose = () => {
+   this.setState({ anchorEl: null });
   };
   
   renderRightButton() {
     const { classes, status, onClick } = this.props;
+    const { anchorEl } = this.state;
+    const open = Boolean(anchorEl);
     
     if (status) {
       if (status.isLoggedIn && !status.isError) {
         return (
-          <Typography color="inherit" noWrap>
-            Hello, dear user
-          </Typography>
-        )
-      }
-      else if (status.isLoggedIn && status.isError) {
-        return (
-          <Button variant='raised' size='medium' color='primary' onClick={onClick.reconnect} className={classes.button}>
-            Reconnect
-          </Button>
+          <div>
+            <IconButton
+              aria-owns={open ? 'menu-appbar' : null}
+              aria-haspopup="true"
+              onClick={this.handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={open}
+              onClose={this.handleMenuClose}
+            >
+              <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+              <MenuItem onClick={this.handleClose}>My account</MenuItem>
+              <MenuItem></MenuItem>
+            </Menu>
+          </div>
         )
       }
       else if (!status.isLoggedIn) {
         return (
           <Button variant='raised' size='medium' color='primary' onClick={onClick.login} className={classes.button}>
             Login
+          </Button>
+        )
+      }
+      else if (status.isLoggedIn && status.isError) {
+        return (
+          <Button variant='raised' size='medium' color='primary' onClick={onClick.reconnect} className={classes.button}>
+            Reconnect
           </Button>
         )
       }
