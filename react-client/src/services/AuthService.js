@@ -106,6 +106,28 @@ const AuthService = {
     var tokenDate = AuthService.getTokenExpirationDate();
     return tokenDate < new Date();
   },
+
+  verifyToken(callback(valid, mesaage)) {
+    var token = AuthService.getToken();
+    fetch('http://localhost.3000/api/verify', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          callback(true, null);
+        }
+        else {
+          callback(false, response.message);       
+        }
+
+        if (err) {
+          callback(false, "There was an error");
+        }
+      })
+  }
 };
 
 export default AuthService;
