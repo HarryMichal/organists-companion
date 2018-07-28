@@ -48,16 +48,17 @@ class DialerPage extends React.Component {
     AuthService.verifyToken((valid, message) => {
       if (valid) {
         this.openConnection();
-        this.verificationTimer = setInterval(verifyToken(), 10*(6*(10^3)));
+        this.verificationTimer = setTimeout(this.verifyToken, 60000);
+        AuthService.getUserData();
       }
       else {
-        console.log("Your token is not valid. You need to login again.");
+        console.log(message);
       }
     })
   }
 
   componentWillUnmount() {
-    if (this.socket !== null) {
+    if (this.socket != null || this.socket != undefined) {
       this.socket.close();
       this.socket = null;
     }
@@ -147,7 +148,8 @@ class DialerPage extends React.Component {
   verifyToken() {
     AuthService.verifyToken((valid, message) => {
       if (valid) {
-        console.log("Everything is alright."); 
+        console.log("Everything is alright.");
+        this.verificationTimer = setTimeout(this.verifyToken, 60000);
       }
       else {
         console.log("The token is not valid anymore. Render a button through which you can get a new token.");

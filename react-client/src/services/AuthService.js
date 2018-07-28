@@ -5,14 +5,14 @@ import { isEmpty } from 'lodash';
 const TOKEN_KEY = "jwt";
 
 const AuthService = {
-  login(user) {
+  login(userInfo) {
     return fetch('http://localhost:3000/api/login', {
       method: 'post',
-      body: JSON.stringify(user),
+      body: JSON.stringify(userInfo),
       headers: {
         "Content-Type": "application/json"
-      }})
-      .then(res => res.json())
+      }
+    }).then(res => res.json())
       .then(json => {
         let jwt = json;
         console.log(jwt);
@@ -22,10 +22,10 @@ const AuthService = {
       });
   },
   
-  signup(user) {
+  signup(userInfo) {
     return fetch('http://localhost:3000/api/login', {
       method: 'post',
-      body: JSON.stringiy(user),
+      body: JSON.stringiy(userInfo),
       headers: {
         "Content-Type": "application/json"
       }
@@ -83,17 +83,22 @@ const AuthService = {
     return null;
   },
   
-  getToken(tokenKey = TOKEN_KEY) {
-    return AuthService.get(tokenKey);
+  getToken(decode = false, tokenKey = TOKEN_KEY) {
+    if (decode) {
+      return atob(AuthService.get(tokenKey));
+    }
+    else {
+      return AuthService.get(tokenKey);
+    }
   },
   
   isLoggedIn() {
-    var token = AuthService.getToken();
+    var token = AuthService.getToken(true);
     return token && !AuthService.isTokenExpired();
   },
   
   getTokenExpirationDate() {
-    var token = decode(AuthService.getToken());
+    var token = decode(AuthService.getToken(true));
     if (!token) {
       return null
     }
@@ -106,11 +111,25 @@ const AuthService = {
     var tokenDate = AuthService.getTokenExpirationDate();
     return tokenDate < new Date();
   },
+  
+  getUserData() {
+    var token = decode(AuthService.getToken(true));
+    var userInfo = {
+      surname: token.sub,
+      permission: token.perm,
+      validFrom: token.iat,
+      validTo: token.exp
+    };
+    console.log(userInfo);
+    return userInfo;
+  },
 
-  verifyToken(callback(valid, mesaage)) {
+  verifyToken(callback) {
     var token = AuthService.getToken();
-    fetch('http://localhost.3000/api/verify', {
-      method: 'GET',
+    var body = { token: token };
+    fetch('http://localhost:3000/api/verify', {
+      method: 'post',
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -120,11 +139,7 @@ const AuthService = {
           callback(true, null);
         }
         else {
-          callback(false, response.message);       
-        }
-
-        if (err) {
-          callback(false, "There was an error");
+          callback(false, response.message);
         }
       })
   }

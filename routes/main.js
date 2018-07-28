@@ -3,36 +3,43 @@ var router = express.Router();
 var sqlite3 = require('sqlite3');
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
+var Base62 = require('base62');
+var database = require('../utils/database.js');
 var config = require('../config/config');
 
-// ======================================================
+function encodeToken(token, callback) {
+  var encodedToken = Buffer.from(token).toString("base64");
+  callback(encodedToken)
+}
 
-var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
-  if (err) {
-    console.error(err);
-  };
-});
-
-function generateToken (username, permission, expiration) {
+function generateToken (username, permission, expiration, callback) {
   var claims = {
     'sub': username,
     'perm': permission
   };
-  return jwt.sign(claims, config.token.secret, { expiresIn: expiration });
+  var token = jwt.sign(claims, config.token.secret, { expiresIn: expiration });
+  encodeToken(token, function(encodedToken) {
+    if (encodedToken) {
+      callback(encodedToken);
+    }
+  })
 };
 
 function verifyToken(token, callback) {
-  jwt.veriy(token, config.token.secret, function(err, token) {
+  token = Buffer.from(token, 'base64').toString('ascii');
+  jwt.verify(token, config.token.secret, function(err, token) {
     if (err) {
-      callback(true, null);
+      console.error("There was an error during token verification.");
+      callback(false);
     }
     if (token) {
-      callback(false, token);
+      callback(true);
     }
   })
 }
 
 var getTokenData = function(token) {
+  token = Buffer.from(token).toString("ascii");
   return jwt.decode(token);
 }
 
@@ -65,14 +72,14 @@ router.post('/login', function(req, res, next) {
       if (err) {
         return res.status(401).json({ success: false, message: err });
       }
-      var token = generateToken(req.body.username, "general", config.token.expiresIn);
-      
-      return res.json({ success: true, token: token });
+      generateToken(req.body.username, "general", config.token.expiresIn, function(token) {
+        return res.json({ success: true, token: token });
+      });
     });
   })(req, res, next);
 }); // runs the passport authenticate function; config in passport.js
 
-router.get('/logout', function(req, res, next) {
+router.get('/logout', function(req, res) {
   req.logout();
   req.session.save((err) => {
     if (err) {
@@ -82,11 +89,23 @@ router.get('/logout', function(req, res, next) {
   });
 });
 
-router.post('/guest', function(req, res, next) {
+router.post('/guest', function(req, res) {
   var guest = req.body;
   var token = generateToken(guest.sub, guest.perm, guest.exp);
   
-  return res.json({token: token});
+  return res.json({ token: token });
+})
+
+router.post('/verify', function(req, res) {
+  var token = req.body.token;
+  verifyToken(token, function(valid) {
+    if (valid) {
+      return res.status(200).json({ success: true });
+    }
+    else {
+      return res.status(401).json({ success: false, message: "Received token was not valid." });
+    }
+  })
 })
 
 module.exports = router;

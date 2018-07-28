@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
 var app = require('../app');
 var debug = require('debug')('companion-server:server');
 var http = require('http');
@@ -34,21 +30,15 @@ var server = http.createServer(app);
  * Configure WebSocket server
  */
 
-var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
- if (err) {
-   console.error(err);
- };
-});
-
 var wss = new WebSocket.Server({
   'server': server,
   'path': "/api/ws",
   'clientTracking': true,
   'verifyClient': function(info, done) {
     var query = url.parse(info.req.url, true).query;
-    
     // check the origin of the issued request
     if (info.origin === "http://localhost:3000" && query.token !== null) {
+      query.token = Buffer.from(query.token, 'base64').toString('ascii');
       jwt.verify(query.token, config.token.secret, function(err, token) {
         if (err) {
           console.error(err);
@@ -106,7 +96,7 @@ wss.sendMessage = function(message, target) {
 
 wss.handleConnection = function(request, ws) {
   let parameters = url.parse(request.url, true);
-  let token = jwt.decode(parameters.query.token);
+  let token = jwt.decode(Buffer.from(parameters.query.token, 'base64').toString('ascii'));
   
   ws.id = token.sub + wss.getUniqueID();
   ws.chatRoom = token.perm;
