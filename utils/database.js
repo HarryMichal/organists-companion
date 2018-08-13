@@ -29,3 +29,39 @@ module.exports.update = function(destination, items, search, searched, callback)
     }
   });
 };
+
+module.exports.selectPromise = function(items, source, search, searched) {
+  return new Promise(function(resolve, reject) {
+    database.get(`SELECT ${items} FROM ${source} WHERE ${search} = ?`, [searched], function(err, result) {
+      if (err) {
+        reject(err);
+      }
+      if (source == "users" && !result) {
+        resolve(null);
+      }
+      if (!result) {
+        reject("NO SUCH RECORD IN THE DATABASE");
+      }
+      if (result) {
+        resolve(result);
+      }
+    })
+  });
+};
+
+module.exports.updatePromise = function(destination, items, search, searched) {
+  return new Promise(function(resolve, reject) {
+    database.run(`UPDATE ${destination} SET ${items} WHERE ${search}`, searched, function(err) {
+      if (err) {
+        reject(err);
+      }
+      if (!this.changes) {
+        reject("NO CHANGES IN THE DATABASE");
+      }
+      if (this.changes) {
+        resolve(this.changes);
+      }
+    });
+  })
+}
+

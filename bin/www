@@ -68,7 +68,7 @@ wss.getUniqueID = function() {
     return '#' + s4();
 };
 
-wss.sendMessage = function(message, target) {
+wss.sendMessage = function(message, target = "all", name = null) {
   switch(target) {
     case "all":
       wss.clients.forEach(function each(client) {
@@ -90,6 +90,12 @@ wss.sendMessage = function(message, target) {
           client.send(JSON.stringify(message));
         }
       });
+      break;
+    case "last":
+      
+      break;
+    case "":
+      
       break;
   }
 }
@@ -119,199 +125,181 @@ wss.handleVerses = function(verse) {
   }
   return verses;
 }
+
+wss.sendActualData = async function(receiver = "all") {
+  try {
+    var meta = await database.selectPromise("type, number, verse, activeverse", "meta", "id", "1");
+    var message = {};
+    
+    switch(meta.type) {
+      case "song":
+        var verse = await utils.toArray(meta.verse);
+        
+        var activeverse = meta.activeverse == null ? [] : await utils.toArray(meta.activeverse);
+        
+        verse = await utils.compareArrays(verse, activeverse);
+        
+        message = {
+          id: meta.number,
+          verse: verse,
+          activeverse: activeverse,
+          type: meta.type
+        };
+        break;
+      case "psalm":
+        var psalm = await database.selectPromise("id, text", "psalms", "id", meta.number);
+        
+        message = {
+          type: meta.type,
+          id: psalm.id,
+          psalmtext: psalm.text
+        };
+        break;
+      default:
+        message = {
+          type: "blank",
+          id: "",
+          verse: [],
+          activeverse: []
+        };
+        break;
+    }
+  }
+  catch (e) {
+    console.error(e);
+  }
+  finally {
+    console.log(message);
+    wss.sendMessage(message, receiver);
+  }
+}
  
-wss.on('connection', function connection(ws, req) {
+wss.on('connection', function Connection(ws, req) {
   wss.handleConnection(req, ws);
   
   wss.showUsers();
   
-  database.select("type, number, verse", "meta", "id", "1", function(err, meta) {
-    if (err) {
-      console.error(err);
-    }
-    if (meta) {
-      if (meta.type === "song") {
-        database.select("id, verse", "songs", "id", meta.number, function(err, song) {
-          if (err) {
-            console.error(err);
-          }
+  wss.sendActualData();
+  
+  ws.on('message', async function Message(data) {
+    var data = JSON.parse(data);
+    
+    switch(data.type) {
+      case "song":
+        try {
+          var song = await database.selectPromise("id, verse", "songs", "id", data.number);
+          
+          song.verse = await wss.handleVerses(song.verse);
+          
           if (song) {
-            let verses = wss.handleVerses(song.verse);
-            
-            if (meta.verse === null) {
-              var activeverse = [];
-            }
-            else {
-              var activeverse = utils.toArray(meta.verse);
-            }
-            
+            var updated = await database.updatePromise("meta", "number = ?, type = ?, verse = ?, activeverse = ?", "id = 1", [`${song.id}`, `${data.type}`, `${song.verse}`, ""]);
+          }
+          
+          var meta = await database.selectPromise("number, type, verse", "meta", "id", "1");
+          
+          if (song && updated && meta) {
             let message = {
-              id: song.id,
-              verse: verses,
-              activeverse: activeverse,
+              id: meta.number,
+              verse: utils.verseToArray(meta.verse),
+              activeverse: [],
               type: meta.type
             };
+            console.log(message);
             wss.sendMessage(message, "all");
           }
-        });
-      }
-      
-      if (meta.type === "psalm") {
-        database.select("id, text", "psalms", "id", meta.number, function(err, psalm) {
-          if (err) {
-            console.error(err);
+        }
+        catch (e) {
+          console.error(e);
+        }
+        break;
+      case "psalm":
+        try {
+          var psalm = await database.selectPromise("id, text", "psalms", "id", data.number);
+          
+          if (psalm) {
+            var updated = await database.updatePromise("meta", "number = ?, type = ?, verse = ?, activeverse = ?", "id = 1", [`${psalm.id}`, `${data.type}`, "", ""])
           }
-          if (meta) {
+          
+          var meta = await database.selectPromise("type, number", "meta", "id", "1");
+          
+          if (psalm && updated && meta) {
             let message = {
               type: meta.type,
               id: psalm.id,
               psalmtext: psalm.text
             };
+            console.log(message);
             wss.sendMessage(message, "all");
           }
-        });
-      }
-      
-      if (meta.type === null) {
-        let message = {
-          type: "blank",
-          id: "",
-          verse: "",
-          activeverse: []
-        };
-        wss.sendMessage(message, "all");
-      }
-    }
-  });
-  
-  ws.on('message', function(data) {
-    var data = JSON.parse(data);
-    
-    switch(data.type) {
-      case "song":
-        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [`${data.number}`, `${data.type}`, null], function(err, changes) {
-          if (err) {
-            console.error(err);
-          }
-          if (changes) {
-            database.select("type, number", "meta", "id", "1", function(err, meta) {
-              if (err) {
-                console.error(err);
-              }
-              if (meta) {
-                database.select("id, verse", "songs", "id", meta.number, function(err, song) {
-                  if (err) {
-                    console.error(err);
-                  }
-                  if (song) {
-                    let verses = wss.handleVerses(song.verse);
-                    let message = {
-                      id: song.id,
-                      verse: verses,
-                      activeverse: [],
-                      type: meta.type
-                    };
-                    wss.sendMessage(message, "all");
-                  }
-                })
-              }
-            });
-          }
-        });
-        break;
-      case "psalm":
-        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [`${data.number}`, `${data.type}`, null], function(err, changes) {
-          if (err) {
-            console.error(err);
-          }
-          if (changes) {
-            database.select("type, number", "meta", "id", "1", function(err, meta) {
-              if (err) {
-                console.error(err);
-              }
-              if (meta) {
-                database.select("id, text", "psalms", "id", meta.number, function(err, psalm) {
-                  if (err) {
-                    console.error(err);
-                  }
-                  if (psalm) {
-                    console.log(meta.type);
-                    let message = {
-                      type: meta.type,
-                      id: psalm.id,
-                      psalmtext: psalm.text
-                    };
-                    wss.sendMessage(message, "all");
-                  }
-                });
-              }
-            });
-          }
-        });
+        }
+        catch (e) {
+          console.error(e);
+        }
         break;
       case "verse":
         if (data.subtype === "add") {
-          database.select("verse", "meta", "id", "1", function(err, meta) {
-            if (err) {
-              console.error(err);
+          try {
+            var meta = await database.selectPromise("verse, activeverse", "meta", "id", "1");
+            
+            var oldVerse = await utils.toArray(meta.verse);
+            var oldActiveverse = await utils.toArray(meta.activeverse);
+            
+            var newActiveverse = oldActiveverse == [] ? await utils.toArray(data.verse) : oldActiveverse.concat(parseInt(data.verse)).sort(function(a, b){return a-b})
+            var newVerse = await utils.compareArrays(oldVerse, newActiveverse);
+            
+            var changed = await database.updatePromise("meta", "activeverse = ?", "id = 1", [`${newActiveverse}`]);
+            
+            if (meta && changed) {
+              var message = {
+                type: data.type,
+                verse: newVerse,
+                activeverse: newActiveverse
+              };
+              console.log(message);
+              wss.sendMessage(message, "all");
             }
-            if (meta) {
-              var oldverse = utils.toArray(meta.verse);
-              if (meta.verse == "" || meta.verse == null) {
-                var verse = utils.toArray(data.verse);
-              }
-              else {
-                var verse = oldverse.concat(parseInt(data.verse)).sort(function(a, b){return a-b});
-              }
-              
-              database.update("meta", "verse = ?", "id = 1", [`${verse}`], function(err, changes) {
-                if (err) {
-                  console.error(err);
-                }
-                if (changes) {
-                  let message = {
-                    type: data.type,
-                    verse: verse
-                  };
-                  wss.sendMessage(message, "all");
-                }
-              })
-            }
-          })
+          }
+          catch (e) {
+            console.error(e);
+          }
         }
         
         if (data.subtype === "del") {
-          database.select("verse", "meta", "id", "1", function(err, meta) {
-            if (err) {
-              console.error(err);
+          try {
+            var meta = await database.selectPromise("verse, activeverse", "meta", "id", "1");
+            
+            var oldVerse = await utils.toArray(meta.verse);
+            var oldActiveverse = await utils.toArray(meta.activeverse);
+            
+            var toDelete = await oldActiveverse.indexOf(parseInt(data.verse));
+            
+            oldActiveverse.splice(toDelete, 1);
+            
+            var newActiveverse = oldActiveverse;
+            var newVerse = await utils.compareArrays(oldVerse, oldActiveverse);
+            
+            var updated = await database.updatePromise("meta", "activeverse = ?", "id = 1", [`${newActiveverse}`]);
+            
+            if (meta && updated) {
+              let message = {
+                type: data.type,
+                verse: newVerse,
+                activeverse: newActiveverse
+              };
+              console.log(message);
+              wss.sendMessage(message, "all");
             }
-            if (meta) {
-              var oldverse = utils.toArray(meta.verse);
-              var todelete = oldverse.indexOf(parseInt(data.verse));
-              oldverse.splice(todelete, 1);
-              
-              database.update("meta", "verse = ?", "id = 1", [`${oldverse}`], function(err, changes) {
-                if (err) {
-                  console.error(err);
-                }
-                if (changes) {
-                  let message = {
-                    type: data.type,
-                    verse: oldverse
-                  };
-                  wss.sendMessage(message, "all");
-                }
-              })
-            }
-          })
+          }
+          catch (e) {
+            console.error(e);
+          }
         }
         break;
       case "blank":
-        database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [null, null, null], function(err, changes) {
-          if (err) {
-            console.error(err)
-          }
-          if (changes) {
+        try {
+          var updated = await database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [null, null, null]);
+          
+          if (updated) {
             let message = {
               id: "",
               verse: "",
@@ -320,19 +308,24 @@ wss.on('connection', function connection(ws, req) {
             };
             wss.sendMessage(message, "all");
           }
-        })
+        }
+        catch (e) {
+          console.error(e);
+        }
         break;
+      case "refresh":
+        wss.sendActualData();
       default:
         console.log("Received unknown message format.");
         break;
     }
   });
   
-  ws.onclose = function(e) {
+  ws.onclose = function onClose(e) {
     console.log("Socket has been closed.");
   };
   
-  ws.onerror = function(err) {
+  ws.onerror = function onError(err) {
     console.error("Socket encountered error: ", err.message, " Closing socket.");
     ws.close();
   };
