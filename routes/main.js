@@ -48,7 +48,7 @@ var getTokenData = function(token) {
 router.post('/signup', function(req, res, next) {
   passport.authenticate('signup', (error, user, info) => {
     if (error) {
-      return res.json({success: false});
+      return res.status(400).json({success: false});
     }
     req.session.save((err) => {
       if (err) {
@@ -66,7 +66,7 @@ router.post('/login', function(req, res, next) {
       return next(error);
     }
     if (!user) {
-      return res.status(403).json({ success: false, error: 'User not found.' });
+      return res.status(401).json({ success: false, error: 'User not found.' });
     }
     req.logIn(user, err => {
       if (err) {

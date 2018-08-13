@@ -2,9 +2,16 @@ var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var sqlite3 = require('sqlite3');
 var bcrypt = require('bcrypt');
+var bcryptUtils = require('../utils/bcrypt.js');
 var jwt = require('jsonwebtoken');
+var database = require('../utils/database.js');
 
-// ====================================================================
+function generateHashTag() {
+  function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+  return '#' + s4();
+}
 
 // expose this function to our app using module.exports
 module.exports = function(app) {
@@ -40,20 +47,40 @@ module.exports = function(app) {
 
   passport.use('signup', new LocalStrategy({
     usernameField: 'username', passwordField: 'password', passReqToCallback: true/* allows us to pass back the entire request to the callback */
-  }, function(req, username, password, done) {
-    // check if the username or email are already used
+  }, async function registerUser(req, username, password, done) {
+    try {
+      var nameExists = await database.selectPromise("username", "users", "username", username);
+      
+      if (nameExists) {
+        throw "This username is already used";
+      }
+      
+      var hashTag = generateHashTag();
+      var hashedPassword = await bcryptUtils.hashPromise(password, 11);
+      
+      var inserted = await database.insertPromise("users", "username, hashTag, email, password", [username, hashTag, req.body.email, hashedPassword]);
+      
+      var user = await database.selectPromise("username, hashTag", "users", "id", inserted);
+      
+      return done(null, user);
+    }
+    catch (e) {
+      console.log(e);
+      return done(e, false)
+    }
+    /*
     db.get("SELECT username FROM users WHERE username = ?", [username], function(err, rows) {
       // error during database querry
       if (err) {
         return done(err)// The username is not unique --> throw an error; stop the function);
       }
       if (rows) {
-        console.error('This username  is already used');
+        console.error('This username is already used');
         return done(null, false);
       } else { // The username is unique --> hash provided password and insert into the database
         var salt = bcrypt.genSaltSync(11);
         bcrypt.hash(password, salt, function(err, new_password) { // Hash provided password and insert into database;
-          db.run("INSERT INTO users (username, email, password) values (?,?,?)", [
+          db.run("INSERT INTO users (username, hashtag, email, password) values (?,?,?,?)", [
             username, req.body.email, new_password
           ], function(err) {
             if (err) {
@@ -65,6 +92,7 @@ module.exports = function(app) {
         }); // bcrypt.hash function + cb
       }; // else
     }); //db.get function + cb
+    */
   })); //passport.use function + callback
 
   /*
