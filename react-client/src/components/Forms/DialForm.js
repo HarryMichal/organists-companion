@@ -84,36 +84,17 @@ class DialForm extends React.Component {
       init_song: false,
       init_psalm: false,
     }
-    this.handleModeButtons = this.handleModeButtons.bind(this);
   };
-  
-  handleModeButtons(event) {
-    const { onClick } = this.props;
-    
-    onClick(event);
-    var song = this.state.init_song;
-    var psalm = this.state.init_psalm;
-    switch (event.target.id) {
-      case("init_song"):
-        if (!this.state.init_psalm)
-          this.setState(prevState => ({ "init_song": !this.state.init_song}))
-        break;
-      case("init_psalm"):
-        if (!this.state.init_song)
-          this.setState(prevState => ({ "init_psalm": !this.state.init_psalm}))
-        break;
-    }
-  }
   
   renderVerseButtons() {
     const { classes, data, onClick } = this.props;
     
     return(
       <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
-        {Array.from(data.verse).map((num) => (
+        {Array.from(data.verse).map((data) => (
           <Grid item xs={this.state.v_buttons.xs}>
-            <Button variant="raised" className={classes.v_button} id="verse" value={num} color="primary" onClick={onClick}>
-            {num}
+            <Button variant="raised" className={classes.v_button} id="verse" value={data[0]} color={data[1] ? ("secondary") : ("primary")} onClick={onClick}>
+            {data[0]}
             </Button>
           </Grid>
         )) }
@@ -122,7 +103,7 @@ class DialForm extends React.Component {
   }
   
   renderButtons() {
-    const { classes, onClick } = this.props;
+    const { classes, onClick, message } = this.props;
     
     return (
       <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
@@ -135,7 +116,7 @@ class DialForm extends React.Component {
       ))}
         
         <Grid item xs={this.state.button.xs}>
-          <Button variant="raised" className={classes.button} id="init_song" value="song" color={!this.state.init_song ? ("secondary") : ("default")} onClick={this.handleModeButtons}>
+          <Button variant="raised" className={classes.button} id="init_song" value="song" color={message.type == "song" ? ("default") : ("secondary")} onClick={onClick}>
           *
           </Button>
         </Grid>
@@ -145,7 +126,7 @@ class DialForm extends React.Component {
           </Button>
         </Grid>
         <Grid item xs={this.state.button.xs}>
-          <Button variant="raised" className={classes.button} id="init_psalm" value="psalm" color={!this.state.init_psalm ? ("secondary") : ("default")} onClick={this.handleModeButtons}>
+          <Button variant="raised" className={classes.button} id="init_psalm" value="psalm" color={message.type == "psalm" ? ("default") : ("secondary")} onClick={onClick}>
           #
           </Button>
         </Grid>
@@ -154,7 +135,7 @@ class DialForm extends React.Component {
   }
   
   render() {
-    const { classes, onClick, onSubmit, message } = this.props;
+    const { classes, onClick, onSubmit, message, data } = this.props;
     
     return (
       <Card className={classes.card}>
@@ -181,9 +162,7 @@ class DialForm extends React.Component {
                 {this.renderButtons()}
             </div>
           </form>
-        </CardContent>
-        <CardContent>
-          {this.renderVerseButtons()}
+          {(data.type == "song" ? this.renderVerseButtons() : null)}
         </CardContent>
       </Card>
     )

@@ -75,7 +75,7 @@ class DialerPage extends React.Component {
           song: data.id,
           verse: data.verse,
           activeverse: data.activeverse,
-          psalmtext: undefined
+          psalmtext: null
         }
       }));
     }
@@ -84,9 +84,9 @@ class DialerPage extends React.Component {
       this.setState(prevState => ({
         data: {
           type: data.type,
-          song: undefined,
-          verse: undefined,
-          activeverse: undefined,
+          song: null,
+          verse: null,
+          activeverse: null,
           psalmtext: data.psalmtext
         }
       }));
@@ -97,8 +97,8 @@ class DialerPage extends React.Component {
         data: {
           type: prevState.data.type,
           song: prevState.data.song,
-          verse: prevState.data.verse,
-          activeverse: data.verse,
+          verse: data.verse,
+          activeverse: data.activeverse,
           psalmtext: prevState.data.psalmtext
         }
       }));
@@ -237,8 +237,11 @@ class DialerPage extends React.Component {
             }
           }));
         }
-        else if (this.state.message.type === "song") {
+        else if (message.type === "song" && message.number != "") {
           this.sendMessage();
+        }
+        else {
+          this.setState({ message: { type: "", number: "", verse: ""}});
         }
         break;
         
@@ -253,8 +256,11 @@ class DialerPage extends React.Component {
             }
           }));
         }
-        else if (this.state.message.type === "psalm") {
+        else if (message.type === "psalm" && message.number != "") {
           this.sendMessage();
+        }
+        else {
+          this.setState({ message: { type: "", number: "", verse: ""}});
         }
         break;
         
