@@ -297,7 +297,7 @@ wss.on('connection', function Connection(ws, req) {
         break;
       case "blank":
         try {
-          var updated = await database.update("meta", "number = ?, type = ?, verse = ?", "id = 1", [null, null, null]);
+          var updated = await database.updatePromise("meta", "number = ?, type = ?, verse = ?", "id = 1", [null, null, null]);
           
           if (updated) {
             let message = {
