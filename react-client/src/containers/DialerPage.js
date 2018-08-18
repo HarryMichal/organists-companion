@@ -1,6 +1,10 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Snackbar from '@material-ui/core/Snackbar';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import DialForm from '../components/Forms/DialForm';
@@ -32,13 +36,20 @@ class DialerPage extends React.Component {
       },
       "status": {
         "isLoggedIn": false,
+	      "isConnected": false,
         "isError": false
+      },
+      "snackBar": {
+        "open": false,
+        "text": "",
+        "action": ""
       }
     };
     this.onMessage = this.onMessage.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onError = this.onError.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.handleCloseSnack = this.handleCloseSnack.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.openConnection = this.openConnection.bind(this);
@@ -175,6 +186,11 @@ class DialerPage extends React.Component {
             isConnected: prevState.status.isConnected,
             isError: prevState.status.isError
           },
+          snackBar: {
+            open: true,
+            text: "Your session has run out. Click this button to renew your session.",
+            action: prevState.snackBar.action
+          }
         }))
         this.verificationTimer = null;
       }
@@ -348,6 +364,56 @@ class DialerPage extends React.Component {
         break;
     }
   }
+  
+  handleCloseSnack(event) {
+    event.preventDefault();
+    
+    this.setState((prevState) => ({
+      snackBar: {
+        open: !this.state.snackBar.open,
+        text: prevState.snackBar.text,
+        action: prevState.snackBar.action
+      }
+    }))
+  }
+
+  renderSnack() {
+    const { classes } = this.props;
+
+    return (
+      <div>
+        <Snackbar
+          anchorOrigin={{
+            'vertical': 'top',
+            'horizontal': 'middle'
+          }}
+          open={this.state.snackBar.open}
+          autoHideDuration={15000}
+          onClose={this.handleCloseSnack}
+          ContentProps={{
+            'aria-describedby': 'message-id'
+          }}
+          message={<span id='message-id'>{this.state.snackBar.text}</span>}
+          action={[
+            <Button id='relogin' color='secondary' size='small' onClick={this.menuActions}>
+              Relogin
+            </Button>,
+            <IconButton
+              key='close'
+              aria-label='Close'
+              color='inherit'
+              className={classes.closeSnack}
+              onClick={this.handleCloseSnack}
+            >
+
+              <CloseIcon />
+            </IconButton>
+          ]}
+        />
+      </div>
+    )
+  }
+  
   render() {
     const { classes } = this.props;
     
@@ -371,6 +437,7 @@ class DialerPage extends React.Component {
       <header className='navbar'>
         <AppDrawer title={this.state.data.song ? (this.state.data.song) : (this.state.data.psalmtext)} status={this.state.status} onClick={this.menuActions}/>
       </header>
+      {this.renderSnack()}
       <Grid container justify='center' alignItems='center' direction='column' spacing='16' className='container-full'>
         <Grid item className='container-dialer'>
           {(this.state.error ?

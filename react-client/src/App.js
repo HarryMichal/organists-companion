@@ -11,12 +11,12 @@ import OutputPage from './containers/OutputPage';
 // =====================================================
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={ (props) =>
-    AuthService.getToken() !== false ? (
-      <Component {...props} />
-    ) : (
-      <Redirect to="/auth/login" />
-    )
+  <Route {...rest} render={props =>
+      AuthService.isLoggedIn() ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to='/auth/login' />
+      )
   } />
 )
 
