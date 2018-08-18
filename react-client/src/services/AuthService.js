@@ -93,8 +93,16 @@ const AuthService = {
   },
   
   isLoggedIn() {
-    var token = AuthService.getToken(true);
-    return token && !AuthService.isTokenExpired();
+    return new Promise((resolve) => {
+      AuthService.verifyToken(isLoggedIn => {
+        if (isLoggedIn) {
+          resolve(true);
+        }
+        else {
+          resolve(false);
+        }
+      })
+    })
   },
   
   getTokenExpirationDate() {
@@ -126,6 +134,11 @@ const AuthService = {
 
   verifyToken(callback) {
     var token = AuthService.getToken();
+    
+    if (!token) {
+      callback(false, null);
+    }
+    
     var body = { token: token };
     fetch('http://localhost:3000/api/verify', {
       method: 'post',

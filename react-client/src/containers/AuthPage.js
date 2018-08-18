@@ -38,6 +38,9 @@ class AuthPage extends React.Component {
   };
   
   componentDidMount() {
+    if (this.props.match.params.authType === "undefined") {
+      this.props.history.push("/auth/login");
+    }
     this.renderForm(this.props);
   }
   

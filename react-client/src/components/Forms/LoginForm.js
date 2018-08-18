@@ -6,6 +6,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   card: {
@@ -25,7 +26,6 @@ const styles = theme => ({
   },
   button: {
     marginTop: 30,
-    marginBottom: 20,
   },
 });
 
@@ -37,9 +37,10 @@ class LoginForm extends React.Component {
       <Card className={classes.card}>
         <CardContent>
           <form className={classes.userform} onSubmit={onSubmit}>
+            <Typography variant="title">Login</Typography>
             <TextField required id="username" label="Username" className={classes.textField} value={user.username} onChange={onChange} margin="normal" />
             <TextField required id="password" label="Password" className={classes.textField} value={user.password} onChange={onChange} type="password" autoComplete="current-password" margin="normal" />
-            <Button variant="raised" className={classes.button} type="submit" color="primary">
+            <Button variant="contained" className={classes.button} type="submit" color="primary">
             Login
             </Button>
           </form>

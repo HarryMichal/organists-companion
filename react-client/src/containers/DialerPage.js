@@ -42,17 +42,20 @@ class DialerPage extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.openConnection = this.openConnection.bind(this);
+    this.menuActions = this.menuActions.bind(this);
+    this.verifyToken = this.verifyToken.bind(this);
   };
   
   componentDidMount() {
     AuthService.verifyToken((valid, message) => {
       if (valid) {
         this.openConnection();
-        this.verificationTimer = setTimeout(this.verifyToken, 60000);
+        this.verifyToken();
         AuthService.getUserData();
       }
       else {
         console.log(message);
+	      this.props.history.push('/');
       }
     })
   }
@@ -61,6 +64,10 @@ class DialerPage extends React.Component {
     if (this.socket != null || this.socket != undefined) {
       this.socket.close();
       this.socket = null;
+    }
+    console.log(this.verificationTimer);
+    if (this.verificationTimer != null || this.verificationTimer != undefined) {
+      this.verificationTimer = null;
     }
   }
   
@@ -122,6 +129,7 @@ class DialerPage extends React.Component {
     this.setState(prevState => ({
       status: {
         isLoggedIn: prevState.status.isLoggedIn,
+        isConnected: prevState.status.isConnected,
         isError: true,
       }
     }));
@@ -130,16 +138,19 @@ class DialerPage extends React.Component {
   onOpen(event) {
     this.setState(prevState => ({
       status: {
-        isLoggedIn : true,
+        isLoggedIn: true,
+        isConnected: true,
         isError: false
       }
     }))
   }
   
   onClose(event) {
+    this.verifyToken();
     this.setState(prevState => ({
       status: {
-        isLoggedIn: false,
+        isLoggedIn: prevState.status.isLoggedIn,
+        IsConnected: false,
         isError: prevState.status.isError
       }
     }))
@@ -148,11 +159,23 @@ class DialerPage extends React.Component {
   verifyToken() {
     AuthService.verifyToken((valid, message) => {
       if (valid) {
-        console.log("Everything is alright.");
-        this.verificationTimer = setTimeout(this.verifyToken, 60000);
+        this.setState(prevState => ({
+          status: {
+            isLoggedIn: true,
+            isConnected: prevState.status.isConnected,
+            isError: prevState.status.isError
+          }
+        }));
+        this.verificationTimer = setTimeout(this.verifyToken, 30000);
       }
       else {
-        console.log("The token is not valid anymore. Render a button through which you can get a new token.");
+        this.setState(prevState => ({
+          status: {
+            isLoggedIn: false,
+            isConnected: prevState.status.isConnected,
+            isError: prevState.status.isError
+          },
+        }))
         this.verificationTimer = null;
       }
     })
@@ -194,7 +217,6 @@ class DialerPage extends React.Component {
     event.preventDefault();
     var message = this.state.message;
     switch (event.target.id) {
-      
       case 'number':
         if (message.type !== "") {
           if (message.number.length < 3) {
@@ -290,11 +312,47 @@ class DialerPage extends React.Component {
     }
   }
   
+  menuActions(event) {
+    event.preventDefault();
+
+    switch (event.target.id) {
+      case "reconnect":
+      try {
+        this.socket.close();
+        this.socket = null;
+      }
+      finally {
+        this.openConnection();
+      }
+        break;
+      case "relogin":
+        var token = AuthService.getToken();
+        var body = { token: token };
+        
+        fetch('http://90.178.223.199:50505/api/relogin', {
+          method: 'post',
+          body: JSON.stringify(body),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(res => res.json())
+          .then(response => {
+            if (response.success) {
+              AuthService.setToken(response.token);
+              this.props.history.push('/app');
+            }
+            else {
+              this.props.history.push('/');
+            }
+          })
+        break;
+    }
+  }
   render() {
     const { classes } = this.props;
     
     let drawerOnClick = {
-      login: () => {this.props.history.push("/auth/login")},
+      login: () => {this.props.history.push("/")},
       reconnect: () => {
         if (this.socket != undefined || this.socket != null) {
           try {
@@ -311,7 +369,7 @@ class DialerPage extends React.Component {
     return (
     <div className='page-parent'>
       <header className='navbar'>
-        <AppDrawer title={this.state.data.song ? (this.state.data.song) : (this.state.data.psalmtext)} status={this.state.status} onClick={drawerOnClick}/>
+        <AppDrawer title={this.state.data.song ? (this.state.data.song) : (this.state.data.psalmtext)} status={this.state.status} onClick={this.menuActions}/>
       </header>
       <Grid container justify='center' alignItems='center' direction='column' spacing='16' className='container-full'>
         <Grid item className='container-dialer'>

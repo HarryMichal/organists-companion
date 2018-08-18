@@ -6,6 +6,12 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import BookIcon from '@material-ui/icons/Book';
+import IconButton from '@material-ui/core/IconButton';
+import NotesIcon from '@material-ui/icons/Notes';
+import DeleteIcon from '@material-ui/icons/Delete';
+import BackspaceIcon from '@material-ui/icons/Backspace';
 
 const styles = theme => ({
   card: {
@@ -40,7 +46,7 @@ const styles = theme => ({
     minWidth: 20,
     width: "100%",
     height: "100%",
-    fontSize: "34px",
+    fontSize: "32px",
     [theme.breakpoints.down('xs')]: {
       fontSize: "26px",
     },
@@ -48,10 +54,10 @@ const styles = theme => ({
       fontSize: "32px"
     },
     [theme.breakpoints.between('md', 'lg')]: {
-      fontSize: "38px"
+      fontSize: "36px"
     },
     [theme.breakpoints.up('xl')]: {
-      fontSize: "44px"
+      fontSize: "42px"
     }
   },
   v_button: {
@@ -65,6 +71,9 @@ const styles = theme => ({
   },
   root: {
     flexGrow: 1,
+  },
+  icon: {
+    fontSize: 80
   }
 });
   
@@ -117,7 +126,7 @@ class DialForm extends React.Component {
         
         <Grid item xs={this.state.button.xs}>
           <Button variant="raised" className={classes.button} id="init_song" value="song" color={message.type == "song" ? ("default") : ("secondary")} onClick={onClick}>
-          *
+            <BookIcon />
           </Button>
         </Grid>
         <Grid item xs={this.state.button.xs}>
@@ -127,7 +136,7 @@ class DialForm extends React.Component {
         </Grid>
         <Grid item xs={this.state.button.xs}>
           <Button variant="raised" className={classes.button} id="init_psalm" value="psalm" color={message.type == "psalm" ? ("default") : ("secondary")} onClick={onClick}>
-          #
+            <NotesIcon />
           </Button>
         </Grid>
       </Grid>
@@ -144,18 +153,18 @@ class DialForm extends React.Component {
             <div className={classes.root}>
               <Grid container justify="center" alignItems='center' spacing={this.state.spacing} >
                 <Grid item xs={this.state.xs}>
-                  <Button variant="raised" className={classes.button} id="delete" onClick={onClick}>
-                  NULL
+                  <Button variant="raised" color="secondary" className={classes.button} id="delete" onClick={onClick}>
+                    <DeleteIcon />
                   </Button>
                 </Grid>
                 <Grid item xs={this.state.xs}>
-                  <p id="number" className={classes.textField}>
-                  {message.number}
-                  </p>
+                  <Typography variant="display2">
+                    {message.number}
+                  </Typography>
                 </Grid>
                 <Grid item xs={this.state.xs}>
                   <Button variant="raised" className={classes.button} id="backspace" onClick={onClick}>
-                  DEL
+                    <BackspaceIcon />
                   </Button>
                 </Grid>
               </Grid>

@@ -11,8 +11,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
-import MenuIcon from 'material-ui-icons/Menu';
-import AccountCircle from 'material-ui-icons/AccountCircle';
+import MenuIcon from '@material-ui/icons/Menu';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -36,9 +36,7 @@ const styles = theme => ({
     position: 'fixed',
   },
   navIconHide: {
-    marginLeft: -10,
-    marginBottom: 5,
-  },
+    },
   drawerHeader: theme.mixins.toolbar,
   drawerPaper: {
     width: 250,
@@ -48,7 +46,6 @@ const styles = theme => ({
     'align-self': 'center',
   },
   titleRight: {
-    width: 200,
     textAlign: 'right'
   }
 });
@@ -80,7 +77,7 @@ class AppDrawer extends React.Component {
     const open = Boolean(anchorEl);
     
     if (status) {
-      if (status.isLoggedIn && !status.isError) {
+      if (status.isLoggedIn && status.isConnected && !status.isError) {
         return (
           <div>
             <IconButton
@@ -89,7 +86,7 @@ class AppDrawer extends React.Component {
               onClick={this.handleMenu}
               color="inherit"
             >
-              <AccountCircle />
+              <MoreVertIcon />
             </IconButton>
             
             <Menu
@@ -106,23 +103,22 @@ class AppDrawer extends React.Component {
               open={open}
               onClose={this.handleMenuClose}
             >
-              <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-              <MenuItem onClick={this.handleClose}>My account</MenuItem>
-              <MenuItem></MenuItem>
+              <MenuItem id="reconnect" onClick={onClick}>Reconnect</MenuItem>
+              <MenuItem id="relogin" onClick={onClick}>Relogin</MenuItem>
             </Menu>
           </div>
         )
       }
       else if (!status.isLoggedIn) {
         return (
-          <Button variant='raised' size='medium' color='primary' onClick={onClick.login} className={classes.button}>
+          <Button variant='raised' size='medium' color='primary' id='relogin' onClick={onClick} className={classes.button}>
             Login
           </Button>
         )
       }
-      else if (status.isLoggedIn && status.isError) {
+      else if (!status.isConnected) {
         return (
-          <Button variant='raised' size='medium' color='primary' onClick={onClick.reconnect} className={classes.button}>
+          <Button variant='raised' size='medium' color='primary' id='reconnect' onClick={onClick} className={classes.button}>
             Reconnect
           </Button>
         )
@@ -142,11 +138,6 @@ class AppDrawer extends React.Component {
             <Link to={"/"}>
               <ListItem button>
                 <ListItemText primary="Home" />
-              </ListItem>
-            </Link>
-            <Link to={"/auth/login"}>
-              <ListItem button>
-                <ListItemText primary="Login" />
               </ListItem>
             </Link>
             <Link to={"/app"}>
