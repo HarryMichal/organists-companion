@@ -1,4 +1,5 @@
 import React from 'react';
+import 'whatwg-fetch';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -345,7 +346,7 @@ class DialerPage extends React.Component {
         var token = AuthService.getToken();
         var body = { token: token };
         
-        fetch('http://90.178.223.199:50505/api/relogin', {
+        fetch('/api/relogin', {
           method: 'post',
           body: JSON.stringify(body),
           headers: {

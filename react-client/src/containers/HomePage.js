@@ -1,4 +1,6 @@
 import React from 'react';
+import 'whatwg-fetch';
+
 import Grid from '@material-ui/core/Grid';
 
 import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
@@ -25,7 +27,7 @@ class HomePage extends React.Component {
   };
   
   getRequestURL() {
-    let requestURL = 'http://90.178.223.199:50505/api/login';
+    let requestURL = '/api/login';
     return requestURL;
   };
   

@@ -1,5 +1,5 @@
 import React from 'react';
-import fetch from 'node-fetch';
+import 'whatwg-fetch';
 
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -25,6 +25,7 @@ class OutputPage extends React.Component {
   componentWillMount() {
     const body = { "sub": "guest", "perm": "guest", "exp": "7d" };
     fetch("http://localhost:3000/api/guest", {
+    fetch("/api/guest", {
       method: 'post',
       body: JSON.stringify(body),
       headers: {

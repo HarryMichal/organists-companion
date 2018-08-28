@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import 'whatwg-fetch';
 import decode from 'jwt-decode';
 import { isEmpty } from 'lodash';
 
@@ -6,7 +6,7 @@ const TOKEN_KEY = "jwt";
 
 const AuthService = {
   login(userInfo) {
-    return fetch('http://localhost:3000/api/login', {
+    return fetch('/api/login', {
       method: 'post',
       body: JSON.stringify(userInfo),
       headers: {
@@ -23,7 +23,7 @@ const AuthService = {
   },
   
   signup(userInfo) {
-    return fetch('http://localhost:3000/api/login', {
+    return fetch('/api/signup', {
       method: 'post',
       body: JSON.stringiy(userInfo),
       headers: {
@@ -132,15 +132,15 @@ const AuthService = {
     return userInfo;
   },
 
-  verifyToken(callback) {
-    var token = AuthService.getToken();
+  verifyToken(tokenKey = TOKEN_KEY, callback) {
+    var token = AuthService.getToken(false, tokenKey);
     
     if (!token) {
       callback(false, null);
     }
     
     var body = { token: token };
-    fetch('http://localhost:3000/api/verify', {
+    fetch('/api/verify', {
       method: 'post',
       body: JSON.stringify(body),
       headers: {
