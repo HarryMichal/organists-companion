@@ -7,43 +7,49 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
-import MenuIcon from '@material-ui/icons/Menu';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import MenuIcon from '@material-ui/icons/Menu';
+import HomeIcon from '@material-ui/icons/Home';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DialpadIcon from '@material-ui/icons/Dialpad';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const styles = theme => ({
   root: {
+    flexGrow: 1,
     width: '100%',
     height: 65,
     marginTop: 0,
-    zIndex: 2,
+    zIndex: 1,
     overflow: 'hidden',
-  },
-  appFrame: {
-    position: 'absolute',
     display: 'flex',
-    width: '100%',
-    height: '100%',
   },
   appBar: {
     position: 'fixed',
   },
-  navIconHide: {
-    },
-  drawerHeader: theme.mixins.toolbar,
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 8px',
+    ...theme.mixins.toolbar
+  },
   drawerPaper: {
     width: 250,
     height: "100%",
   },
+  headerTitle: {
+    'text-align': 'center'
+  },
   titleCenter: {
-    'align-self': 'center',
+    'text-align': 'center',
   },
   titleRight: {
     textAlign: 'right'
@@ -131,20 +137,34 @@ class AppDrawer extends React.PureComponent {
 
     const drawer = (
       <div>
-        <div className={classes.drawerHeader} />
+        <div className={classes.drawerHeader}>
+          <Typography variant='title' style={{'flex': 1, width: 'auto'}} className={classes.headerTitle}>Organist's Companion</Typography>
+        </div>
         <Divider />
         <List component="nav">
           <div>
-            <Link to={"/"}>
-              <ListItem button>
-                <ListItemText primary="Home" />
-              </ListItem>
-            </Link>
-            <Link to={"/app"}>
-              <ListItem button>
-                <ListItemText primary="Dialer"/>
-              </ListItem>
-            </Link>
+            <ListItem button component="a" href="/">
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+            
+            <ListItem button component="a" href="/output">
+              <ListItemIcon>
+                <VisibilityIcon />
+              </ListItemIcon>
+              <ListItemText primary="Output"/>
+            </ListItem>
+            
+            <Divider />
+            
+            <ListItem button component="a" href="/app">
+              <ListItemIcon>
+                <DialpadIcon />
+              </ListItemIcon>
+              <ListItemText primary="Dialer"/>
+            </ListItem>
           </div>
         </List>
       </div>
@@ -152,42 +172,48 @@ class AppDrawer extends React.PureComponent {
 
     return (
       <div className={classes.root}>
-        <div className={classes.appFrame}>
-          <AppBar className={classes.appBar}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerToggle}
-                className={classes.navIconHide}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography style={status ? {'flex': 1, width: 'auto'} : {width: '100%', paddingRight: 35} } className={classes.titleCenter} variant="title" color="inherit" noWrap>
-                {this.props.title}
-              </Typography>
-              {(status &&
-                <div className={classes.titleRight}>
-                  {this.renderRightButton()}
-                </div>
-              )}
-            </Toolbar>
-          </AppBar>
-            <Drawer
-              type="temporary"
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={this.state.open}
-              onClose={this.handleDrawerToggle}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
-              >
-              {drawer}
-            </Drawer>
-        </div>
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={this.handleDrawerToggle}
+              className={classes.navIconHide}
+            >
+              <MenuIcon />
+            </IconButton>
+            
+            <Typography
+              style={status ? {'flex': 1, width: 'auto'} : {width: '100%', paddingRight: 35} }
+              className={classes.titleCenter}
+              variant={status ? "Subheading" : "Title"}
+              color="inherit"
+              noWrap
+            >
+              {this.props.title}
+            </Typography>
+            
+            {(status &&
+              <div className={classes.titleRight}>
+                {this.renderRightButton()}
+              </div>
+            )}
+          </Toolbar>
+        </AppBar>
+          <Drawer
+            variant="temporary"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open={this.state.open}
+            onClose={this.handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            >
+            {drawer}
+          </Drawer>
       </div>
     );
   }
