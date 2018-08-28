@@ -50,7 +50,7 @@ const styles = theme => ({
   }
 });
 
-class AppDrawer extends React.Component {
+class AppDrawer extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

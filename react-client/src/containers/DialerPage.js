@@ -17,7 +17,7 @@ const styles = theme => ({
   
 });
 
-class DialerPage extends React.Component {
+class DialerPage extends React.PureComponent {
   constructor(props) {
     super(props);
     // set the initial component state

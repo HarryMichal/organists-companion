@@ -8,7 +8,7 @@ const styles = theme => ({
   
 });
 
-class OutputPage extends React.Component {
+class OutputPage extends React.PureComponent {
   constructor() {
     super();
     this.state ={

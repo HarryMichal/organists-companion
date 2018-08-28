@@ -77,7 +77,7 @@ const styles = theme => ({
   }
 });
   
-class DialForm extends React.Component {
+class DialForm extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
