@@ -74,6 +74,12 @@ const styles = theme => ({
   },
   icon: {
     fontSize: 80
+  },
+  display1: {
+    color: "grey"
+  },
+  display2: {
+    color: "black"
   }
 });
   
@@ -158,9 +164,14 @@ class DialForm extends React.PureComponent {
                   </Button>
                 </Grid>
                 <Grid item xs={this.state.xs}>
-                  <Typography variant="display2">
+                  {(((data.type == "psalm" || data.type == "song") && message.number == "") ?
+                    <Typography classes={{ display1: classes.display1 }} variant="display1">
+                    {data.number}
+                    </Typography> :
+                    <Typography classes={{ display2: classes.display2 }} variant="display2">
                     {message.number}
-                  </Typography>
+                    </Typography>
+                  )}
                 </Grid>
                 <Grid item xs={this.state.xs}>
                   <Button variant="raised" className={classes.button} id="backspace" onClick={onClick}>
