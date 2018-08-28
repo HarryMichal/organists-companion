@@ -11,7 +11,8 @@ var json = require('json');
 const sqlite3 = require('sqlite3').verbose();
 
 var config = require('./config/config');
-var routes = require('./routes/main');
+var mainRoutes = require('./routes/main');
+var apiRoutes = require('./routes/api');
 
 var app = express();
 
@@ -25,7 +26,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '/react-client/build')));
+}
 
 // Passport setup
 require('./config/passport')(app);
@@ -33,8 +36,11 @@ app.use(session({secret: config.session.secret, resave: config.session.resave, s
 app.use(passport.initialize());
 app.use(passport.session());
 
+// React production routine
+app.use('/*', mainRoutes);
+
 // API routes
-app.use('/api', routes);
+app.use('/api', apiRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
