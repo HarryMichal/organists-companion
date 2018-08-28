@@ -32,9 +32,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Passport setup
 require('./config/passport')(app);
-app.use(session({secret: config.session.secret, resave: config.session.resave, saveUninitialized: config.session.saveUninit})); // session secret
 app.use(passport.initialize());
-app.use(passport.session());
 
 // React production routine
 app.use('/*', mainRoutes);
