@@ -93,14 +93,7 @@ a:hover {
 .container-full {
   height: 100%;
   min-height: 100%;
-  width: 100%;
   padding-top: 65px;
-  box-sizing: border-box;
-  justify-content: stretch;
-  -moz-box-sizing: border-box;
-  -moz-box-align: start;
-  -moz-box-direction: normal;
-  -moz-box-orient: vertical;
 }
 
 .container {
@@ -135,7 +128,7 @@ a:hover {
 .container-dialer {
   width: -moz-fit-content;
   height: -moz-fit-content;
-  margin: 70px auto;
+  margin: auto auto;
   box-sizing: inherit;
 }
 
@@ -249,14 +242,14 @@ a:hover {
   width: 100%;
   margin: auto auto;
   font-size: 8em;
+  color: black;
   box-sizing: inherit;
 }
 
 .textbox-verse {
-  height: 100%;
-  width: 100%;
+  height: auto;
+  width: auto;
   padding: 4px;
-  font-size: 7em;
   box-sizing: inherit;
 }
 
