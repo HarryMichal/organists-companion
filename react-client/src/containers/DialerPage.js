@@ -58,11 +58,12 @@ class DialerPage extends React.PureComponent {
     this.verifyToken = this.verifyToken.bind(this);
   };
   
+  
   componentDidMount() {
-    AuthService.verifyToken((valid, message) => {
+    AuthService.verifyToken("jwt",(valid, message) => {
       if (valid) {
         this.openConnection();
-        this.verifyToken();
+        this.verifyToken;
         AuthService.getUserData();
       }
       else {
@@ -169,7 +170,7 @@ class DialerPage extends React.PureComponent {
   }
 
   verifyToken() {
-    AuthService.verifyToken((valid, message) => {
+    AuthService.verifyToken('jwt',(valid, message) => {
       if (valid) {
         this.setState(prevState => ({
           status: {
@@ -193,16 +194,32 @@ class DialerPage extends React.PureComponent {
             action: prevState.snackBar.action
           }
         }))
-        this.verificationTimer = null;
+        clearInterval(this.verificationTimer);
       }
     })
   }
   
   openConnection() {
-    var query = "token=" +  AuthService.getToken();
+    let target = "ws://";
+    
+    // Add a case for own development case expression
+    switch (window.location.origin) {
+      case 'http://localhost:3000':
+        target += "localhost:3001/api/ws";
+        break;
+      case 'http://192.168.0.109:3000':
+        target += "192.168.0.109:3001/api/ws";
+        break;
+      default:
+        let origin = window.location.origin.slice(7);
+        target += origin + "/api/ws"
+        break;
+    }
+    
+    target += "?token=" +  AuthService.getToken();
     
     try {
-      this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
+      this.socket = new WebSocket(target);
     }
     finally {
       if (this.socket != undefined) {
@@ -442,11 +459,7 @@ class DialerPage extends React.PureComponent {
       {this.renderSnack()}
       <Grid container justify='center' alignItems='center' direction='column' spacing='16' className='container-full'>
         <Grid item className='container-dialer'>
-          {(this.state.error ?
-            <ErrorForm onClick={this.openConnection} />
-            :
             <DialForm message={this.state.message} data={this.state.data} onClick={this.handleClick} onSubmit={this.sendMessage} />
-          )}
         </Grid>
       </Grid>
     </div>
