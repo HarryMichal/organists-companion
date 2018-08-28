@@ -12,12 +12,12 @@ const styles = theme => ({
     borderLeft: '1px solid black',
     height: '100%'
   },
-  display4: {
+  display4Song: {
     [theme.breakpoints.up('xs')]: {
-      fontSize: '10rem'
+      fontSize: '12rem'
     },
     [theme.breakpoints.up('sm')]: {
-      fontSize: '16rem'
+      fontSize: '15rem'
     },
     [theme.breakpoints.up('md')]: {
       fontSize: '22rem'
@@ -26,12 +26,29 @@ const styles = theme => ({
       fontSize: '28rem'
     },
     [theme.breakpoints.up('xl')]: {
-      fontSize: '34rem'
+      fontSize: '40rem'
     },
   },
-  display3: {
+  display4Psalm: {
     [theme.breakpoints.up('xs')]: {
-      fontSize: '1.5rem'
+      fontSize: '2.6rem'
+    },
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '3.5rem'
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '5.5rem'
+    },
+    [theme.breakpoints.up('lg')]: {
+      fontSize: '7.7rem'
+    },
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '12rem'
+    },
+  },
+  display3Verse: {
+    [theme.breakpoints.up('xs')]: {
+      fontSize: '1.8rem'
     },
     [theme.breakpoints.up('sm')]: {
       fontSize: '2.5rem'
@@ -43,7 +60,7 @@ const styles = theme => ({
       fontSize: '5rem'
     },
     [theme.breakpoints.up('xl')]: {
-      fontSize: '6rem'
+      fontSize: '7.5rem'
     },
   }
 });
@@ -95,10 +112,26 @@ class OutputPage extends React.PureComponent {
       if (json.success == true) {
         AuthService.setToken(json.token, false, "guest-jwt")
         
-        let query = "token=" + json.token;
+        let target = "ws://";
+        
+        // Add a case for own development case expression
+        switch (window.location.origin) {
+          case 'http://localhost:3000':
+            target += "localhost:3001/api/ws";
+            break;
+          case 'http://192.168.0.109:3000':
+            target += "192.168.0.109:3001/api/ws";
+            break;
+          default:
+            let origin = window.location.origin.slice(7);
+            target += origin + "/api/ws"
+            break;
+        }
+        
+        target += "?token=" + json.token;
         
         try {
-          this.socket = new WebSocket("ws://localhost:3001/api/ws?" + query);
+          this.socket = new WebSocket(target);
         }
         finally {
           if (this.socket != undefined) {
@@ -172,7 +205,7 @@ class OutputPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: data.type,
-          number: null,
+          number: data.number,
           verse: null,
           psalmtext: data.psalmtext
         }
@@ -211,7 +244,7 @@ class OutputPage extends React.PureComponent {
           
           <Grid container className='container-main' justify='center' alignItems='center'>
             <Grid item xs={12}>
-              <Typography classes={{display4: classes.display4}} variant='display4' color='inherit'>
+              <Typography classes={{display4: classes.display4Song}} variant='display4' color='inherit'>
                 {this.state.data.number}
               </Typography>
             </Grid>
@@ -220,15 +253,15 @@ class OutputPage extends React.PureComponent {
           :
           
           <Grid container className='container-main' justify='center' alignItems='center'>
-            <Grid item xs={10}>
-              <Typography classes={{display4: classes.display4}} variant='display4' color='inherit'>
+            <Grid item xs={9}>
+              <Typography classes={{display4: classes.display4Song}} variant='display4' color='inherit'>
                 {this.state.data.number}
               </Typography>
             </Grid>
-            <Grid item container direction='column' alignItems='center' justify='center' className={classes.verseContainer} xs={2}>
+            <Grid item container direction='column' alignItems='center' justify='center' className={classes.verseContainer} xs={this.state.data.verse.length >= 13 ? 3 : 2}>
               {Array.from(this.state.data.verse).map((number) => (
-                <Grid item xs={2} >
-                  <Typography classes={{display3: classes.display3}} variant='display3' color='inherit'>{number}</Typography>
+                <Grid item xs={1.5} >
+                  <Typography classes={{display3: classes.display3Verse}} variant='display3' color='inherit'>{number}</Typography>
                 </Grid>
               ))}
             </Grid>
@@ -240,10 +273,13 @@ class OutputPage extends React.PureComponent {
   }
   
   renderPsalm() {
+    const { classes } = this.props;
+    
     return(
       <Grid container className='container-main' justify='center' alignItems='center'>
         <Grid item className='wrap-main'>
-          <Typography variant='display4' color='inherit'>
+          <Typography classes={{display4: classes.display4Psalm}} variant='display4' >Žalm: {this.state.data.number}</Typography>
+          <Typography classes={{display4: classes.display4Psalm}} variant='display4' color='inherit'>
             {this.state.data.psalmtext}
           </Typography>
         </Grid>
