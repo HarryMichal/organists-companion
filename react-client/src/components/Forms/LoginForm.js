@@ -13,11 +13,6 @@ const styles = theme => ({
     minWidth: 270,
     width: 320,
     height: "fit-content",
-    "align-self": "center",
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
   },
   textField: {
     marginLeft: theme.spacing.unit,
