@@ -14,7 +14,7 @@ class OutputPage extends React.PureComponent {
     this.state ={
       "data": {
         "type": "",
-        "song": "",
+        "number": "",
         "verse": [],
         "psalmtext": "",
       }
@@ -54,9 +54,9 @@ class OutputPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: data.type,
-          song: data.id,
+          number: data.number,
           verse: data.activeverse,
-          psalmtext: undefined
+          psalmtext: null
         }
       }));
     }
@@ -66,8 +66,8 @@ class OutputPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: data.type,
-          song: undefined,
-          verse: undefined,
+          number: null,
+          verse: null,
           psalmtext: data.psalmtext
         }
       }));
@@ -77,8 +77,8 @@ class OutputPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: prevState.data.type,
-          song: prevState.data.song,
-          verse: data.verse,
+          number: prevState.data.number,
+          verse: data.activeverse,
           psalmtext: prevState.data.psalmtext
         }
       }))
@@ -92,16 +92,16 @@ class OutputPage extends React.PureComponent {
           <Grid container className='container-main' justify='center' alignItems='center'>
             <Grid item className='wrap-main'>
               <p className='textbox-number'>
-                {this.state.data.song}
               </p>
+                {this.state.data.number}
             </Grid>
           </Grid>
           :
           <Grid container className='container' justify='center' alignItems='center'>
             <Grid item className='container-outputleft'>
               <p className="textbox-number">
-                {this.state.data.song}
               </p>
+                {this.state.data.number}
             </Grid>
             <Grid item className='container-outputright'>
               {Array.from(this.state.data.verse).map((num) => (

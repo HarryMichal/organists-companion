@@ -25,7 +25,7 @@ class DialerPage extends React.PureComponent {
       "title": "Dialer",
       "data": {
         "type": "",
-        "song": "",
+        "number": "",
         "verse": "",
         "activeverse": "",
         "psalmtext": "",
@@ -91,7 +91,7 @@ class DialerPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: data.type,
-          song: data.id,
+          number: data.number,
           verse: data.verse,
           activeverse: data.activeverse,
           psalmtext: null
@@ -103,7 +103,7 @@ class DialerPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: data.type,
-          song: null,
+          number: data.number,
           verse: null,
           activeverse: null,
           psalmtext: data.psalmtext
@@ -115,7 +115,7 @@ class DialerPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: prevState.data.type,
-          song: prevState.data.song,
+          number: prevState.data.number,
           verse: data.verse,
           activeverse: data.activeverse,
           psalmtext: prevState.data.psalmtext
@@ -127,7 +127,7 @@ class DialerPage extends React.PureComponent {
       this.setState(prevState => ({
         data: {
           type: null,
-          song: data.id,
+          number: data.number,
           verse: data.verse,
           activeverse: data.activeverse,
           psalmtext: null
@@ -249,6 +249,7 @@ class DialerPage extends React.PureComponent {
         break;
         
       case 'backspace':
+        if (this.state.message.number)
         this.setState(prevState => ({
           message: {
             type: prevState.message.type,
@@ -436,7 +437,7 @@ class DialerPage extends React.PureComponent {
     return (
     <div className='page-parent'>
       <header className='navbar'>
-        <AppDrawer title={this.state.data.song ? (this.state.data.song) : (this.state.data.psalmtext)} status={this.state.status} onClick={this.menuActions}/>
+        <AppDrawer title={this.state.data.psalmtext} status={this.state.status} onClick={this.menuActions}/>
       </header>
       {this.renderSnack()}
       <Grid container justify='center' alignItems='center' direction='column' spacing='16' className='container-full'>

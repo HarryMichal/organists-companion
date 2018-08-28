@@ -140,10 +140,10 @@ wss.sendActualData = async function(receiver = "all") {
         verse = await utils.compareArrays(verse, activeverse);
         
         message = {
-          id: meta.number,
+          type: meta.type,
+          number: meta.number,
           verse: verse,
           activeverse: activeverse,
-          type: meta.type
         };
         break;
       case "psalm":
@@ -151,14 +151,14 @@ wss.sendActualData = async function(receiver = "all") {
         
         message = {
           type: meta.type,
-          id: psalm.id,
+          number: psalm.id,
           psalmtext: psalm.text
         };
         break;
       default:
         message = {
           type: "blank",
-          id: "",
+          number: "",
           verse: [],
           activeverse: []
         };
@@ -199,7 +199,7 @@ wss.on('connection', function Connection(ws, req) {
           
           if (song && updated && meta) {
             let message = {
-              id: meta.number,
+              number: meta.number,
               verse: utils.verseToArray(meta.verse),
               activeverse: [],
               type: meta.type
@@ -225,7 +225,7 @@ wss.on('connection', function Connection(ws, req) {
           if (psalm && updated && meta) {
             let message = {
               type: meta.type,
-              id: psalm.id,
+              number: psalm.id,
               psalmtext: psalm.text
             };
             console.log(message);
@@ -301,7 +301,7 @@ wss.on('connection', function Connection(ws, req) {
           
           if (updated) {
             let message = {
-              id: "",
+              number: "",
               verse: "",
               activeverse: [],
               type: "blank"
