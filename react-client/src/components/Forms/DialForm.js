@@ -15,23 +15,22 @@ import BackspaceIcon from '@material-ui/icons/Backspace';
 
 const styles = theme => ({
   card: {
-    minWidth: 270,
-    width: 450,
     height: "fit-content",
-    "align-self": "center",
-    [theme.breakpoints.down('xs')]: {
-      width: 350,
+    [theme.breakpoints.up('xs')]: {
+      width: 360
     },
-    [theme.breakpoints.only('sm')]: {
-      width: 450,
+    [theme.breakpoints.up('sm')]: {
+      width: 420
     },
-    [theme.breakpoints.between('md', 'lg')]: {
-      width: 500,
+    [theme.breakpoints.up('md')]: {
+      width: 460
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: 500
     },
     [theme.breakpoints.up('xl')]: {
-      width: 800,
-      height: 800,
-    }
+      width: 540
+    },
   },
   container: {
     display: 'flex',
@@ -46,25 +45,41 @@ const styles = theme => ({
     minWidth: 20,
     width: "100%",
     height: "100%",
-    fontSize: "32px",
-    [theme.breakpoints.down('xs')]: {
-      fontSize: "26px",
+    [theme.breakpoints.up('xs')]: {
+      fontSize: '32px'
     },
-    [theme.breakpoints.only('sm')]: {
-      fontSize: "32px"
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '38px'
     },
-    [theme.breakpoints.between('md', 'lg')]: {
-      fontSize: "36px"
+    [theme.breakpoints.up('md')]: {
+      fontSize: '42px'
+    },
+    [theme.breakpoints.up('lg')]: {
+      fontSize: '46px'
     },
     [theme.breakpoints.up('xl')]: {
-      fontSize: "42px"
-    }
+      fontSize: '50px'
+    },
   },
   v_button: {
-    minWidth: 20,
+    minWidth: 30,
     width: "100%",
     height: "100%",
-    fontSize: "24px"
+    [theme.breakpoints.up('xs')]: {
+      fontSize: '24px'
+    },
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '26px'
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '28px'
+    },
+    [theme.breakpoints.up('lg')]: {
+      fontSize: '30px'
+    },
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '32px'
+    },
   },
   buttonwrap: {
     marginTop: 15
