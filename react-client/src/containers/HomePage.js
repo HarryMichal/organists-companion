@@ -2,6 +2,7 @@ import React from 'react';
 import 'whatwg-fetch';
 
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
 import LoginForm from '../components/Forms/LoginForm';
@@ -66,7 +67,10 @@ class HomePage extends React.Component {
       <header className='navbar'>
         <AppDrawer title={this.state.title}/>
       </header>
-      <Grid container justify='center' alignItems='center' className='container-full'>
+      <Grid container spacing={16} justify='center' alignItems='center' direction='column' className='container-full'>
+        <Grid item>
+          <Typography variant='display1' color='inherit'>Welcome in the Organist's companion.</Typography>
+        </Grid>
         <Grid item className='container-center'>
           <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user} />
         </Grid>
