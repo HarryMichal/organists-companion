@@ -63,6 +63,8 @@ class AppDrawer extends React.PureComponent {
       open: false,
       anchorEl: null,
     };
+    
+    this.renderRightButton = this.renderRightButton.bind(this);
   };
 
   handleDrawerToggle = () => {
@@ -81,6 +83,11 @@ class AppDrawer extends React.PureComponent {
     const { classes, status, onClick } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
+    
+    let onClickNew = (event) => {
+      onClick(event);
+      this.handleMenuClose();
+    }
     
     if (status) {
       if (status.isLoggedIn && status.isConnected && !status.isError) {
@@ -109,8 +116,8 @@ class AppDrawer extends React.PureComponent {
               open={open}
               onClose={this.handleMenuClose}
             >
-              <MenuItem id="reconnect" onClick={onClick}>Reconnect</MenuItem>
-              <MenuItem id="relogin" onClick={onClick}>Relogin</MenuItem>
+              <MenuItem id="reconnect" onClick={onClickNew}>Reconnect</MenuItem>
+              <MenuItem id="relogin" onClick={onClickNew}>Relogin</MenuItem>
             </Menu>
           </div>
         )
@@ -186,9 +193,8 @@ class AppDrawer extends React.PureComponent {
             <Typography
               style={status ? {'flex': 1, width: 'auto'} : {width: '100%', paddingRight: 35} }
               className={classes.titleCenter}
-              variant={status ? "Subheading" : "Title"}
+              variant={status ? "subheading" : "title"}
               color="inherit"
-              noWrap
             >
               {this.props.title}
             </Typography>
