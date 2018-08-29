@@ -29,7 +29,7 @@ function verifyToken(token, callback) {
   token = Buffer.from(token, 'base64').toString('ascii');
   jwt.verify(token, config.token.secret, function(err, token) {
     if (err) {
-      console.error("There was an error during token verification.");
+      console.error(err);
       callback(false);
     }
     if (token) {
@@ -110,13 +110,18 @@ router.post('/verify', function(req, res) {
 
 router.post('/relogin', function(req, res) {
   var token = req.body.token;
-  verifyToken(token, function(valid, decodedToken) {
-    var actualDate = Date.now();
-    if (actualDate > (decodedToken.exp + 86000)) {
+  
+  jwt.verify(Buffer.from(token, 'base64').toString('ascii'), config.token.secret, {ignoreExpiration: true, maxAge: "7 days"}, function(err, token) {
+    if (err) {
+      console.error(err);
+      return res.status(401).json({ success: false, message: "Received token was not valid."})
     }
-    else {
+    if (token) {
+      generateToken(token.sub, token.perm, config.token.expiresIn, function(token) {
+        return res.status(200).json({ success: true, token: token });
+      });
     }
-  })
+  });
 })
 
 module.exports = router;
