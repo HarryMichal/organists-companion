@@ -1,13 +1,13 @@
 {
   "name": "companion-server",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "scripts": {
-    "start": "NODE_ENV=developemnt node ./bin/www",
-    "devstart": "nodemon ./bin/www",
-    "production-full": "cd react-client && npm install && npm install --only=dev --no-shinkwrap &&  npm run build && cd .. && NODE_ENV=production node ./bin/www",
-    "production-semi": "cd react-client && npm run build && cd .. && NODE_ENV=production node ./bin/www",
-    "production-mini": "NODE_ENV=production node ./bin/www"
+    "start": "node ./bin/www",
+    "devstart": "NODE_ENV=production nodemon ./bin/www",
+    "production-full": "npm install && cd react-client && npm install && npm install --only=dev --no-shinkwrap && npm run build && cd .. && NODE_ENV=production npm start",
+    "production-semi": "cd react-client && npm run build && sleep 2 && cd .. && NODE_ENV=production npm start",
+    "production-mini": "NODE_ENV=production npm start"
   },
   "dependencies": {
     "base62": "^2.0.0",
