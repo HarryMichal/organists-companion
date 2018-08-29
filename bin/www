@@ -37,7 +37,7 @@ var wss = new WebSocket.Server({
   'verifyClient': function(info, done) {
     var query = url.parse(info.req.url, true).query;
     // check the origin of the issued request
-    if (info.origin === "http://localhost:3000" && query.token !== null) {
+    if (query.token !== null) {
       query.token = Buffer.from(query.token, 'base64').toString('ascii');
       jwt.verify(query.token, config.token.secret, function(err, token) {
         if (err) {
