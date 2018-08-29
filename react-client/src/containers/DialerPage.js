@@ -56,14 +56,16 @@ class DialerPage extends React.PureComponent {
     this.openConnection = this.openConnection.bind(this);
     this.menuActions = this.menuActions.bind(this);
     this.verifyToken = this.verifyToken.bind(this);
+    this.isConnected = this.isConnected.bind(this);
+    this.renderSnack = this.renderSnack.bind(this);
   };
   
-  
   componentDidMount() {
-    AuthService.verifyToken("jwt",(valid, message) => {
+    AuthService.verifyToken("jwt", (valid, message) => {
       if (valid) {
         this.openConnection();
         this.verifyToken;
+        this.isConnected();
         AuthService.getUserData();
       }
       else {
@@ -78,9 +80,13 @@ class DialerPage extends React.PureComponent {
       this.socket.close();
       this.socket = null;
     }
-    console.log(this.verificationTimer);
+    
     if (this.verificationTimer != null || this.verificationTimer != undefined) {
-      this.verificationTimer = null;
+      clearTimeout(this.verificationTimer);
+    }
+    
+    if (this.checkConnection != null || this.checkConnection != undefined) {
+      clearTimeout(this.checkConnection);
     }
   }
   
@@ -138,7 +144,6 @@ class DialerPage extends React.PureComponent {
   }
   
   onError(event) {
-    // this.props.history.push("/auth/login");
     this.setState(prevState => ({
       status: {
         isLoggedIn: prevState.status.isLoggedIn,
@@ -163,14 +168,14 @@ class DialerPage extends React.PureComponent {
     this.setState(prevState => ({
       status: {
         isLoggedIn: prevState.status.isLoggedIn,
-        IsConnected: false,
+        isConnected: false,
         isError: prevState.status.isError
       }
     }))
   }
 
   verifyToken() {
-    AuthService.verifyToken('jwt',(valid, message) => {
+    AuthService.verifyToken('jwt', (valid, message) => {
       if (valid) {
         this.setState(prevState => ({
           status: {
@@ -199,6 +204,41 @@ class DialerPage extends React.PureComponent {
     })
   }
   
+  isConnected() {
+    var readyState = this.socket.readyState;
+    
+    switch (readyState) {
+      case 0:
+        break;
+      case 1:
+        if (!this.state.status.isConnected) {
+          this.setState(prevState => ({
+            status: {
+              isLoggedIn: prevState.status.isLoggedIn,
+              isConnected: true,
+              isError: prevState.status.isError
+            }
+          }));
+        }
+        break;
+      case 2:
+        break;
+      case 3:
+        if (this.state.status.isConnected) {
+          this.setState(prevState => ({
+            status: {
+              isLoggedIn: prevState.status.isLoggedIn,
+              isConnected: false,
+              isError: prevState.status.isError
+            }
+          }));
+        }
+        break;
+    }
+    
+    this.checkConnection = setTimeout(() => {this.isConnected()}, 500);
+  }
+  
   openConnection() {
     let target = "ws://";
     
@@ -222,7 +262,7 @@ class DialerPage extends React.PureComponent {
       this.socket = new WebSocket(target);
     }
     finally {
-      if (this.socket != undefined) {
+      if (this.socket != null) {
         this.socket.onopen = this.onOpen;
         this.socket.onerror = this.onError;
         this.socket.onclose = this.onClose;
@@ -374,7 +414,7 @@ class DialerPage extends React.PureComponent {
           .then(response => {
             if (response.success) {
               AuthService.setToken(response.token);
-              this.props.history.push('/app');
+              this.props.history.go(0)
             }
             else {
               this.props.history.push('/');
@@ -398,6 +438,11 @@ class DialerPage extends React.PureComponent {
 
   renderSnack() {
     const { classes } = this.props;
+    
+    let onClick = (event) => {
+      this.menuActions(event);
+      this.handleCloseSnack(event);
+    }
 
     return (
       <div>
@@ -414,7 +459,7 @@ class DialerPage extends React.PureComponent {
           }}
           message={<span id='message-id'>{this.state.snackBar.text}</span>}
           action={[
-            <Button id='relogin' color='secondary' size='small' onClick={this.menuActions}>
+            <Button id='relogin' color='secondary' size='small' onClick={onClick}>
               Relogin
             </Button>,
             <IconButton
