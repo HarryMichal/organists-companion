@@ -27,6 +27,14 @@ class HomePage extends React.Component {
     this.changeUser = this.changeUser.bind(this);
   };
   
+  componentDidMount() {
+    AuthService.verifyToken("jwt", (valid, message) => {
+      if (valid) {
+        this.props.history.push('/app');
+      }
+    })
+  }
+  
   getRequestURL() {
     let requestURL = '/api/login';
     return requestURL;
