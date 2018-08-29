@@ -1,11 +1,10 @@
+const crypto = require('crypto');
+
+const secret = crypto.randomBytes(256).toString('hex');
+
 module.exports = {
   'token': {
-    'secret': 'MYSECRET',
-    'expiresIn': '300m'
-  },
-  'session': {
-    'secret': 'MYSECRET',
-    'resave': true,
-    'saveUninit': true
+    'secret': secret,
+    'expiresIn': '480m'
   }
 };
