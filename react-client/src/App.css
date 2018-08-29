@@ -91,7 +91,7 @@ a:hover {
 }
 
 .container-full {
-  height: 100%;
+  height: auto;
   min-height: 100%;
   padding-top: 65px;
 }
