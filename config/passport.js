@@ -15,7 +15,7 @@ function generateHashTag() {
 
 // expose this function to our app using module.exports
 module.exports = function(app) {
-  var db = new sqlite3.Database('./db/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+  var db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error(err);
     };
@@ -108,8 +108,7 @@ module.exports = function(app) {
 // LOCAL LOGIN
 passport.use('login', new LocalStrategy({
   usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
-  }, function(req, username, password, done) { // callback with email and password from our form
-    console.log(username + ' ' + password);
+  }, function(req, username, password, done) {
     db.get("SELECT * FROM users WHERE username = ?", [username], function(err, rows) { // Checks whether the user is in the database
       if (err) // when error during query happens
         return done(err);
