@@ -139,6 +139,35 @@ class AppDrawer extends React.PureComponent {
     }
   }
 
+  renderMiddleText() {
+    const { classes, status } = this.props;
+
+    if (!status && this.props.title) {
+      return(
+        <Typography
+          style={status ? { 'flex': 1, width: 'auto' } : { width: '100%', paddingRight: 35 }}
+          className={classes.titleCenter}
+          variant={status ? "subheading" : "title"}
+          color="inherit"
+        >
+          {this.props.title}
+        </Typography>
+      )
+    }
+    else if (status) {
+      return(
+        <Typography
+          style={status.isConnected ? { color: 'green' } : { color: 'red' }}
+          className={classes.titleCenter}
+          variant="title"
+          color="inherit"
+        >
+          {status.isConnected ? "Connected" : "Disconnected"}
+        </Typography>
+      )
+    }
+  }
+
   render() {
     const { classes, theme, status } = this.props;
 
@@ -177,6 +206,8 @@ class AppDrawer extends React.PureComponent {
       </div>
     );
 
+
+
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar}>
@@ -190,6 +221,8 @@ class AppDrawer extends React.PureComponent {
               <MenuIcon />
             </IconButton>
             
+            {this.renderMiddleText()}
+
             <Typography
               style={status ? {'flex': 1, width: 'auto'} : {width: '100%', paddingRight: 35} }
               className={classes.titleCenter}
