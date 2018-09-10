@@ -1,10 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var sqlite3 = require('sqlite3');
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
-var Base62 = require('base62');
-var database = require('../utils/database.js');
 var config = require('../config/config');
 
 function encodeToken(token, callback) {
@@ -34,6 +31,9 @@ function verifyToken(token, callback) {
     }
     if (token) {
       callback(true, token);
+    }
+    if (!token) {
+      callback(false);
     }
   })
 }
