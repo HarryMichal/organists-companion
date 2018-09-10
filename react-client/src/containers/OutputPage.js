@@ -94,7 +94,6 @@ class OutputPage extends React.PureComponent {
   
   componentWillUnmount() {
     this.socket.close();
-    this.socket = null;
   }
   
   openConnection() {
@@ -288,15 +287,20 @@ class OutputPage extends React.PureComponent {
   }
   
   render() {
-    return(
-      <div className='page-parent'>
-        {this.state.data.type === "song" ?
-          this.renderSong()
-          :
-          this.renderPsalm()
-        }
-      </div>
-    )
+    if (this.state.data.type === "song") {
+      return(
+        <div className='page-parent'>
+          {this.renderSong()}
+        </div>
+      )
+    }
+    else if (this.state.data.type === "psalm") {
+      return(
+        <div className='page-parent'>
+          {this.renderPsalm()}
+        </div>
+      )
+    }
   }
 }
 
