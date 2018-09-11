@@ -35,7 +35,9 @@ require('./config/passport')(app);
 app.use(passport.initialize());
 
 // React production routine
-app.use('/*', mainRoutes);
+app.use('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'react-client/build', 'index.html'))
+});
 
 // API routes
 app.use('/api', apiRoutes);
