@@ -157,10 +157,9 @@ class AppDrawer extends React.PureComponent {
     else if (status) {
       return(
         <Typography
-          style={status.isConnected ? { color: 'green' } : { color: 'red' }}
+          style={status.isConnected ? { color: 'lightgreen', 'flex': 1} : { color: 'red', 'flex': 1}}
           className={classes.titleCenter}
           variant="title"
-          color="inherit"
         >
           {status.isConnected ? "Connected" : "Disconnected"}
         </Typography>
@@ -223,15 +222,6 @@ class AppDrawer extends React.PureComponent {
             
             {this.renderMiddleText()}
 
-            <Typography
-              style={status ? {'flex': 1, width: 'auto'} : {width: '100%', paddingRight: 35} }
-              className={classes.titleCenter}
-              variant={status ? "subheading" : "title"}
-              color="inherit"
-            >
-              {this.props.title}
-            </Typography>
-            
             {(status &&
               <div className={classes.titleRight}>
                 {this.renderRightButton()}
