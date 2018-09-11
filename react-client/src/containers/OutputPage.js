@@ -301,6 +301,11 @@ class OutputPage extends React.PureComponent {
         </div>
       )
     }
+    else {
+      return(
+        <div className='page-parent'></div>
+      )
+    }
   }
 }
 
