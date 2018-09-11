@@ -6,8 +6,8 @@
     "start": "node ./bin/www",
     "devstart": "NODE_ENV=production nodemon ./bin/www",
     "production-full": "npm install && cd react-client && npm install && npm install --only=dev --no-shinkwrap && npm run build && cd .. && NODE_ENV=production npm start",
-    "production-semi": "cd react-client && npm run build && sleep 2 && cd .. && NODE_ENV=production npm start",
-    "production-mini": "NODE_ENV=production npm start"
+    "production-mini": "NODE_ENV=production npm start",
+    "build": "npm install && cd react-client && npm install && npm build"
   },
   "dependencies": {
     "base62": "^2.0.0",
