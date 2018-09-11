@@ -24,6 +24,7 @@ function generateToken (username, permission, expiration, callback) {
 
 function verifyToken(token, callback) {
   token = Buffer.from(token, 'base64').toString('ascii');
+
   jwt.verify(token, config.token.secret, function(err, token) {
     if (err) {
       console.error(err);
@@ -98,6 +99,11 @@ router.post('/guest', function(req, res) {
 
 router.post('/verify', function(req, res) {
   var token = req.body.token;
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: "No token received"});
+  }
+
   verifyToken(token, function(valid) {
     if (valid) {
       return res.status(200).json({ success: true });
