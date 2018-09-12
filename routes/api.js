@@ -15,6 +15,7 @@ function generateToken (username, permission, expiration, callback) {
     'perm': permission
   };
   var token = jwt.sign(claims, config.token.secret, { expiresIn: expiration });
+   
   encodeToken(token, function(encodedToken) {
     if (encodedToken) {
       callback(encodedToken);
@@ -47,7 +48,7 @@ var getTokenData = function(token) {
 // ====================================================================
 
 router.post('/signup', function(req, res, next) {
-  passport.authenticate('signup', (error, user, info) => {
+  passport.authenticate('signup', function signup(error, user, info) {
     if (error) {
       return res.status(400).json({success: false});
     }
@@ -56,29 +57,32 @@ router.post('/signup', function(req, res, next) {
         return next(err);
       }
     });
-    res.json({success: true});
+    return res.status(200).res.json({success: true});
   })(req, res, next);
-  return;
-}); // runs the passport authenticate function; config in passport.js
+});
 
 router.post('/login', function(req, res, next) {
-  passport.authenticate('login', (error, user, info) => {
-    if (error) {
-      return next(error);
+  passport.authenticate('login', function login(err, user, info) {
+    if (err) {
+      console.error(err);
     }
     if (!user) {
-      return res.status(401).json({ success: false, error: 'User not found.' });
+      return res.status(401).json({ success: false, error: true, message: "Entered credentials are incorrect" });
     }
-    req.logIn(user, err => {
+    req.logIn(user, function finishLogin(err)  {
       if (err) {
-        return res.status(401).json({ success: false, message: err });
+        return res.status(401).json({ success: false, error: true, message: err });
       }
       generateToken(req.body.username, "general", config.token.expiresIn, function(token) {
-        return res.status(200).json({ success: true, token: token });
+        if (token) {
+          return res.status(200).json({ success: true, error: false, token: token });
+          console.log("YEAH");
+        }
+        return res.status(400).json({ success: false, error: true, message: "There was an error on the server."})
       });
     });
   })(req, res, next);
-}); // runs the passport authenticate function; config in passport.js
+});
 
 router.get('/logout', function(req, res) {
   req.logout();
