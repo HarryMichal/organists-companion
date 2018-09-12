@@ -20,6 +20,10 @@ class HomePage extends React.Component {
         username: '',
         email: '',
         password: ''
+      },
+      response: {
+        error: false,
+        message: ''
       }
     }
     this.processForm = this.processForm.bind(this);
@@ -33,12 +37,7 @@ class HomePage extends React.Component {
       }
     })
   }
-  
-  getRequestURL() {
-    let requestURL = '/api/login';
-    return requestURL;
-  };
-  
+
   changeUser(event) {
     const field = event.target.id;
     const user = this.state.user;
@@ -49,9 +48,8 @@ class HomePage extends React.Component {
   processForm(event) { // send to API and handle client authentication
     event.preventDefault();
     const user = this.state.user;
-    const requestURL = this.getRequestURL();
     
-    fetch(requestURL, {
+    fetch("/api/login", {
       method: 'post',
       body: JSON.stringify(user),
       headers: {
@@ -62,8 +60,22 @@ class HomePage extends React.Component {
     .then(json => {
       if (json.success) {
         let token = json.token;
+        this.setState(prevState => ({
+          response: {
+            error: false,
+            message: ''
+          }
+        }));
         AuthService.setToken(token);
         this.props.history.push("/app");
+      }
+      else if (json.error) {
+        this.setState(prevState => ({
+          response: {
+            error: true,
+            message: json.message
+          }
+        }));
       }
     })
   };
@@ -79,7 +91,7 @@ class HomePage extends React.Component {
           <Typography variant='display1' color='inherit'>Welcome to the Organist's companion.</Typography>
         </Grid>
         <Grid item className='container-center'>
-          <LoginForm onSubmit={this.processForm} onChange={this.changeUser} errors={this.state.errors} user={this.state.user} />
+          <LoginForm onSubmit={this.processForm} onChange={this.changeUser} response={this.state.response} user={this.state.user} />
         </Grid>
       </Grid>
     </div>
