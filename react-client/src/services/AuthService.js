@@ -140,6 +140,7 @@ const AuthService = {
     }
     
     var body = { token: token };
+    
     fetch('/api/verify', {
       method: 'post',
       body: JSON.stringify(body),
