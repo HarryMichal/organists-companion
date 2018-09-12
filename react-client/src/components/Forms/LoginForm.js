@@ -25,6 +25,19 @@ const styles = theme => ({
 });
 
 class LoginForm extends React.Component {
+  showError() {
+    if (this.props.response.error) {
+      return(
+        <Typography
+          variant='body1'
+          color='error'
+        >
+        {this.props.response.message}
+        </Typography>
+      )
+    }
+  }
+  
   render() {
     const { classes, onSubmit, onChange, user } = this.props;
     
@@ -33,6 +46,7 @@ class LoginForm extends React.Component {
         <CardContent>
           <form className={classes.userform} onSubmit={onSubmit}>
             <Typography variant="title">Login</Typography>
+            {this.showError()}
             <TextField required id="username" label="Username" className={classes.textField} value={user.username} onChange={onChange} margin="normal" />
             <TextField required id="password" label="Password" className={classes.textField} value={user.password} onChange={onChange} type="password" autoComplete="current-password" margin="normal" />
             <Button variant="contained" className={classes.button} type="submit" color="primary">
@@ -48,7 +62,7 @@ class LoginForm extends React.Component {
 LoginForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
+  response: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 
