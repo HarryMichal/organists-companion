@@ -1,18 +1,12 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var session = require('express-session');
-var LocalStrategy = require('passport-local').Strategy;
-var json = require('json');
-const sqlite3 = require('sqlite3').verbose();
 
-var config = require('./config/config');
-var mainRoutes = require('./routes/main');
-var apiRoutes = require('./routes/api');
+var mainRouter = require('./routes/main');
+var apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -26,6 +20,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/react-client/build')));
 }
@@ -34,13 +29,14 @@ if (process.env.NODE_ENV === 'production') {
 require('./config/passport')(app);
 app.use(passport.initialize());
 
-// React production routine
-app.use('/*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'react-client/build', 'index.html'))
-});
+app.use('/api', apiRouter);
 
-// API routes
-app.use('/api', apiRoutes);
+// React production routine
+if (process.env.NODE_ENV === 'production') {
+  app.use('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'react-client/build/', "index.html"))
+  });
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
