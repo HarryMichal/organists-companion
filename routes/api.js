@@ -76,7 +76,6 @@ router.post('/login', function(req, res, next) {
       generateToken(req.body.username, "general", config.token.expiresIn, function(token) {
         if (token) {
           return res.status(200).json({ success: true, error: false, token: token });
-          console.log("YEAH");
         }
         return res.status(400).json({ success: false, error: true, message: "There was an error on the server."})
       });
