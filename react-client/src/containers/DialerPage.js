@@ -64,7 +64,7 @@ class DialerPage extends React.PureComponent {
     AuthService.verifyToken("jwt", (valid, message) => {
       if (valid) {
         this.openConnection();
-        this.verifyToken;
+        this.verifyToken();
         this.isConnected();
         AuthService.getUserData();
       }
@@ -184,7 +184,7 @@ class DialerPage extends React.PureComponent {
             isError: prevState.status.isError
           }
         }));
-        this.verificationTimer = setTimeout(this.verifyToken, 30000);
+        this.verificationTimer = setTimeout( () => {this.verifyToken()}, 30000);
       }
       else {
         this.setState(prevState => ({
@@ -199,7 +199,6 @@ class DialerPage extends React.PureComponent {
             action: prevState.snackBar.action
           }
         }))
-        clearInterval(this.verificationTimer);
       }
     })
   }
