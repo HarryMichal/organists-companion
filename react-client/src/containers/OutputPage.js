@@ -8,11 +8,11 @@ import Typography from '@material-ui/core/Typography';
 import AuthService from '../services/AuthService.js';
 
 const styles = theme => ({
-  verseContainer: {
-    borderLeft: '1px solid black',
-    height: '100%'
-  },
   display4Song: {
+    lineHeight: '0.95em',
+    fontWeight: '400',
+    margin: 0,
+    padding: 0,
     [theme.breakpoints.up('xs')]: {
       fontSize: '12rem'
     },
@@ -20,13 +20,13 @@ const styles = theme => ({
       fontSize: '15rem'
     },
     [theme.breakpoints.up('md')]: {
-      fontSize: '22rem'
+      fontSize: '25rem'
     },
     [theme.breakpoints.up('lg')]: {
-      fontSize: '28rem'
+      fontSize: '34rem'
     },
     [theme.breakpoints.up('xl')]: {
-      fontSize: '40rem'
+      fontSize: '41rem'
     },
   },
   display4Psalm: {
@@ -40,7 +40,7 @@ const styles = theme => ({
       fontSize: '5.5rem'
     },
     [theme.breakpoints.up('lg')]: {
-      fontSize: '7.7rem'
+      fontSize: '7.8rem'
     },
     [theme.breakpoints.up('xl')]: {
       fontSize: '12rem'
@@ -57,7 +57,7 @@ const styles = theme => ({
       fontSize: '4rem'
     },
     [theme.breakpoints.up('lg')]: {
-      fontSize: '5rem'
+      fontSize: '6rem'
     },
     [theme.breakpoints.up('xl')]: {
       fontSize: '7.5rem'
@@ -237,38 +237,36 @@ class OutputPage extends React.PureComponent {
   renderSong() {
     const { classes } = this.props;
     
-    return(
-      <Grid container className='container-main' justify='center' alignItems='center'>
-        {this.state.data.verse.length == 0 ?
-          
-          <Grid container className='container-main' justify='center' alignItems='center'>
-            <Grid item xs={12}>
-              <Typography classes={{display4: classes.display4Song}} variant='display4' color='inherit'>
-                {this.state.data.number}
-              </Typography>
-            </Grid>
+    if (this.state.data.verse.length !== 0) {
+      return(
+        <Grid container className='container-main' direction='column' justify='center' alignItems='center'>
+          <Grid item >
+            <Typography classes={{ display4: classes.display4Song }} variant='display4' color='inherit'>
+              {this.state.data.number}
+            </Typography>
           </Grid>
-          
-          :
-          
-          <Grid container className='container-main' justify='center' alignItems='center'>
-            <Grid item xs={9}>
-              <Typography classes={{display4: classes.display4Song}} variant='display4' color='inherit'>
-                {this.state.data.number}
-              </Typography>
-            </Grid>
-            <Grid item container direction='column' alignItems='center' justify='center' className={classes.verseContainer} xs={this.state.data.verse.length >= 13 ? 3 : 2}>
-              {Array.from(this.state.data.verse).map((number) => (
-                <Grid item xs={1.5} >
-                  <Typography classes={{display3: classes.display3Verse}} variant='display3' color='inherit'>{number}</Typography>
-                </Grid>
-              ))}
-            </Grid>
+          <Grid item container alignItems='center' justify='center' >
+            <div></div>
+            {Array.from(this.state.data.verse).map((number) => (
+              <Grid key={number} item xs={1} >
+                <Typography classes={{ display3: classes.display3Verse }} variant='display3' color='inherit'>{number}</Typography>
+              </Grid>
+            ))}
           </Grid>
-          
-        }
-      </Grid>
-    )
+        </Grid>
+      )
+    }
+    else {
+      return(
+        <Grid container className='container-main' justify='center' alignItems='center'>
+          <Grid item xs={12}>
+            <Typography classes={{display4: classes.display4Song}} variant='display4' color='inherit'>
+              {this.state.data.number}
+            </Typography>
+          </Grid>
+        </Grid>
+      )
+    }
   }
   
   renderPsalm() {
