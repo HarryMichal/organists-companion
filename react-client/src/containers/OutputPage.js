@@ -20,7 +20,7 @@ const styles = theme => ({
       fontSize: '15rem'
     },
     [theme.breakpoints.up('md')]: {
-      fontSize: '25rem'
+      fontSize: '28rem'
     },
     [theme.breakpoints.up('lg')]: {
       fontSize: '34rem'
@@ -37,7 +37,7 @@ const styles = theme => ({
       fontSize: '3.5rem'
     },
     [theme.breakpoints.up('md')]: {
-      fontSize: '5.5rem'
+      fontSize: '6.5rem'
     },
     [theme.breakpoints.up('lg')]: {
       fontSize: '7.8rem'
@@ -54,7 +54,7 @@ const styles = theme => ({
       fontSize: '2.5rem'
     },
     [theme.breakpoints.up('md')]: {
-      fontSize: '4rem'
+      fontSize: '5rem'
     },
     [theme.breakpoints.up('lg')]: {
       fontSize: '6rem'
@@ -87,18 +87,18 @@ class OutputPage extends React.PureComponent {
     this.onClose = this.onClose.bind(this);
     this.onMessage = this.onMessage.bind(this);
   }
-  
+
   componentDidMount() {
     this.openConnection();
   }
-  
+
   componentWillUnmount() {
     this.socket.close();
   }
-  
+
   openConnection() {
     const body = { "sub": "guest", "perm": "guest", "exp": "120min" };
-    
+
     fetch("/api/guest", {
       method: 'post',
       body: JSON.stringify(body),
@@ -110,9 +110,9 @@ class OutputPage extends React.PureComponent {
     .then(json => {
       if (json.success == true) {
         AuthService.setToken(json.token, false, "guest-jwt")
-        
+
         let target = "ws://";
-        
+
         // Add a case for own development case expression
         switch (window.location.origin) {
           case 'http://localhost:3000':
@@ -126,9 +126,9 @@ class OutputPage extends React.PureComponent {
             target += origin + "/api/ws"
             break;
         }
-        
+
         target += "?token=" + json.token;
-        
+
         try {
           this.socket = new WebSocket(target);
         }
@@ -140,12 +140,12 @@ class OutputPage extends React.PureComponent {
             this.verifyToken();
           }
         }
-        
+
       }
     })
   }
-  
-  
+
+
   verifyToken() {
     AuthService.verifyToken("guest-jwt", (valid, message) => {
       if (valid) {
@@ -171,7 +171,7 @@ class OutputPage extends React.PureComponent {
       }
     })
   }
-  
+
   onOpen(event) {
     this.setState(prevState => ({
       status: {
@@ -181,11 +181,11 @@ class OutputPage extends React.PureComponent {
       }
     }));
   };
-  
+
   onClose(event) {
     this.verifyToken();
   }
-  
+
   onMessage(event) {
     var data = JSON.parse(event.data);
     if (data.type === "song") {
@@ -198,7 +198,7 @@ class OutputPage extends React.PureComponent {
         }
       }));
     }
-    
+
     if (data.type === "psalm") {
       console.log(data.text);
       this.setState(prevState => ({
@@ -210,7 +210,7 @@ class OutputPage extends React.PureComponent {
         }
       }));
     }
-    
+
     if (data.type === "verse") {
       this.setState(prevState => ({
         data: {
@@ -221,7 +221,7 @@ class OutputPage extends React.PureComponent {
         }
       }))
     }
-    
+
     if (data.type == "blank") {
       this.setState(prevState => ({
         data: {
@@ -233,10 +233,10 @@ class OutputPage extends React.PureComponent {
       }))
     }
   }
-  
+
   renderSong() {
     const { classes } = this.props;
-    
+
     if (this.state.data.verse.length !== 0) {
       return(
         <Grid container className='container-main' direction='column' justify='center' alignItems='center'>
@@ -268,10 +268,10 @@ class OutputPage extends React.PureComponent {
       )
     }
   }
-  
+
   renderPsalm() {
     const { classes } = this.props;
-    
+
     return(
       <Grid container className='container-main' justify='center' alignItems='center'>
         <Grid item className='wrap-main'>
@@ -283,7 +283,7 @@ class OutputPage extends React.PureComponent {
       </Grid>
     )
   }
-  
+
   render() {
     if (this.state.data.type === "song") {
       return(
