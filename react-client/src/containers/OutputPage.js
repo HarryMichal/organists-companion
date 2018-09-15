@@ -76,8 +76,8 @@ class OutputPage extends React.PureComponent {
         "psalmtext": "",
       },
       status: {
-        isLoggedIn: true,
-        isConnected: true,
+        isLoggedIn: false,
+        isConnected: false,
         isError: false
       }
     };
@@ -89,11 +89,14 @@ class OutputPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.openConnection();
+    this.checkConnectionInterval = setInterval(() => {
+      this.verifyToken();
+    }, 3000)
   }
 
   componentWillUnmount() {
     this.socket.close();
+    clearInterval(this.checkConnectionInterval);
   }
 
   openConnection() {
@@ -140,7 +143,6 @@ class OutputPage extends React.PureComponent {
             this.verifyToken();
           }
         }
-
       }
     })
   }
@@ -156,7 +158,10 @@ class OutputPage extends React.PureComponent {
             isError: prevState.status.isError
           }
         }));
-        this.verificationTimer = setTimeout(this.verifyToken, 30000);
+
+        if (!this.state.status.isConnected) {
+          this.openConnection();
+        }
       }
       else {
         this.setState(prevState => ({
@@ -166,7 +171,6 @@ class OutputPage extends React.PureComponent {
             isError: prevState.status.isError
           },
         }))
-        clearInterval(this.verificationTimer);
         this.openConnection();
       }
     })
@@ -183,6 +187,13 @@ class OutputPage extends React.PureComponent {
   };
 
   onClose(event) {
+    this.setState(prevState => ({
+      status: {
+        isLoggedIn: prevState.isLoggedIn,
+        isConnected: false,
+        isError: prevState.isError
+      }
+    }));
     this.verifyToken();
   }
 
@@ -200,7 +211,6 @@ class OutputPage extends React.PureComponent {
     }
 
     if (data.type === "psalm") {
-      console.log(data.text);
       this.setState(prevState => ({
         data: {
           type: data.type,
