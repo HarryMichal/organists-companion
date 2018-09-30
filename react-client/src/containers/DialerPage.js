@@ -285,11 +285,12 @@ class DialerPage extends React.PureComponent {
       this.socket.send(JSON.stringify(event));
     }
   }
-  
+
   handleClick(event) {
     event.preventDefault();
     var message = this.state.message;
-    switch (event.target.id) {
+    
+    switch (event.currentTarget.id) {
       case 'number':
         if (message.type !== "") {
           if (message.number.length < 3) {
