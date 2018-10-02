@@ -61,12 +61,11 @@ class DialerPage extends React.PureComponent {
   };
   
   componentDidMount() {
-    AuthService.verifyToken("jwt", (valid, message) => {
-      if (valid) {
+    AuthService.verifyToken('jwt', (valid, message) => {
+      if (valid === true) {
         this.openConnection();
         this.verifyToken();
         this.isConnected();
-        AuthService.getUserData();
       }
       else {
         console.log(message);
@@ -285,7 +284,7 @@ class DialerPage extends React.PureComponent {
       this.socket.send(JSON.stringify(event));
     }
   }
-
+  
   handleClick(event) {
     event.preventDefault();
     var message = this.state.message;
@@ -294,7 +293,7 @@ class DialerPage extends React.PureComponent {
       case 'number':
         if (message.type !== "") {
           if (message.number.length < 3) {
-            var newNumber = event.target.value;
+            var newNumber = event.currentTarget.value;
             this.setState(prevState => ({
               message: {
                 type: prevState.message.type,
@@ -325,7 +324,7 @@ class DialerPage extends React.PureComponent {
         
       case 'init_song':
         if (message.type === "") {
-          var newType = event.target.value;
+          var newType = event.currentTarget.value;
           this.setState(prevState => ({
             message: {
               type: prevState.message.type.concat([newType]),
@@ -344,7 +343,7 @@ class DialerPage extends React.PureComponent {
         
       case 'init_psalm':
         if (message.type === "") {
-          var newType = event.target.value;
+          var newType = event.currentTarget.value;
           this.setState(prevState => ({
             message: {
               type: prevState.message.type.concat([newType]),
@@ -362,20 +361,20 @@ class DialerPage extends React.PureComponent {
         break;
         
       case 'verse':
-        var newType = event.target.id;
+        var newType = event.currentTarget.id;
         var message = {};
-        if (this.state.data.activeverse == undefined || this.state.data.activeverse.indexOf(parseInt(event.target.value)) === -1) {
+        if (this.state.data.activeverse == undefined || this.state.data.activeverse.indexOf(parseInt(event.currentTarget.value)) === -1) {
           message = {
-            type: event.target.id,
+            type: event.currentTarget.id,
             subtype: "add",
-            verse: event.target.value
+            verse: event.currentTarget.value
           }
         }
         else {
           message = {
-            type: event.target.id,
+            type: event.currentTarget.id,
             subtype: "del",
-            verse: event.target.value
+            verse: event.currentTarget.value
           }
         }
         this.sendMessage(message);
@@ -390,7 +389,7 @@ class DialerPage extends React.PureComponent {
   menuActions(event) {
     event.preventDefault();
 
-    switch (event.target.id) {
+    switch (event.currentTarget.id) {
       case "reconnect":
       try {
         this.socket.close();
