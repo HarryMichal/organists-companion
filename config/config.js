@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 
-const secret = crypto.randomBytes(256).toString('hex');
+const secret = 't0ps3cur3s3cr3t'.toString('hex');
 
 module.exports = {
   'token': {
