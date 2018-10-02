@@ -94,7 +94,7 @@ const AuthService = {
   
   isLoggedIn() {
     return new Promise((resolve) => {
-      AuthService.verifyToken(isLoggedIn => {
+      AuthService.verifyToken('jwt', isLoggedIn => {
         if (isLoggedIn) {
           resolve(true);
         }
