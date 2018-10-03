@@ -132,7 +132,7 @@ const AuthService = {
     return userInfo;
   },
 
-  verifyToken(tokenKey = TOKEN_KEY, callback) {
+  async verifyToken(tokenKey = TOKEN_KEY, callback) {
     var token = AuthService.getToken(false, tokenKey);
     
     if (!token) {
@@ -141,21 +141,26 @@ const AuthService = {
     
     var body = { token: token };
     
-    fetch('/api/verify', {
-      method: 'post',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json'
+    try {
+      var res = await fetch('/api/verify', {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      var response = await res.json();
+      
+      if (response.success) {
+        callback(true, null);
       }
-    }).then(res => res.json())
-      .then(response => {
-        if (response.success) {
-          callback(true, null);
-        }
-        else {
-          callback(false, response.message);
-        }
-      })
+      else {
+        callback(false, response.message);
+      }
+    }
+    catch(err) {
+      console.log(err);
+    }
   }
 };
 
