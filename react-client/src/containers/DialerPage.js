@@ -64,8 +64,10 @@ class DialerPage extends React.PureComponent {
     AuthService.verifyToken('jwt', (valid, message) => {
       if (valid === true) {
         this.openConnection();
-        this.verifyToken();
-        this.isConnected();
+        this.checkConnectionInterval = setInterval(() => {
+          this.verifyToken();
+        }, 10000);
+        this.checkConnectionStatus = setInterval(() => { this.isConnected() }, 500);
       }
       else {
         console.log(message);
@@ -75,21 +77,10 @@ class DialerPage extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if (this.socket != null || this.socket != undefined) {
-      this.socket.close();
-      this.socket = null;
-    }
-    
-    if (this.verificationTimer != null || this.verificationTimer != undefined) {
-      clearTimeout(this.verificationTimer);
-    }
-    
-    if (this.checkConnection != null || this.checkConnection != undefined) {
-      clearTimeout(this.checkConnection);
-    }
+    clearInterval(this.checkConnectionStatus);
+    clearInterval(this.checkConnectionInterval);
+    this.socket.close();
   }
-  
-  // Event based functions
   
   onMessage(event) {
     var data = JSON.parse(event.data);
@@ -163,7 +154,6 @@ class DialerPage extends React.PureComponent {
   }
   
   onClose(event) {
-    this.verifyToken();
     this.setState(prevState => ({
       status: {
         isLoggedIn: prevState.status.isLoggedIn,
@@ -183,7 +173,10 @@ class DialerPage extends React.PureComponent {
             isError: prevState.status.isError
           }
         }));
-        this.verificationTimer = setTimeout( () => {this.verifyToken()}, 30000);
+        
+        if (!this.state.status.isConnected) {
+          this.openConnection();
+        }
       }
       else {
         this.setState(prevState => ({
@@ -198,6 +191,7 @@ class DialerPage extends React.PureComponent {
             action: prevState.snackBar.action
           }
         }))
+        this.openConnection();
       }
     })
   }
@@ -233,8 +227,6 @@ class DialerPage extends React.PureComponent {
         }
         break;
     }
-    
-    this.checkConnection = setTimeout(() => {this.isConnected()}, 500);
   }
   
   openConnection() {
