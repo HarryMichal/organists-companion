@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import AppDrawer from '../components/AppBar/AppBar';
 import DialForm from '../components/Forms/DialForm';
 import ErrorForm from '../components/Forms/ErrorForm';
 

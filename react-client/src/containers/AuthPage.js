@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
-import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import AppDrawer from '../components/AppBar/AppBar';
 import LoginForm from '../components/Forms/LoginForm';
 import SignUpForm from '../components/Forms/SignUpForm';
 import WelcomeButtons from '../components/Buttons/WelcomeButtons';

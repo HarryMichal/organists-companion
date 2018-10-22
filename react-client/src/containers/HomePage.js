@@ -4,7 +4,7 @@ import 'whatwg-fetch';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import AppDrawer from '../components/AppBar/AppBar';
 import LoginForm from '../components/Forms/LoginForm';
 
 import AuthService from '../services/AuthService';
