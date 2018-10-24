@@ -3,6 +3,11 @@ var router = express.Router();
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var config = require('../config/config');
+var database = require('../utils/database.js');
+
+function getPsalms() {
+  
+}
 
 function encodeToken(token, callback) {
   var encodedToken = Buffer.from(token).toString("base64");
@@ -131,6 +136,30 @@ router.post('/relogin', function(req, res) {
       });
     }
   });
+})
+
+router.get('/psalms', async function(req, res) {
+  try {
+    let query = req.query;
+    let psalms = await database.selectAll("id, text", "psalms", "id");
+    if (psalms) {
+      if (!query.from && !query.to) {
+        return res.status(200).json({ success: true, psalms: psalms})
+      }
+      else {
+        query.from--;
+        if (!query.to) {
+          query.to = psalms.length;
+        }
+        psalms = psalms.slice(query.from, query.to);
+        return res.status(200).json({ success: true, psalms: psalms });
+      }
+    }
+  }
+  catch (e) {
+    console.error(e);
+    return res.status(400).json({ success: false });
+  }
 })
 
 module.exports = router;

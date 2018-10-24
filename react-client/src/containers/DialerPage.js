@@ -79,7 +79,7 @@ class DialerPage extends React.PureComponent {
   componentWillUnmount() {
     clearInterval(this.checkConnectionStatus);
     clearInterval(this.checkConnectionInterval);
-    this.socket.close();
+    if (this.socket) this.socket.close();
   }
   
   onMessage(event) {

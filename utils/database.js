@@ -30,7 +30,7 @@ module.exports.update = function(destination, items, search, searched, callback)
   });
 };
 
-module.exports.insert = function(destination, columns, values) {
+module.exports.insert = function(destination, columns, values, callback) {
   var placeholders = values.map((value) => '?').join(',');
   
   database.run(`INSERT INTO ${destination} (${columns}) values (${placeholders})`, function(err) {
@@ -41,6 +41,19 @@ module.exports.insert = function(destination, columns, values) {
       callback(null, this.changes);
     }
   });
+}
+module.exports.selectAll = function(item, source, orderBy) {
+  var result = [];
+  return new Promise((resolve, reject) => {
+    database.all(`SELECT ${item} FROM ${source} ORDER BY ${orderBy}`, [], (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+      if (rows) {
+        resolve(rows);
+      }
+    });
+  })
 }
 
 module.exports.selectPromise = function(items, source, search, searched) {
