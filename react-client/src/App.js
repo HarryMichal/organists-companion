@@ -9,24 +9,42 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // =====================================================
 
-const Loading = () => <div>Loading...</div>
+const Loading = (props) => {
+  if (props.error) {
+    return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
+  }
+  else if (props.timedOut) {
+    return <div>Taking a long time... <button onClick={ props.retry }>Retry</button></div>;
+  }
+  else if (props.pastDelay) {
+    return <div>Loading...</div>;
+  }
+  else {
+    return null;
+  }
+}
+  
 
 const Components = {
   Home: Loadable({
     loader: () => import('./containers/HomePage'),
-    loading: Loading
+    loading: Loading,
+    timeout: 10000, // 10 seconds
   }),
   Output: Loadable({
     loader: () => import('./containers/OutputPage'),
-    loading: Loading
+    loading: Loading,
+    timeout: 10000, // 10 seconds
   }),
   Dialer: Loadable({
     loader: () => import('./containers/DialerPage'),
-    loading: Loading
+    loading: Loading,
+    timeout: 10000, // 10 seconds
   }),
-  Catalog: Loadable({
-    loader: () => import('./containers/CatalogPage'),
-    loading: Loading
+  Psalms: Loadable({
+    loader: () => import('./containers/PsalmsPage'),
+    loading: Loading,
+    timeout: 10000, // 10 seconds
   })
 }
 
