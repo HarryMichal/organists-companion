@@ -18,8 +18,13 @@ module.exports.verseToArray = function(string) {
     result = string.split(',').map((value) => { return parseInt(value) });
   }
   finally {
-    result.map((value, index) => {result.fill([value,false], index, index + 1)})
-    return result
+    if (string.length === 0) {
+      return [];
+    }
+    else {
+      result.map((value, index) => {result.fill([value,false], index, index + 1)})
+      return result
+    }
   }
 }
 
