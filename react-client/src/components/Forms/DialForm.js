@@ -119,17 +119,22 @@ class DialForm extends React.PureComponent {
   renderVerseButtons() {
     const { classes, data, onClick } = this.props;
     
-    return(
-      <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
-        {Array.from(data.verse).map((data) => (
-          <Grid item xs={this.state.v_buttons.xs}>
-            <Button variant="raised" className={classes.v_button} id="verse" value={data[0]} color={data[1] ? ("secondary") : ("primary")} onClick={onClick}>
-            {data[0]}
-            </Button>
-          </Grid>
-        )) }
-      </Grid>
-    )
+    if (Array.from(data.verse).length === 0) {
+      return null;
+    }
+    else {
+      return(
+        <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
+          {Array.from(data.verse).map((data) => (
+            <Grid item xs={this.state.v_buttons.xs}>
+              <Button variant="raised" className={classes.v_button} id="verse" value={data[0]} color={data[1] ? ("secondary") : ("primary")} onClick={onClick}>
+              {data[0]}
+              </Button>
+            </Grid>
+          )) }
+        </Grid>
+      )
+    }
   }
   
   renderButtons() {
