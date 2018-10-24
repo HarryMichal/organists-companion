@@ -89,6 +89,7 @@ class OutputPage extends React.PureComponent {
   }
 
   componentDidMount() {
+    this.openConnection();
     this.checkConnectionInterval = setInterval(() => {
       this.verifyToken();
     }, 3000)
