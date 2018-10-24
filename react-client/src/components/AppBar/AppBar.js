@@ -21,6 +21,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DialpadIcon from '@material-ui/icons/Dialpad';
+import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import AuthService from '../../services/AuthService.js';
@@ -42,6 +43,7 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
     padding: '0 8px',
+    textAlign: 'center',
     ...theme.mixins.toolbar
   },
   drawerPaper: {
@@ -182,6 +184,7 @@ class AppDrawer extends React.PureComponent {
             window.location.reload();
           }}>Logout</Button> :
           <Typography
+            style={{flex: 1}}
             variant="title"
             color="inherit"
           >
