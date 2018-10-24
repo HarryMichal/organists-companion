@@ -10,9 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
 const styles = theme => ({
-  paper: {
-
-  },
+  
 })
 
 class TableHeader extends React.PureComponent {

@@ -2,10 +2,10 @@ import React from 'react';
 import 'whatwg-fetch';
 import Grid from '@material-ui/core/Grid';
 
-import AppDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import AppDrawer from '../components/AppBar/AppBar';
 import PsalmsTable from '../components/Tables/PsalmsTable';
 
-export default class CatalogPage extends React.PureComponent {
+export default class PsalmsPage extends React.PureComponent {
   constructor() {
     super();
     

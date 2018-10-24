@@ -208,6 +208,15 @@ class AppDrawer extends React.PureComponent {
             
             <Divider />
             
+            <ListItem button component="a" href="/psalms">
+              <ListItemIcon>
+                <ViewHeadlineIcon />
+              </ListItemIcon>
+              <ListItemText primary="Psalms"/>
+            </ListItem>
+            
+            <Divider />
+            
             <ListItem button component="a" href="/app">
               <ListItemIcon>
                 <DialpadIcon />
