@@ -127,7 +127,7 @@ class DialForm extends React.PureComponent {
         <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
           {Array.from(data.verse).map((data) => (
             <Grid item xs={this.state.v_buttons.xs}>
-              <Button variant="raised" className={classes.v_button} id="verse" value={data[0]} color={data[1] ? ("secondary") : ("primary")} onClick={onClick}>
+              <Button disableRipple variant="raised" className={classes.v_button} id="verse" value={data[0]} color={data[1] ? ("secondary") : ("primary")} onClick={onClick}>
               {data[0]}
               </Button>
             </Grid>
@@ -144,24 +144,24 @@ class DialForm extends React.PureComponent {
       <Grid container justify='center' spacing={this.state.spacing} className={classes.buttonwrap}>
       {this.state.button.number.map((num) => (
         <Grid item xs={this.state.button.xs}>
-          <Button variant="raised" className={classes.button} id="number" value={num} color="primary" onClick={onClick}>
+          <Button disableRipple variant="raised" className={classes.button} id="number" value={num} color="primary" onClick={onClick}>
           {num}
           </Button>
         </Grid>
       ))}
         
         <Grid item xs={this.state.button.xs}>
-          <Button variant="raised" className={classes.button} id="init_song" value="song" color={message.type == "song" ? ("default") : ("secondary")} onClick={onClick}>
+          <Button disableRipple variant="raised" className={classes.button} id="init_song" value="song" color={message.type == "song" ? ("default") : ("secondary")} onClick={onClick}>
             <BookIcon />
           </Button>
         </Grid>
         <Grid item xs={this.state.button.xs}>
-          <Button variant="raised" className={classes.button} id="number" value="0" color="primary" onClick={onClick}>
+          <Button disableRipple variant="raised" className={classes.button} id="number" value="0" color="primary" onClick={onClick}>
           0
           </Button>
         </Grid>
         <Grid item xs={this.state.button.xs}>
-          <Button variant="raised" className={classes.button} id="init_psalm" value="psalm" color={message.type == "psalm" ? ("default") : ("secondary")} onClick={onClick}>
+          <Button disableRipple variant="raised" className={classes.button} id="init_psalm" value="psalm" color={message.type == "psalm" ? ("default") : ("secondary")} onClick={onClick}>
             <NotesIcon />
           </Button>
         </Grid>
@@ -179,7 +179,7 @@ class DialForm extends React.PureComponent {
             <div className={classes.root}>
               <Grid container justify="center" alignItems='center' spacing={this.state.spacing} >
                 <Grid item xs={this.state.xs}>
-                  <Button variant="raised" color="secondary" className={classes.button} id="delete" onClick={onClick}>
+                  <Button disableRipple variant="raised" color="secondary" className={classes.button} id="delete" onClick={onClick}>
                     <DeleteIcon />
                   </Button>
                 </Grid>
@@ -194,7 +194,7 @@ class DialForm extends React.PureComponent {
                   )}
                 </Grid>
                 <Grid item xs={this.state.xs}>
-                  <Button variant="raised" className={classes.button} id="backspace" onClick={onClick}>
+                  <Button disableRipple disableRipple variant="raised" className={classes.button} id="backspace" onClick={onClick}>
                     <BackspaceIcon />
                   </Button>
                 </Grid>
