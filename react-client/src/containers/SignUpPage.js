@@ -1,7 +1,7 @@
 import React from 'react';
 import fetch from 'node-fetch';
 
-import ResponsiveDrawer from '../components/ResponsiveDrawer/ResponsiveDrawer';
+import AppBar from '../components/AppBar/AppBar';
 import SignUpForm from '../components/Forms/SignUpForm';
 
 class SignUpPage extends React.Component {

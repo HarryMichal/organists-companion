@@ -18,9 +18,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import MenuIcon from '@material-ui/icons/Menu';
 import HomeIcon from '@material-ui/icons/Home';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DialpadIcon from '@material-ui/icons/Dialpad';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+
+import AuthService from '../../services/AuthService.js';
 
 const styles = theme => ({
   root: {
@@ -124,14 +127,14 @@ class AppDrawer extends React.PureComponent {
       }
       else if (!status.isLoggedIn) {
         return (
-          <Button variant='raised' size='medium' color='primary' id='relogin' onClick={onClick} className={classes.button}>
+          <Button variant='contained' size='medium' color='primary' id='relogin' onClick={onClick} className={classes.button}>
             Login
           </Button>
         )
       }
       else if (!status.isConnected) {
         return (
-          <Button variant='raised' size='medium' color='primary' id='reconnect' onClick={onClick} className={classes.button}>
+          <Button variant='contained' size='medium' color='primary' id='reconnect' onClick={onClick} className={classes.button}>
             Reconnect
           </Button>
         )
@@ -173,7 +176,18 @@ class AppDrawer extends React.PureComponent {
     const drawer = (
       <div>
         <div className={classes.drawerHeader}>
-          <Typography variant='title' style={{'flex': 1, width: 'auto'}} className={classes.headerTitle}>Organist's Companion</Typography>
+        {status ?
+          <Button style={{flex: 1}} color='primary' variant="contained" onClick={() => {
+            AuthService.clearToken();
+            window.location.reload();
+          }}>Logout</Button> :
+          <Typography
+            variant="title"
+            color="inherit"
+          >
+            Organist's Companion
+          </Typography>
+        }
         </div>
         <Divider />
         <List component="nav">
