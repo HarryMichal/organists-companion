@@ -1,15 +1,34 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import Loadable from 'react-loadable';
 import './App.css';
 
 import AuthService from './services/AuthService';
 
-import HomePage from './containers/HomePage';
-import DialerPage from './containers/DialerPage';
-import AuthPage from './containers/AuthPage';
-import OutputPage from './containers/OutputPage';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // =====================================================
+
+const Loading = () => <div>Loading...</div>
+
+const Components = {
+  Home: Loadable({
+    loader: () => import('./containers/HomePage'),
+    loading: Loading
+  }),
+  Output: Loadable({
+    loader: () => import('./containers/OutputPage'),
+    loading: Loading
+  }),
+  Dialer: Loadable({
+    loader: () => import('./containers/DialerPage'),
+    loading: Loading
+  }),
+  Catalog: Loadable({
+    loader: () => import('./containers/CatalogPage'),
+    loading: Loading
+  })
+}
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={props =>
@@ -34,10 +53,10 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <Switch>
-            <Route exact path="/" component={HomePage}/>
-            <DisabledRoute exact path="/auth/:authType" component={AuthPage}/>
-            <Route exact path="/output" component={OutputPage}/>
-            <PrivateRoute exact path="/app" component={DialerPage}/>
+            <Route exact path="/" component={Components.Home}/>
+            <Route exact path="/output" component={Components.Output}/>
+            <Route exact path="/catalog" component={Components.Catalog}/>
+            <PrivateRoute exact path="/app" component={Components.Dialer}/>
           </Switch>
         </div>
       </Router>
