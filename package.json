@@ -3,28 +3,25 @@
   "version": "1.0.0",
   "private": false,
   "scripts": {
-    "start": "node ./bin/www",
-    "devstart": "NODE_ENV=development nodemon ./bin/www",
-    "production-full": "npm install && cd react-client && npm install && npm install --only=dev --no-shinkwrap && npm run build && cd .. && NODE_ENV=production npm start",
+    "start": "node ./bin/www.js",
+    "dev": "NODE_ENV=development nodemon ./bin/www.js",
+    "production-full": "npm install --only=prod && cd react-client && npm install --only=prod --no-shinkwrap && npm run build && cd .. && NODE_ENV=production npm start",
     "production-mini": "NODE_ENV=production npm start",
     "build": "npm install && cd react-client && npm install && npm run build"
   },
   "dependencies": {
-    "base62": "^2.0.0",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
-    "express": "~4.15.5",
+    "express": "^4.16.4",
     "express-session": "^1.15.6",
     "json": "^9.0.6",
     "jsonwebtoken": "^8.3.0",
-    "morgan": "~1.9.0",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.1",
     "passport-local": "^1.0.0",
-    "serve-favicon": "~2.4.5",
-    "sqlite3": "^3.1.13",
+    "sqlite3": "^4.0.4",
     "ws": "^4.1.0"
   },
   "devDependencies": {
