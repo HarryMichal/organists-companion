@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import BookIcon from '@material-ui/icons/Book';
-import IconButton from '@material-ui/core/IconButton';
 import NotesIcon from '@material-ui/icons/Notes';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BackspaceIcon from '@material-ui/icons/Backspace';
@@ -17,10 +16,10 @@ const styles = theme => ({
   card: {
     height: "fit-content",
     [theme.breakpoints.up('xs')]: {
-      width: 360
+      width: "100%"
     },
     [theme.breakpoints.up('sm')]: {
-      width: 420
+      width: "420"
     },
     [theme.breakpoints.up('md')]: {
       width: 460
