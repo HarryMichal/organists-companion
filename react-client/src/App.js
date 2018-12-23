@@ -70,9 +70,10 @@ class App extends React.Component {
         <div className="App">
           <Switch>
             <Route exact path="/" component={Components.Home}/>
-            <Route exact path="/output" component={Components.Output}/>
-            <Route exact path="/psalms" component={Components.Psalms}/>
-            <PrivateRoute exact path="/app" component={Components.Dialer}/>
+            <Route exact path="/index.html" component={Components.Home}/>
+            <Route path="/output" component={Components.Output}/>
+            <Route path="/psalms" component={Components.Psalms}/>
+            <PrivateRoute path="/app" component={Components.Dialer}/>
           </Switch>
         </div>
       </Router>
