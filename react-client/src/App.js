@@ -1,11 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Loadable from 'react-loadable';
+
 import './App.css';
 
 import AuthService from './services/AuthService';
-
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 // =====================================================
 
@@ -65,7 +64,6 @@ const DisabledRoute = ({ component: Component, ...rest }) => (
 )
 
 class App extends React.Component {
-  
   render() {
     return (
       <Router>

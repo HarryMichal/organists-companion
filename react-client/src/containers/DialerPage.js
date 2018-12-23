@@ -504,13 +504,3 @@ class DialerPage extends React.PureComponent {
 }
 
 export default withStyles(styles)(DialerPage);
-
-/*
-<Card className={classes.card}>
-  <CardContent>
-      <TextField className={classes.textField} value={this.state.data.number} margin="normal" />
-      <TextField className={classes.textField} value={this.state.data.psalmtext} margin="normal" />
-      <TextField className={classes.textField} value={this.state.temporary} margin="normal" />
-  </CardContent>
-</Card>
-*/
