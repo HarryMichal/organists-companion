@@ -21,8 +21,10 @@ class HomePage extends React.Component {
         email: '',
         password: ''
       },
-      response: {
+      formStatus: {
         error: false,
+        wrongUsername: false,
+        wrongPassword: false,
         message: ''
       }
     }
@@ -43,42 +45,94 @@ class HomePage extends React.Component {
     const user = this.state.user;
     user[field] = event.target.value;
     this.setState({user});
+    
+    if (field === "username" && this.state.formStatus.wrongUsername) {
+      this.setState(state => ({
+        formStatus: {
+          error: state.formStatus.error,
+          wrongUsername: false,
+          wrongPassword: state.formStatus.wrongPassword,
+          message: ''
+        }
+      }));
+    }
+
+    if (field === "password" && this.state.formStatus.wrongPassword) {
+      this.setState(state => ({
+        formStatus: {
+          error: state.formStatus.error,
+          wrongUsername: state.formStatus.wrongUsername,
+          wrongPassword: false,
+          message: ''
+        }
+      }));
+    }
   };
   
-  processForm(event) { // send to API and handle client authentication
+  async processForm(event) { // send to API and handle client authentication
     event.preventDefault();
     const user = this.state.user;
     
-    fetch("/api/login", {
+    let res = await fetch("/api/login", {
       method: 'post',
       body: JSON.stringify(user),
       headers: {
         "Content-Type": "application/json"
       }}
     )
-    .then(res => res.json())
-    .then(json => {
+    let response = await res.json()
+
+    this.handleServerResponse(response)
+  }
+
+  handleServerResponse(json) {
+    console.log(json);
       if (json.success) {
         let token = json.token;
         this.setState(prevState => ({
-          response: {
+        formStatus: {
             error: false,
+          wrongUsername: false,
+          wrongPassword: false,
             message: ''
           }
         }));
         AuthService.setToken(token);
         this.props.history.push("/app");
-      }
-      else if (json.error) {
+    } else {
+      if (json.error) {
         this.setState(prevState => ({
-          response: {
+          formStatus: {
             error: true,
+            wrongUsername: false,
+            wrongPassword: false,
+            message: json.message
+          }
+        }));
+      } else {
+        if (json.wrongUsername) {
+          this.setState(prevState => ({
+            formStatus: {
+              error: false,
+              wrongUsername: true,
+              wrongPassword: false,
+              message: json.message
+      }
+          }));
+        }
+        if (json.wrongPassword) {
+        this.setState(prevState => ({
+            formStatus: {
+              error: false,
+              wrongUsername: false,
+              wrongPassword: true,
             message: json.message
           }
         }));
       }
-    })
-  };
+      }
+    }
+  }
   
   render() {
     return (
@@ -91,7 +145,7 @@ class HomePage extends React.Component {
           <Typography variant='display1' color='inherit'>Welcome to the Organist's companion.</Typography>
         </Grid>
         <Grid item className='container-center'>
-          <LoginForm onSubmit={this.processForm} onChange={this.changeUser} response={this.state.response} user={this.state.user} />
+          <LoginForm onSubmit={this.processForm} onChange={this.changeUser} status={this.state.formStatus} user={this.state.user} />
         </Grid>
       </Grid>
     </div>
