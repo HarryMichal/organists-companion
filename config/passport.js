@@ -107,30 +107,33 @@ module.exports = function(app) {
 
 // LOCAL LOGIN
 passport.use('login', new LocalStrategy({
-  usernameField: 'username', passwordField: 'password', passReqToCallback: true // allows us to pass back the entire request to the callback
+  usernameField: 'username',
+  passwordField: 'password',
+  passReqToCallback: true // allows us to pass back the entire request to the callback
   }, async function(req, username, password, done) {
     try {
       let user = await database.selectPromise("*", "users", "username", username);
 
-      if (!user) {
-        throw "Requested user doesn't exist"
-      }
+      if (!user)
+        throw "Incorrect username"
 
       let samePassword = bcrypt.compareSync(password, user.password);
       
-      if (!samePassword) {
-        throw "The entered password is incorrect"
-      }
+      if (!samePassword)
+        throw "Incorrect password"
 
-      if (user && samePassword) {
+      if (user && samePassword)
         return done(null, user);
-      }
-      else {
+      else
         return done("Unidentified error during login");
-      }
     }
     catch (err) {
-      return done(err);
+      if (err === "Incorrect username")
+        return done(null, false, { message:"Wrong username" })
+      else if (err === "Incorrect password")
+        return done(null, false, { message:"Wrong password" })
+      else
+        return done(err)
     }
   }));
 };

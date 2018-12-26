@@ -70,20 +70,23 @@ router.post('/login', function(req, res, next) {
   passport.authenticate('login', function login(err, user, info) {
     if (err) {
       console.error(err);
+      return res.status(400).json({ success: false, error: true, message: "There was an error on the server."})
     }
+      
     if (!user) {
-      return res.status(401).json({ success: false, error: true, message: "Entered credentials are incorrect" });
+      if (info.message === "Wrong username")
+        return res.status(401).json({ success: false, error: false, wrongUsername: true, wrongPassword: false, message: info.message });
+      else if (info.message === "Wrong password")
+        return res.status(401).json({ success: false, error: false, wrongUsername: false, wrongPassword: true, message: info.message });
     }
-    req.logIn(user, function finishLogin(err)  {
-      if (err) {
-        return res.status(401).json({ success: false, error: true, message: err });
-      }
-      generateToken(req.body.username, "general", config.token.expiresIn, function(token) {
-        if (token) {
-          return res.status(200).json({ success: true, error: false, token: token });
-        }
+
+    generateToken(req.body.username, "general", config.token.expiresIn, function(token) {
+      if (token)
+        return res.status(200).json({ success: true, error: false, token: token })
+      else {
+        console.error("There was an error during token generation")
         return res.status(400).json({ success: false, error: true, message: "There was an error on the server."})
-      });
+      }
     });
   })(req, res, next);
 });
